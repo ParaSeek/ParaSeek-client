@@ -2,7 +2,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <section className='flex flex-col p-5 bg-secondary'>
+    <section className='p-5 bg-secondary'>
     <h1 className='mb-4 text-xl text-center font-bold'>About Us</h1>
     <div>
 
@@ -24,7 +24,7 @@ const page = () => {
       <h2 className='font-bold mt-4'>Our Team</h2>
       We are a team of passionate professionals dedicated to helping you achieve your career goals. Our diverse backgrounds in technology, education, and human resources enable us to provide a comprehensive and user-friendly platform.
       <h2 className='font-bold mt-4'>Join Us</h2>
-      Whether you’re a job seeker looking for your next opportunity or an employer searching for the perfect candidate, [Your Platform Name] is here to help. Join us today and take the next step in your career journey!
+      Whether you’re a job seeker looking for your next opportunity or an employer searching for the perfect candidate, we are here to help. Join us today and take the next step in your career journey!
     </div>
   </section>
   )
