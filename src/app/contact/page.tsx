@@ -1,10 +1,12 @@
 "use client";
-import React from "react";
+import {useState} from "react";
 import { useForm} from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
+import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/hooks/use-toast";
+import Loader_dots from "@/components/Loader_dots";
 interface contactFormData {
   name: string;
   email: string;
@@ -12,14 +14,21 @@ interface contactFormData {
   message: string;
 }
 
-const page = () => {
+const Page = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<contactFormData>();
+  const {toast} = useToast();
+  const [loading, setLoading] = useState(false)
   const onSubmit = (data: contactFormData) => {
-    console.log(data);
+    setLoading(true);
+    setTimeout(() => {
+      console.log(data);
+      toast({variant:"destructive",title:"An Error Occurred"})
+      setLoading(false);
+    }, 3000);
   };
   return (
     <div
@@ -88,8 +97,7 @@ const page = () => {
             </div>
             
             <div className="mb-4">
-              <Input
-                type="message"
+              <Textarea
                 placeholder="Message"
                 className="w-full"
                 {...register("message", {
@@ -105,9 +113,10 @@ const page = () => {
             
             <Button
               type="submit"
+              disabled={loading}
               className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90"
             >
-              Send Message
+              {loading? <Loader_dots text="Sending"/> : "Send Message"}
             </Button>
           </form>
         </motion.div>
@@ -116,4 +125,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

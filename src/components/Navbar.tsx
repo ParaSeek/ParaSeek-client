@@ -23,7 +23,7 @@ export const Navbar = () => {
         setActiveLink(pathname);
     }, [pathname]);
     return (
-        <header className="bg-background/50 flex items-center sticky h-16 px-2 top-0 left-0 backdrop-blur-sm">
+        <header className="bg-background/50 flex items-center sticky z-50 h-16 px-2 top-0 left-0 backdrop-blur-sm">
             <nav className="container h-16 flex justify-between mx-auto items-center">
                 <div className='md:hidden flex items-center justify-start w-[25vw]'>
                     <div onClick={toggleMenu} className="flex duration-300 flex-col justify-around relative z-10 w-8 h-8 cursor-pointer">
@@ -43,7 +43,7 @@ export const Navbar = () => {
                 </div>
                 <div className="text-lg flex w-[25vw] items-center justify-center md:justify-start font-bold">
                     <Link href="/" className='flex items-baseline'>
-                        <span>Para</span><span className='font-medium text-primary text-xl'>Seek.</span>
+                        <span className='text-2xl'>Para</span><span className='font-medium text-primary text-2xl'>Seek.</span>
                     </Link>
                 </div>
                 <div className={`flex md:px-12 md:h-16 flex-col transition-all duration-300 fixed left-0 top-0 h-screen bg-secondary items-center justify-center overflow-hidden md:relative md:bg-transparent md:flex-row ${isMenuOpen ? "w-[70vw] md:w-auto" : "w-[0vw] md:w-auto"}`}>

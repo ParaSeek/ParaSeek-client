@@ -1,7 +1,7 @@
 import Link from "next/link";
 export default function Home() {
   return (
-    <div style={{minHeight:"calc(100vh - 64px)"}} className="flex flex-col items-center justify-center py-8 bg-secondary">
+    <div style={{minHeight:"calc(100vh - 64px)"}} className="main-bg flex flex-col items-center justify-center py-8 bg-secondary">
       <main className="flex flex-col items-center justify-center flex-1 w-full px-20 text-center">
         <h1 className="text-6xl font-bold">
           Welcome to <a className="text-primary" href="#">ParaSeek.</a>
@@ -17,7 +17,7 @@ export default function Home() {
           </button></Link>
         </div>
 
-        <div className="mt-6 w-full max-w-3xl">
+        <div className="mt-6 w-full relative z-10 max-w-3xl">
           <form className="flex flex-col sm:flex-row items-center justify-center w-full space-y-4 sm:space-y-0 sm:space-x-4">
             <input
               type="text"

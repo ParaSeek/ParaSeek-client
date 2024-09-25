@@ -104,3 +104,81 @@ section{
   max-width: 1640px;
   margin: 0 auto;
 }
+
+
+/* loader-dots */
+.loading-dots {
+  display: inline-flex;
+}
+
+.dot {
+  opacity: 0;
+  animation: blink 1.5s infinite;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 1s;
+}
+
+@keyframes blink {
+
+  0%,
+  20%,
+  100% {
+      opacity: 0;
+  }
+
+  50% {
+      opacity: 1;
+  }
+}
+
+.main-bg{
+  overflow: hidden;
+  position: relative;
+}
+.main-bg::after, .main-bg::before{
+  content: "";
+  width: 40vmax;
+  height: 40vmax;
+  position: absolute;
+  background: rgba(115, 0, 255, 0.034);
+  left: 0vmin;
+  top: auto;
+  animation: morph 15s linear infinite alternate, spin 20s linear infinite;
+  z-index: 1;
+  will-change: border-radius, transform;
+  transform-origin: 30% 50%;
+  pointer-events: none;
+}
+.main-bg::after{
+  width: 70vmin;
+  height: 70vmin;
+  left: auto;
+  right: -10vmin;
+  top: auto;
+  bottom: 0;
+  animation: morph 10s linear infinite alternate, spin 26s linear infinite reverse;
+  transform-origin: 20% 20%;
+}
+@keyframes morph {
+  0% {
+    border-radius: 40% 60% 60% 40% / 70% 30%;
+  }
+  100% {
+    border-radius: 40% 60%;
+  }
+}
+@keyframes spin {
+  100% {
+    transform: rotate(1turn);
+  }
+}

@@ -12,12 +12,13 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { useForm, Controller } from 'react-hook-form';
+import Loader_dots from '@/components/Loader_dots';
 
 interface UserData {
-  name?: string;
-  email: string;
-  role?: string;
-  password?: string;
+    username?: string;
+    email: string;
+    role?: string;
+    password?: string;
 }
 
 const Page = () => {
@@ -27,14 +28,40 @@ const Page = () => {
     const toggleForm = (type: 'login' | 'signup' | 'forgotPassword') => {
         setFormType(type);
     };
-
-    const onSubmit = (data: UserData) => {
+    const [loading, setLoading] = useState(false)
+    const onSubmit = async (data: UserData) => {
         if (formType === 'login') {
+            setLoading(true)
             console.log('Login data:', data);
+            setTimeout(() => {
+                setLoading(false)
+            }, 3000);
         } else if (formType === 'signup') {
-            console.log('Signup data:', data);
+            setLoading(true)
+            console.log(data);
+            try {
+                const res = await fetch("http://localhost:8000/api/v1/auth/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    mode: "no-cors",
+                    body: JSON.stringify(data),
+                });
+                const dataRes = await res.json();
+                console.log(dataRes);
+            } catch (error) {
+                console.log(error);
+            }
+            finally {
+                setLoading(false);
+            }
         } else if (formType === 'forgotPassword') {
+            setLoading(true)
             console.log('Forgot Password data:', data.email);
+            setTimeout(() => {
+                setLoading(false)
+            }, 3000);
         }
     };
 
@@ -56,8 +83,8 @@ const Page = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         {formType === 'signup' && (
                             <div className="mb-4">
-                                <Input type="text" placeholder="Name" className="w-full" {...register('name', { required: true })} />
-                                {errors.name && <span className="text-red-500 text-xs">This field is required</span>}
+                                <Input type="text" placeholder="username" className="w-full" {...register('username', { required: true, pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/ })} />
+                                {errors.username && <span className="text-red-500 text-xs">Username should start from a letter and can include numbers and underscore</span>}
                             </div>
                         )}
                         <div className="mb-4">
@@ -79,8 +106,8 @@ const Page = () => {
                                                 <SelectValue placeholder="Role" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="candidate">Candidate</SelectItem>
-                                                <SelectItem value="recruiter">Recruiter</SelectItem>
+                                                <SelectItem value="job_seeker">Job-seeker</SelectItem>
+                                                <SelectItem value="employer">Employer</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     )}
@@ -95,8 +122,8 @@ const Page = () => {
                             </div>
                         )}
                         {formType === 'login' && <span className="text-red-500 text-xs underline cursor-pointer" onClick={() => toggleForm('forgotPassword')}>Forgot Password?</span>}
-                        <Button type="submit" className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90">
-                            {formType === 'login' ? 'Login' : formType === 'signup' ? 'Sign Up' : 'Reset Password'}
+                        <Button disabled={loading} type="submit" className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90">
+                            {formType === 'login' ? (loading ? <Loader_dots text='Logging in' /> : 'Login') : formType === 'signup' ? (loading ? <Loader_dots text="Signing Up" /> : 'Sign Up') : (loading ? <Loader_dots text='Loading' /> : 'Reset Password')}
                         </Button>
                     </form>
                     <motion.div
