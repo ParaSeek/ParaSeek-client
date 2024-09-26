@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useDispatch, UseDispatch } from "react-redux";
+import { useDispatch} from "react-redux";
 import { login } from "../../slices/userSlice";
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
@@ -52,6 +52,7 @@ const Page = () => {
       try {
         const res = await fetch("http://localhost:8000/api/v1/auth/login", {
           method: "POST",
+          credentials:"include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -60,6 +61,7 @@ const Page = () => {
         const dataRes = await res.json();
         if(dataRes.success){
         console.log(dataRes);
+
         dispatch(login(dataRes.data));
         toast({title: "Logged in successfully!"})
         } else {
@@ -75,6 +77,7 @@ const Page = () => {
       try {
         const res = await fetch("http://localhost:8000/api/v1/auth/register", {
           method: "POST",
+          credentials:"include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -103,6 +106,14 @@ const Page = () => {
 
   if(userLog){
     router.push("/account")
+  }
+
+  if(userLog){
+    return(
+      <section className="justify-center">
+        <h1>You are Logged In</h1>
+      </section>
+    )
   }
   return (
     <div
