@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster"
+import { Providers } from "./provider";
 const montserrat = Montserrat({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700']
@@ -29,10 +30,12 @@ export default function RootLayout({
       <body
         className={montserrat.className}
       >
-        <Navbar />
-        {children}
-        <Toaster/>
-        <Footer />
+        <Providers>
+          <Navbar />
+          {children}
+          <Toaster />
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

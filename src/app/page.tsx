@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 export default function Home() {
-  const userLog = false;
+  const userLog = useSelector((state:RootState)=>state.user.isLoggedIn)
+
   return (
     <div
       style={{ minHeight: "calc(100vh - 64px)" }}

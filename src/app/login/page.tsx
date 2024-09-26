@@ -5,6 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { useDispatch, UseDispatch } from "react-redux";
+import { login } from "../../slices/userSlice";
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/store'
+
 import {
   Select,
   SelectContent,
@@ -39,10 +44,11 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const {toast} = useToast();
   const router = useRouter();
+  const dispatch = useDispatch();
+  const userLog = useSelector((state:RootState)=>state.user.isLoggedIn)
   const onSubmit = async (data: UserData) => {
     if (formType === "login") {
       setLoading(true);
-      console.log(data);
       try {
         const res = await fetch("http://localhost:8000/api/v1/auth/login", {
           method: "POST",
@@ -52,18 +58,20 @@ const Page = () => {
           body: JSON.stringify(data),
         });
         const dataRes = await res.json();
+        if(dataRes.success){
         console.log(dataRes);
-        sessionStorage.setItem("localUser", JSON.stringify(dataRes));
+        dispatch(login(dataRes.data));
         toast({title: "Logged in successfully!"})
-        router.push("/account")
-      } catch (error) {
-        console.log(error);
+        } else {
+          toast({variant:"destructive", title: dataRes.message})
+        }
+      } catch (error:any) {
+        toast({variant:"destructive", title:error.message});
       } finally {
         setLoading(false);
       }
     } else if (formType === "signup") {
       setLoading(true);
-      console.log(data);
       try {
         const res = await fetch("http://localhost:8000/api/v1/auth/register", {
           method: "POST",
@@ -73,11 +81,14 @@ const Page = () => {
           body: JSON.stringify(data),
         });
         const dataRes = await res.json();
-        console.log(dataRes);
-        toast({title: "Account created successfully"});
-        setFormType("login");
-      } catch (error) {
-        console.log(error);
+        if(dataRes.success){
+          setFormType("login");
+          toast({title: dataRes.message});
+        } else {
+          toast({variant:"destructive", title: dataRes.message});
+        }
+      } catch (error:any) {
+        toast({variant:"destructive", title:error.message});
       } finally {
         setLoading(false);
       }
@@ -90,6 +101,9 @@ const Page = () => {
     }
   };
 
+  if(userLog){
+    router.push("/account")
+  }
   return (
     <div
       style={{ minHeight: "calc(100vh - 64px)" }}

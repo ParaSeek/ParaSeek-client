@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 const navItems = [
   { path: "/jobs", name: "Jobs" },
   { path: "/companies", name: "Companies" },
@@ -15,7 +17,7 @@ export const Navbar = () => {
   const pathname = usePathname();
   const [activeLink, setActiveLink] = useState(pathname);
   const [isMenuOpen, setisMenuOpen] = useState(false);
-  const userLog = false;
+  const userLog = useSelector((state:RootState)=>state.user.isLoggedIn)
   const toggleMenu = () => {
     setisMenuOpen(!isMenuOpen);
   };
