@@ -1,20 +1,41 @@
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
 export default function Home() {
+  const userLog = false;
   return (
-    <div style={{minHeight:"calc(100vh - 64px)"}} className="main-bg flex flex-col items-center justify-center py-8 bg-secondary">
+    <div
+      style={{ minHeight: "calc(100vh - 64px)" }}
+      className="main-bg flex flex-col items-center justify-center py-8 bg-secondary"
+    >
       <main className="flex flex-col items-center justify-center flex-1 w-full px-20 text-center">
         <h1 className="text-6xl font-bold">
-          Welcome to <a className="text-primary" href="#">ParaSeek.</a>
+          Welcome to{" "}
+          <a className="text-primary" href="#">
+            ParaSeek.
+          </a>
         </h1>
 
         <p className="mt-3 text-2xl">
-          Find your dream job with us. Explore thousands of job listings from top companies.
+          Find your dream job with us. Explore thousands of job listings from
+          top companies.
         </p>
 
         <div className="mt-6">
-          <Link href='/login'><button className="px-8 py-3 text-lg font-medium text-primary-foreground bg-primary rounded-md hover:bg-primary/90">
-            Get Started
-          </button></Link>
+          {userLog ? (
+            <Link href="/account">
+              <button className="px-8 py-3 text-lg font-medium text-primary-foreground bg-primary rounded-md hover:bg-primary/90">
+                Go To Dashboard
+              </button>
+            </Link>
+          ) : (
+            <Link href="/login">
+              <button className="px-8 py-3 text-lg font-medium text-primary-foreground bg-primary rounded-md hover:bg-primary/90">
+                Get Started
+              </button>
+            </Link>
+          )}
         </div>
 
         <div className="mt-6 w-full relative z-10 max-w-3xl">
@@ -37,7 +58,6 @@ export default function Home() {
             </button>
           </form>
         </div>
-
       </main>
     </div>
   );
