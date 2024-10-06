@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "../../slices/userSlice";
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store/store'
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 import {
   Select,
@@ -22,14 +22,15 @@ import Loader_dots from "@/components/Loader_dots";
 import { useToast } from "@/hooks/use-toast";
 interface UserData {
   username?: string;
-  email: string;
+  email?: string;
   role?: string;
   password?: string;
+  activation_code?: number;
 }
 
 const Page = () => {
   const [formType, setFormType] = useState<
-    "login" | "signup" | "forgotPassword"
+    "login" | "signup" | "forgotPassword" | "otp"
   >("login");
   const {
     register,
@@ -38,37 +39,41 @@ const Page = () => {
     formState: { errors },
   } = useForm<UserData>();
 
-  const toggleForm = (type: "login" | "signup" | "forgotPassword") => {
+  const toggleForm = (type: "login" | "signup" | "forgotPassword" | "otp") => {
     setFormType(type);
   };
   const [loading, setLoading] = useState(false);
-  const {toast} = useToast();
+  const { toast } = useToast();
   const router = useRouter();
   const dispatch = useDispatch();
-  const userLog = useSelector((state:RootState)=>state.user.isLoggedIn)
+  const userLog = useSelector((state: RootState) => state.user.isLoggedIn);
   const onSubmit = async (data: UserData) => {
     if (formType === "login") {
       setLoading(true);
       try {
         const res = await fetch("http://localhost:8000/api/v1/auth/login", {
           method: "POST",
-          credentials:"include",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         });
         const dataRes = await res.json();
-        if(dataRes.success){
-        console.log(dataRes);
+        if (dataRes.success) {
+          console.log(dataRes);
 
-        dispatch(login(dataRes.data));
-        toast({title: "Logged in successfully!"})
+          dispatch(login(dataRes.data));
+          toast({ title: "Logged in successfully!" });
         } else {
-          toast({variant:"destructive", title: dataRes.message})
+          toast({ variant: "destructive", title: dataRes.message });
         }
-      } catch (error:any) {
-        toast({variant:"destructive", title:error.message, description: "Internal Server Error"});
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: error.message,
+          description: "Internal Server Error",
+        });
       } finally {
         setLoading(false);
       }
@@ -77,22 +82,26 @@ const Page = () => {
       try {
         const res = await fetch("http://localhost:8000/api/v1/auth/register", {
           method: "POST",
-          credentials:"include",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         });
         const dataRes = await res.json();
-        console.log(dataRes)
-        if(dataRes.success){
-          setFormType("login");
-          toast({title: dataRes.message});
+        console.log(dataRes);
+        if (dataRes.success) {
+          setFormType("otp");
+          toast({ title: dataRes.message });
         } else {
-          toast({variant:"destructive", title: dataRes.message});
+          toast({ variant: "destructive", title: dataRes.message });
         }
-      } catch (error:any) {
-        toast({variant:"destructive", title:error.message, description:"Internal Server Error"});
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: error.message,
+          description: "Internal Server Error",
+        });
       } finally {
         setLoading(false);
       }
@@ -102,19 +111,50 @@ const Page = () => {
       setTimeout(() => {
         setLoading(false);
       }, 3000);
+    } else if (formType === "otp") {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          "http://localhost:8000/api/v1/auth//activate-user",
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        const dataRes = await res.json();
+        console.log(dataRes);
+        if (dataRes.success) {
+          setFormType("login");
+          toast({ title: dataRes.message });
+        } else {
+          toast({ variant: "destructive", title: dataRes.message });
+        }
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: error.message,
+          description: "Internal Server Error",
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  if(userLog){
-    router.push("/account")
+  if (userLog) {
+    router.push("/account");
   }
 
-  if(userLog){
-    return(
+  if (userLog) {
+    return (
       <section className="justify-center">
-        <Loader_dots text="Loading"/>
+        <Loader_dots text="Loading" />
       </section>
-    )
+    );
   }
   return (
     <div
@@ -136,11 +176,13 @@ const Page = () => {
               ? "Login"
               : formType === "signup"
               ? "Register"
+              : formType === "otp"
+              ? "Verify OTP"
               : "Forgot Password"}
           </h2>
           <form onSubmit={handleSubmit(onSubmit)}>
-            
-              <div className="mb-4">
+            <div className="mb-4">
+              {formType != "otp" && (
                 <Input
                   type="text"
                   placeholder="username"
@@ -150,31 +192,32 @@ const Page = () => {
                     pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
                   })}
                 />
-                {errors.username && (
-                  <span className="text-red-500 text-xs">
-                    Username should start from a letter and can include numbers
-                    and underscore
-                  </span>
-                )}
-              </div>
-            
-            {formType === "signup" && (
-            <div className="mb-4">
-              <Input
-                type="email"
-                placeholder="Email"
-                className="w-full"
-                {...register("email", {
-                  required: true,
-                  pattern: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                })}
-              />
-              {errors.email && (
+              )}
+              {errors.username && (
                 <span className="text-red-500 text-xs">
-                  Invalid email address
+                  Username should start from a letter and can include numbers
+                  and underscore
                 </span>
               )}
             </div>
+
+            {formType === "signup" && (
+              <div className="mb-4">
+                <Input
+                  type="email"
+                  placeholder="Email"
+                  className="w-full"
+                  {...register("email", {
+                    required: true,
+                    pattern: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                  })}
+                />
+                {errors.email && (
+                  <span className="text-red-500 text-xs">
+                    Invalid email address
+                  </span>
+                )}
+              </div>
             )}
             {formType === "signup" && (
               <div className="mb-4">
@@ -201,7 +244,7 @@ const Page = () => {
                 )}
               </div>
             )}
-            {formType !== "forgotPassword" && (
+            {formType !== ("forgotPassword" && "otp") && (
               <div className="mb-4">
                 <Input
                   type="password"
@@ -213,6 +256,22 @@ const Page = () => {
                   <span className="text-red-500 text-xs">
                     This field is required
                   </span>
+                )}
+              </div>
+            )}
+            {formType === "otp" && (
+              <div className="mb-4">
+                <Input
+                  type="number"
+                  placeholder="Enter activation code"
+                  className="w-full"
+                  {...register("activation_code", {
+                    required: true,
+                    pattern: /^\d{6}$/,
+                  })}
+                />
+                {errors.activation_code && (
+                  <span className="text-red-500 text-xs">error</span>
                 )}
               </div>
             )}
@@ -241,6 +300,12 @@ const Page = () => {
                 ) : (
                   "Sign Up"
                 )
+              ) : formType === "otp" ? (
+                loading ? (
+                  <Loader_dots text="Verifying" />
+                ) : (
+                  "Verify"
+                )
               ) : loading ? (
                 <Loader_dots text="Loading" />
               ) : (
@@ -257,7 +322,8 @@ const Page = () => {
             <a
               href="#"
               onClick={() =>
-                toggleForm(formType === "login" ? "signup" : "login")
+                toggleForm(formType === "login" ? "signup" : formType==="signup"? "login":  formType==="forgotPassword"? "login" :"signup")
+
               }
               className="text-primary hover:underline"
             >
@@ -265,6 +331,8 @@ const Page = () => {
                 ? "Create an account"
                 : formType === "signup"
                 ? "Already have an account? Login"
+                : formType === "otp"
+                ? "Back to signup"
                 : "Back to Login"}
             </a>
           </motion.div>
