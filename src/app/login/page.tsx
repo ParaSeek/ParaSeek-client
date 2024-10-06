@@ -139,7 +139,7 @@ const Page = () => {
               : "Forgot Password"}
           </h2>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {formType === "signup" && (
+            
               <div className="mb-4">
                 <Input
                   type="text"
@@ -157,7 +157,8 @@ const Page = () => {
                   </span>
                 )}
               </div>
-            )}
+            
+            {formType === "signup" && (
             <div className="mb-4">
               <Input
                 type="email"
@@ -174,6 +175,7 @@ const Page = () => {
                 </span>
               )}
             </div>
+            )}
             {formType === "signup" && (
               <div className="mb-4">
                 <Controller

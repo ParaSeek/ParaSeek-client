@@ -14,7 +14,7 @@ const LoadUserData = () => {
     async function loadUser() {
       try {
         setLoading(true)
-        const res = await fetch("http://localhost:8000/api/v1/auth/me", {
+        const res = await fetch("http://localhost:8000/api/v1/user/me", {
           method: "GET",
           credentials: "include",
           headers: {
