@@ -15,6 +15,7 @@ const Page = () => {
   const { toast } = useToast();
   const dispatch = useDispatch();
   const router = useRouter();
+  
   const handleLogout = async () => {
     setLoading(true);
     try {
@@ -47,7 +48,7 @@ const Page = () => {
 
   if (!userData) {
     return <section className='justify-center'>
-      <h1>You are not logged in</h1>
+      <Loader_dots text='Loading'/>
     </section>
   }
   console.log(userData);
@@ -55,6 +56,41 @@ const Page = () => {
   return (
     <section>
       Welcome, {userData.username}!
+      {
+        userData.role === process.env.JOBSEEKER_ID ? (
+          <div className='flex flex-col items-cente'>
+            <h2>Job Seeker Dashboard</h2>
+            <ul>
+              <li>
+                <a href="/job-search">Search for jobs</a>
+              </li>
+              <li>
+                <a href="/job-applications">View job applications</a>
+              </li>
+              <li>
+                <a href="/profile">Edit profile</a>
+              </li>
+            </ul>
+          </div>
+        ) : userData.role === process.env.EMPLOYER_ID ? (
+          <div className='flex flex-col justify-center'>
+            <h2>Employer Dashboard</h2>
+            <ul>
+              <li>
+                <a href="/post-job">Post a new job</a>
+              </li>
+              <li>
+                <a href="/job-listings">View job listings</a>
+              </li>
+              <li>
+                <a href="/candidate-management">Manage candidates</a>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <p>Invalid role</p>
+        )
+      }
       <Button onClick={handleLogout}
         disabled={loading}
         type="submit"

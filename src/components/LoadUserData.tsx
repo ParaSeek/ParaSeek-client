@@ -5,6 +5,7 @@ import { RootState } from "@/store/store";
 import { useState, useEffect } from "react";
 import { login } from "@/slices/userSlice";
 import { useToast } from "@/hooks/use-toast";
+import Loader_dots from './Loader_dots';
 const LoadUserData = () => {
     const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
     const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const LoadUserData = () => {
           console.error({ variant: "destructive", title: dataRes.message })
         }
       } catch (error: any) {
-        toast({ variant: "destructive", title: error.message });
+        console.error({ variant: "destructive", title: error.message, description:"Internal Server Error" }); 
       } finally {
         setLoading(false);
       }
@@ -39,7 +40,7 @@ const LoadUserData = () => {
       }
     }, [])
   return (
-    <div></div>
+    <div className='flex justify-center'>{loading && <Loader_dots text='Loading'/>}</div>
   )
 }
 

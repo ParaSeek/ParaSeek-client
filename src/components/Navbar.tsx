@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import Image from "../../public/account_icon.png"
 const navItems = [
   { path: "/jobs", name: "Jobs" },
   { path: "/companies", name: "Companies" },
@@ -84,9 +85,7 @@ export const Navbar = () => {
         <div className="w-[25vw] flex items-center justify-end">
           {userLog ? (
             <Link href="/account">
-              <p className="bg-primary font-medium text-primary-foreground px-3 py-2 rounded-md hover:bg-primary/90">
-                Account
-              </p>
+              <img className="h-10" src={Image.src} alt="" />
             </Link>
           ) : (
             <Link href="/login">

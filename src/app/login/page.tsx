@@ -68,7 +68,7 @@ const Page = () => {
           toast({variant:"destructive", title: dataRes.message})
         }
       } catch (error:any) {
-        toast({variant:"destructive", title:error.message});
+        toast({variant:"destructive", title:error.message, description: "Internal Server Error"});
       } finally {
         setLoading(false);
       }
@@ -84,6 +84,7 @@ const Page = () => {
           body: JSON.stringify(data),
         });
         const dataRes = await res.json();
+        console.log(dataRes)
         if(dataRes.success){
           setFormType("login");
           toast({title: dataRes.message});
@@ -91,7 +92,7 @@ const Page = () => {
           toast({variant:"destructive", title: dataRes.message});
         }
       } catch (error:any) {
-        toast({variant:"destructive", title:error.message});
+        toast({variant:"destructive", title:error.message, description:"Internal Server Error"});
       } finally {
         setLoading(false);
       }
@@ -111,7 +112,7 @@ const Page = () => {
   if(userLog){
     return(
       <section className="justify-center">
-        <h1>You are Logged In</h1>
+        <Loader_dots text="Loading"/>
       </section>
     )
   }

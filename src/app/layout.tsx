@@ -32,8 +32,8 @@ export default function RootLayout({
         className={montserrat.className}
       >
         <Providers>
-          <LoadUserData/>
           <Navbar />
+          <LoadUserData/>
           {children}
           <Toaster />
           <Footer />
