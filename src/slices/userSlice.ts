@@ -4,11 +4,13 @@ import { createSlice } from "@reduxjs/toolkit";
 interface UserState {
   data: any;
   isLoggedIn: boolean;
+  loading: boolean;
 }
 
 const initialState: UserState = {
   data: null,
   isLoggedIn: false,
+  loading: false,
 };
 
 const userSlice = createSlice({
@@ -19,6 +21,9 @@ const userSlice = createSlice({
       state.data = action.payload;
       state.isLoggedIn = true;
     },
+    toggleLoading(state, action){
+      state.loading = action.payload
+    },
     logout(state) {
       state.data = null;
       state.isLoggedIn = false;
@@ -26,5 +31,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout, toggleLoading } = userSlice.actions;
 export default userSlice.reducer;

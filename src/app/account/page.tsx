@@ -94,7 +94,7 @@ const Page = () => {
       <Button onClick={handleLogout}
         disabled={loading}
         type="submit"
-        className="w-[100px] py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90"
+        className="w-[130px] py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90"
       >
         {loading ? <Loader_dots text="Logging Out" /> :
           "Log out"}

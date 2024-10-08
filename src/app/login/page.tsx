@@ -107,13 +107,41 @@ const Page = () => {
       }
     } else if (formType === "forgotPassword") {
       setLoading(true);
-      console.log("Forgot Password data:", data.email);
-      setTimeout(() => {
+      console.log("Forgot Password data:", data);
+      try {
+        const res = await fetch(
+          "http://localhost:8000/api/v1/auth/forgotPassword",
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        const dataRes = await res.json();
+        console.log(dataRes);
+        // if (dataRes.success) {
+        //   setFormType("login");
+        //   toast({ title: dataRes.message });
+        // } else {
+        //   toast({ variant: "destructive", title: dataRes.message });
+        // }
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: error.message,
+          description: "Internal Server Error",
+        });
+      } finally {
         setLoading(false);
-      }, 3000);
+      }
     } else if (formType === "otp") {
       setLoading(true);
+      console.log(data);
       try {
+        
         const res = await fetch(
           "http://localhost:8000/api/v1/auth//activate-user",
           {
@@ -175,14 +203,14 @@ const Page = () => {
             {formType === "login"
               ? "Login"
               : formType === "signup"
-              ? "Register"
-              : formType === "otp"
-              ? "Verify OTP"
-              : "Forgot Password"}
+                ? "Register"
+                : formType === "otp"
+                  ? "Verify OTP"
+                  : "Forgot Password"}
           </h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
-              {formType != "otp" && (
+              {(formType === "signup" || formType==="login") && (
                 <Input
                   type="text"
                   placeholder="username"
@@ -201,7 +229,7 @@ const Page = () => {
               )}
             </div>
 
-            {formType === "signup" && (
+            {(formType === "signup" || formType === "forgotPassword") && (
               <div className="mb-4">
                 <Input
                   type="email"
@@ -244,7 +272,7 @@ const Page = () => {
                 )}
               </div>
             )}
-            {formType !== ("forgotPassword" && "otp") && (
+            {(formType === "login" || formType == "signup") && (
               <div className="mb-4">
                 <Input
                   type="password"
@@ -271,7 +299,7 @@ const Page = () => {
                   })}
                 />
                 {errors.activation_code && (
-                  <span className="text-red-500 text-xs">error</span>
+                  <span className="text-red-500 text-xs">Activation code is a six digit numeric code</span>
                 )}
               </div>
             )}
@@ -322,7 +350,7 @@ const Page = () => {
             <a
               href="#"
               onClick={() =>
-                toggleForm(formType === "login" ? "signup" : formType==="signup"? "login":  formType==="forgotPassword"? "login" :"signup")
+                toggleForm(formType === "login" ? "signup" : formType === "signup" ? "login" : formType === "forgotPassword" ? "login" : "signup")
 
               }
               className="text-primary hover:underline"
@@ -330,10 +358,10 @@ const Page = () => {
               {formType === "login"
                 ? "Create an account"
                 : formType === "signup"
-                ? "Already have an account? Login"
-                : formType === "otp"
-                ? "Back to signup"
-                : "Back to Login"}
+                  ? "Already have an account? Login"
+                  : formType === "otp"
+                    ? "Back to signup"
+                    : "Back to Login"}
             </a>
           </motion.div>
         </motion.div>

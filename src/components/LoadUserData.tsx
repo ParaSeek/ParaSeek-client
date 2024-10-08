@@ -3,17 +3,14 @@ import React from 'react'
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useState, useEffect } from "react";
-import { login } from "@/slices/userSlice";
-import { useToast } from "@/hooks/use-toast";
-import Loader_dots from './Loader_dots';
+import { login, toggleLoading } from "@/slices/userSlice";
+
 const LoadUserData = () => {
     const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
     const dispatch = useDispatch();
-    const { toast } = useToast();
-    const [loading, setLoading] = useState(false);
     async function loadUser() {
       try {
-        setLoading(true)
+        dispatch(toggleLoading(true));
         const res = await fetch("http://localhost:8000/api/v1/user/me", {
           method: "GET",
           credentials: "include",
@@ -31,7 +28,7 @@ const LoadUserData = () => {
       } catch (error: any) {
         console.error({ variant: "destructive", title: error.message, description:"Internal Server Error" }); 
       } finally {
-        setLoading(false);
+        dispatch(toggleLoading(false));
       }
     }
     useEffect(() => {
@@ -40,8 +37,7 @@ const LoadUserData = () => {
       }
     }, [])
   return (
-    <div className='flex justify-center'>{loading && <Loader_dots text='Loading'/>}</div>
+    <div></div>
   )
 }
-
-export default LoadUserData
+export default LoadUserData;
