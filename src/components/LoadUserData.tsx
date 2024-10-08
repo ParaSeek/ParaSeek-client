@@ -32,10 +32,8 @@ const LoadUserData = () => {
       }
     }
     useEffect(() => {
-      if (!userLog) {
         loadUser();
-      }
-    }, [])
+    }, [userLog])
   return (
     <div></div>
   )

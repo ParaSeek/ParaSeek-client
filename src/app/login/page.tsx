@@ -122,12 +122,12 @@ const Page = () => {
         );
         const dataRes = await res.json();
         console.log(dataRes);
-        // if (dataRes.success) {
-        //   setFormType("login");
-        //   toast({ title: dataRes.message });
-        // } else {
-        //   toast({ variant: "destructive", title: dataRes.message });
-        // }
+        if (dataRes.success) {
+          setFormType("login");
+          toast({ title: dataRes.message });
+        } else {
+          toast({ variant: "destructive", title: dataRes.message });
+        }
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -143,7 +143,7 @@ const Page = () => {
       try {
         
         const res = await fetch(
-          "http://localhost:8000/api/v1/auth//activate-user",
+          "http://localhost:8000/api/v1/auth/activate-user",
           {
             method: "POST",
             credentials: "include",
