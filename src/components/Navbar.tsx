@@ -89,7 +89,7 @@ export const Navbar = () => {
             <Link href="/account">
               <Avatar className="w-8 h-8">
                 <AvatarImage src="" />
-                <AvatarFallback className="bg-primary/80 text-white">{user.username.substring(0,1).toUpperCase()}</AvatarFallback>
+                <AvatarFallback className="bg-primary text-white">{user.username.substring(0,1).toUpperCase()}</AvatarFallback>
               </Avatar>
             </Link>
           ) : (

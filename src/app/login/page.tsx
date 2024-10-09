@@ -196,7 +196,7 @@ const Page = () => {
   return (
     <div
       style={{ minHeight: "calc(100vh - 64px)" }}
-      className="flex flex-col items-center justify-center p-2 bg-secondary"
+      className="flex flex-col items-center justify-center p-2 bg-background/70"
     >
       <AnimatePresence>
         <motion.div
@@ -296,7 +296,7 @@ const Page = () => {
                 )}
               </div>
             )}
-            {formType === "otp" || (
+            {formType === "otp" && (
               <div>
                 <div className="mb-4 flex w-full gap-4">
                   <div className="w-1/6">

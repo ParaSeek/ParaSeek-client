@@ -33,7 +33,7 @@ const Page = () => {
   return (
     <div
       style={{ minHeight: "calc(100vh - 64px)" }}
-      className="flex flex-col items-center justify-center py-2 bg-secondary"
+      className="flex flex-col items-center justify-center py-2 bg-background/70"
     >
       <AnimatePresence>
         <motion.div
