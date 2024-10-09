@@ -2,7 +2,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { login, toggleLoading } from "@/slices/userSlice";
 
 const LoadUserData = () => {

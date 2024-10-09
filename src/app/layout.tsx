@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster"
 import { Providers } from "./provider";
 import LoadUserData from "@/components/LoadUserData";
+import { ThemeProvider } from "@/components/theme-provider";
 const montserrat = Montserrat({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700']
@@ -31,13 +32,20 @@ export default function RootLayout({
       <body
         className={montserrat.className}
       >
-        <Providers>
-          <Navbar />
-          <LoadUserData/>
-          {children}
-          <Toaster />
-          <Footer />
-        </Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <Navbar />
+            <LoadUserData />
+            {children}
+            <Toaster />
+            <Footer />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

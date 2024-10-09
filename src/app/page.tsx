@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div
       style={{ minHeight: "calc(100vh - 64px)" }}
-      className="main-bg flex flex-col items-center justify-center py-8 bg-secondary"
+      className="main-bg flex flex-col items-center justify-center py-8 bg-secondary dark:bg-background/85"
     >
       {userDataLoading ? <motion.aside
         initial={{ opacity: 0 }}

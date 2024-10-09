@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import Image from "../../public/account_icon.png"
+import { ToggleTheme } from "./ToggleTheme";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 const navItems = [
   { path: "/jobs", name: "Jobs" },
   { path: "/companies", name: "Companies" },
@@ -18,7 +20,8 @@ export const Navbar = () => {
   const pathname = usePathname();
   const [activeLink, setActiveLink] = useState(pathname);
   const [isMenuOpen, setisMenuOpen] = useState(false);
-  const userLog = useSelector((state:RootState)=>state.user.isLoggedIn)
+  const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
+  const user= useSelector((state: RootState) => state.user.data)
   const toggleMenu = () => {
     setisMenuOpen(!isMenuOpen);
   };
@@ -26,7 +29,7 @@ export const Navbar = () => {
     setActiveLink(pathname);
   }, [pathname]);
   return (
-    <header className="bg-background/50 flex items-center sticky z-50 h-16 px-2 top-0 left-0 backdrop-blur-sm">
+    <header className="bg-background flex items-center sticky z-50 h-16 px-2 top-0 left-0 backdrop-blur-sm">
       <nav className="container h-16 flex justify-between mx-auto items-center">
         <div className="md:hidden flex items-center justify-start w-[25vw]">
           <div
@@ -35,17 +38,17 @@ export const Navbar = () => {
           >
             <motion.div
               animate={isMenuOpen ? { rotate: 45, y: 10 } : { rotate: 0, y: 0 }}
-              className="w-full h-[3px] bg-black rounded"
+              className="w-full h-[3px] bg-black dark:bg-white rounded"
             />
             <motion.div
               animate={isMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-              className="w-3/5 h-[3px] bg-black rounded"
+              className="w-3/5 h-[3px] bg-black dark:bg-white rounded"
             />
             <motion.div
               animate={
                 isMenuOpen ? { rotate: -45, y: -11 } : { rotate: 0, y: 0 }
               }
-              className="w-full h-[3px] bg-black rounded"
+              className="w-full h-[3px] bg-black dark:bg-white rounded"
             />
           </div>
         </div>
@@ -56,18 +59,16 @@ export const Navbar = () => {
           </Link>
         </div>
         <div
-          className={`flex md:px-12 md:h-16 flex-col transition-all duration-300 fixed left-0 top-0 h-screen bg-secondary items-center justify-center overflow-hidden md:relative md:bg-transparent md:flex-row ${
-            isMenuOpen ? "w-[70vw] md:w-auto" : "w-[0vw] md:w-auto"
-          }`}
+          className={`flex md:px-12 md:h-16 flex-col transition-all duration-300 fixed left-0 top-0 h-screen bg-secondary items-center justify-center overflow-hidden md:relative md:bg-transparent md:flex-row ${isMenuOpen ? "w-[70vw] md:w-auto" : "w-[0vw] md:w-auto"
+            }`}
         >
           {navItems.map((item) => (
             <Link onClick={toggleMenu} key={item.path} href={item.path}>
               <div
-                className={`relative mx-2 px-2 py-2 ${
-                  activeLink === item.path
-                    ? "text-primary"
-                    : "hover:text-primary"
-                } font-medium`}
+                className={`relative mx-2 px-2 py-2 ${activeLink === item.path
+                  ? "text-primary"
+                  : "hover:text-primary"
+                  } font-medium`}
                 onClick={() => setActiveLink(item.path)}
               >
                 {item.name}
@@ -82,10 +83,14 @@ export const Navbar = () => {
             </Link>
           ))}
         </div>
-        <div className="w-[25vw] flex items-center justify-end">
+        <div className="w-[25vw] flex gap-2 items-center justify-end">
+          <ToggleTheme />
           {userLog ? (
             <Link href="/account">
-              <img className="h-10" src={Image.src} alt="" />
+              <Avatar className="w-8 h-8">
+                <AvatarImage src="" />
+                <AvatarFallback className="bg-primary/80 text-white">{user.username.substring(0,1).toUpperCase()}</AvatarFallback>
+              </Avatar>
             </Link>
           ) : (
             <Link href="/login">

@@ -42,7 +42,7 @@ const Page = () => {
           exit={{ opacity: 0, y: -50 }}
           layout="position"
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md p-8 bg-white rounded-lg shadow-md"
+          className="w-full max-w-md p-8 bg-white dark:bg-gray-950 rounded-lg shadow-md"
         >
           <h2 className="mb-6 text-2xl font-bold text-center">
             Contact Us

@@ -47,14 +47,14 @@ const Page = () => {
 
 
   if (!userData) {
-    return <section className='justify-center'>
+    return <section className='bg-secondary dark:bg-background/85 justify-center'>
       <Loader_dots text='Loading'/>
     </section>
   }
   console.log(userData);
 
   return (
-    <section>
+    <section className='bg-secondary dark:bg-background/85'>
       Welcome, {userData.username}!
       {
         userData.role === process.env.JOBSEEKER_ID ? (

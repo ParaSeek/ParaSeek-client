@@ -150,7 +150,7 @@ section{
   width: 40vmax;
   height: 40vmax;
   position: absolute;
-  background: rgba(115, 0, 255, 0.034);
+  background: rgba(161, 84, 255, 0.06);
   left: 0vmin;
   top: auto;
   animation: morph 15s linear infinite alternate, spin 20s linear infinite;

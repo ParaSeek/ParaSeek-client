@@ -46,7 +46,49 @@ const Page = () => {
   const { toast } = useToast();
   const router = useRouter();
   const dispatch = useDispatch();
+  const [otp, setOtp] = useState(["", "", "", "", "", ""])
+  const [otpError, setOtpError] = useState("")
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn);
+  const handleOTPVerify = async () => {
+    if (otp[0] == "" || otp[1] == "" || otp[2] == "" || otp[3] == "" || otp[4] == "" || otp[5] == "") {
+      setOtpError("Enter 6 digit numeric verification code")
+    } else {
+      setOtpError("");
+      setLoading(true);
+      const data = {
+        activation_code: (otp[0] + otp[1] + otp[2] + otp[3] + otp[4] + otp[5])
+      }
+      try {
+        const res = await fetch(
+          "http://localhost:8000/api/v1/auth/activate-user",
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        const dataRes = await res.json();
+        console.log(dataRes);
+        if (dataRes.success) {
+          setFormType("login");
+          toast({ title: dataRes.message });
+        } else {
+          toast({ variant: "destructive", title: dataRes.message });
+        }
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: error.message,
+          description: "Internal Server Error",
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
   const onSubmit = async (data: UserData) => {
     if (formType === "login") {
       setLoading(true);
@@ -137,39 +179,6 @@ const Page = () => {
       } finally {
         setLoading(false);
       }
-    } else if (formType === "otp") {
-      setLoading(true);
-      console.log(data);
-      try {
-        
-        const res = await fetch(
-          "http://localhost:8000/api/v1/auth/activate-user",
-          {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
-        const dataRes = await res.json();
-        console.log(dataRes);
-        if (dataRes.success) {
-          setFormType("login");
-          toast({ title: dataRes.message });
-        } else {
-          toast({ variant: "destructive", title: dataRes.message });
-        }
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: error.message,
-          description: "Internal Server Error",
-        });
-      } finally {
-        setLoading(false);
-      }
     }
   };
 
@@ -187,7 +196,7 @@ const Page = () => {
   return (
     <div
       style={{ minHeight: "calc(100vh - 64px)" }}
-      className="flex flex-col items-center justify-center py-2 bg-secondary"
+      className="flex flex-col items-center justify-center p-2 bg-secondary"
     >
       <AnimatePresence>
         <motion.div
@@ -197,7 +206,7 @@ const Page = () => {
           exit={{ opacity: 0, y: -50 }}
           layout="position"
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md p-8 bg-white rounded-lg shadow-md"
+          className="w-full max-w-md p-8 bg-white dark:bg-gray-950 rounded-lg shadow-md"
         >
           <h2 className="mb-6 text-2xl font-bold text-center">
             {formType === "login"
@@ -210,7 +219,7 @@ const Page = () => {
           </h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
-              {(formType === "signup" || formType==="login") && (
+              {(formType === "signup") && (
                 <Input
                   type="text"
                   placeholder="username"
@@ -229,7 +238,7 @@ const Page = () => {
               )}
             </div>
 
-            {(formType === "signup" || formType === "forgotPassword") && (
+            {(formType === "signup" || formType === "login" || formType === "forgotPassword") && (
               <div className="mb-4">
                 <Input
                   type="email"
@@ -287,20 +296,306 @@ const Page = () => {
                 )}
               </div>
             )}
-            {formType === "otp" && (
-              <div className="mb-4">
-                <Input
-                  type="number"
-                  placeholder="Enter activation code"
-                  className="w-full"
-                  {...register("activation_code", {
-                    required: true,
-                    pattern: /^\d{6}$/,
-                  })}
-                />
-                {errors.activation_code && (
-                  <span className="text-red-500 text-xs">Activation code is a six digit numeric code</span>
-                )}
+            {formType === "otp" || (
+              <div>
+                <div className="mb-4 flex w-full gap-4">
+                  <div className="w-1/6">
+                    <Input
+                      type="text"
+                      id="otp-1"
+                      pattern="[0-9]{1}"
+                      inputMode="numeric"
+                      className="w-full"
+                      maxLength={1}
+                      value={otp[0]}
+                      onPaste={(e: any) => {
+                        e.preventDefault();
+                        const clipboardData = e.clipboardData;
+                        const pastedText = clipboardData.getData('text');
+                        setOtp((prev) => {
+                          prev[0] = pastedText.substring(0, 1)
+                          prev[1] = pastedText.substring(1, 2)
+                          prev[2] = pastedText.substring(2, 3)
+                          prev[3] = pastedText.substring(3, 4)
+                          prev[4] = pastedText.substring(4, 5)
+                          prev[5] = pastedText.substring(5, 6)
+                          return [...prev]
+                        })
+                      }}
+                      onKeyDown={(e: any) => {
+                        if (/^\d+$/.test(e.key)) {
+                          setOtp((prev) => { prev[0] = e.key; return [...prev] })
+                          setTimeout(() => {
+                            const nextInput = document.getElementById("otp-2")
+                            nextInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Backspace") {
+                          setOtp((prev) => { prev[0] = ""; return [...prev] })
+                          setTimeout(() => {
+                            const prevInput = document.getElementById("otp-1")
+                            prevInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Enter") {
+                          setOtp((prev) => { return [...prev] })
+                          setTimeout(() => {
+                            const submit = document.getElementById("otp-submit")
+                            submit?.focus();
+                          }, 0)
+                        } else if (/^[a-zA-Z]+$/.test(e.key)) {
+                          setOtp((prev) => { prev[0] = ""; return [...prev] })
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/6">
+                    <Input
+                      type="text"
+                      id="otp-2"
+                      pattern="[0-9]{1}"
+                      inputMode="numeric"
+                      className="w-full"
+                      maxLength={1}
+                      value={otp[1]}
+                      onPaste={(e: any) => {
+                        e.preventDefault();
+                        const clipboardData = e.clipboardData;
+                        const pastedText = clipboardData.getData('text');
+                        setOtp((prev) => {
+                          prev[0] = pastedText.substring(0, 1)
+                          prev[1] = pastedText.substring(1, 2)
+                          prev[2] = pastedText.substring(2, 3)
+                          prev[3] = pastedText.substring(3, 4)
+                          prev[4] = pastedText.substring(4, 5)
+                          prev[5] = pastedText.substring(5, 6)
+                          return [...prev]
+                        })
+                      }
+                      }
+                      onKeyDown={(e: any) => {
+                        if (/^\d+$/.test(e.key)) {
+                          setOtp((prev) => { prev[1] = e.key; return [...prev] })
+                          setTimeout(() => {
+                            const nextInput = document.getElementById("otp-3")
+                            nextInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Backspace") {
+                          setOtp((prev) => { prev[1] = ""; return [...prev] })
+                          setTimeout(() => {
+                            const prevInput = document.getElementById("otp-1")
+                            prevInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Enter") {
+                          setOtp((prev) => { return [...prev] })
+                          setTimeout(() => {
+                            const submit = document.getElementById("otp-submit")
+                            submit?.focus();
+                          }, 0)
+                        } else if (/^[a-zA-Z]+$/.test(e.key)) {
+                          setOtp((prev) => { prev[1] = ""; return [...prev] })
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/6">
+                    <Input
+                      type="text"
+                      id="otp-3"
+                      pattern="[0-9]{1}"
+                      inputMode="numeric"
+                      className="w-full"
+                      maxLength={1}
+                      value={otp[2]}
+                      onPaste={(e: any) => {
+                        e.preventDefault();
+                        const clipboardData = e.clipboardData;
+                        const pastedText = clipboardData.getData('text');
+                        setOtp((prev) => {
+                          prev[0] = pastedText.substring(0, 1)
+                          prev[1] = pastedText.substring(1, 2)
+                          prev[2] = pastedText.substring(2, 3)
+                          prev[3] = pastedText.substring(3, 4)
+                          prev[4] = pastedText.substring(4, 5)
+                          prev[5] = pastedText.substring(5, 6)
+                          return [...prev]
+                        })
+                      }
+                      }
+                      onKeyDown={(e: any) => {
+                        if (/^\d+$/.test(e.key)) {
+                          setOtp((prev) => { prev[2] = e.key; return [...prev] })
+                          setTimeout(() => {
+                            const nextInput = document.getElementById("otp-4")
+                            nextInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Backspace") {
+                          setOtp((prev) => { prev[2] = ""; return [...prev] })
+                          setTimeout(() => {
+                            const prevInput = document.getElementById("otp-2")
+                            prevInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Enter") {
+                          setOtp((prev) => { return [...prev] })
+                          setTimeout(() => {
+                            const submit = document.getElementById("otp-submit")
+                            submit?.focus();
+                          }, 0)
+                        } else if (/^[a-zA-Z]+$/.test(e.key)) {
+                          setOtp((prev) => { prev[2] = ""; return [...prev] })
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/6">
+                    <Input
+                      type="text"
+                      id="otp-4"
+                      pattern="[0-9]{1}"
+                      inputMode="numeric"
+                      className="w-full"
+                      maxLength={1}
+                      value={otp[3]}
+                      onPaste={(e: any) => {
+                        e.preventDefault();
+                        const clipboardData = e.clipboardData;
+                        const pastedText = clipboardData.getData('text');
+                        setOtp((prev) => {
+                          prev[0] = pastedText.substring(0, 1)
+                          prev[1] = pastedText.substring(1, 2)
+                          prev[2] = pastedText.substring(2, 3)
+                          prev[3] = pastedText.substring(3, 4)
+                          prev[4] = pastedText.substring(4, 5)
+                          prev[5] = pastedText.substring(5, 6)
+                          return [...prev]
+                        })
+                      }
+                      }
+                      onKeyDown={(e: any) => {
+                        if (/^\d+$/.test(e.key)) {
+                          setOtp((prev) => { prev[3] = e.key; return [...prev] })
+                          setTimeout(() => {
+                            const nextInput = document.getElementById("otp-5")
+                            nextInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Backspace") {
+                          setOtp((prev) => { prev[3] = ""; return [...prev] })
+                          setTimeout(() => {
+                            const prevInput = document.getElementById("otp-3")
+                            prevInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Enter") {
+                          setOtp((prev) => { return [...prev] })
+                          setTimeout(() => {
+                            const submit = document.getElementById("otp-submit")
+                            submit?.focus();
+                          }, 0)
+                        } else if (/^[a-zA-Z]+$/.test(e.key)) {
+                          setOtp((prev) => { prev[3] = ""; return [...prev] })
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/6">
+                    <Input
+                      type="text"
+                      id="otp-5"
+                      pattern="[0-9]{1}"
+                      inputMode="numeric"
+                      className="w-full"
+                      maxLength={1}
+                      value={otp[4]}
+                      onPaste={(e: any) => {
+                        e.preventDefault();
+                        const clipboardData = e.clipboardData;
+                        const pastedText = clipboardData.getData('text');
+                        setOtp((prev) => {
+                          prev[0] = pastedText.substring(0, 1)
+                          prev[1] = pastedText.substring(1, 2)
+                          prev[2] = pastedText.substring(2, 3)
+                          prev[3] = pastedText.substring(3, 4)
+                          prev[4] = pastedText.substring(4, 5)
+                          prev[5] = pastedText.substring(5, 6)
+                          return [...prev]
+                        })
+                      }
+                      }
+                      onKeyDown={(e: any) => {
+                        if (/^\d+$/.test(e.key)) {
+                          setOtp((prev) => { prev[4] = e.key; return [...prev] })
+                          setTimeout(() => {
+                            const nextInput = document.getElementById("otp-6")
+                            nextInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Backspace") {
+                          setOtp((prev) => { prev[4] = ""; return [...prev] })
+                          setTimeout(() => {
+                            const prevInput = document.getElementById("otp-4")
+                            prevInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Enter") {
+                          setOtp((prev) => { return [...prev] })
+                          setTimeout(() => {
+                            const submit = document.getElementById("otp-submit")
+                            submit?.focus();
+                          }, 0)
+                        } else if (/^[a-zA-Z]+$/.test(e.key)) {
+                          setOtp((prev) => { prev[4] = ""; return [...prev] })
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/6">
+                    <Input
+                      type="text"
+                      id="otp-6"
+                      pattern="[0-9]{1}"
+                      inputMode="numeric"
+                      className="w-full"
+                      maxLength={1}
+                      value={otp[5]}
+                      onPaste={(e: any) => {
+                        e.preventDefault();
+                        const clipboardData = e.clipboardData;
+                        const pastedText = clipboardData.getData('text');
+                        setOtp((prev) => {
+                          prev[0] = pastedText.substring(0, 1)
+                          prev[1] = pastedText.substring(1, 2)
+                          prev[2] = pastedText.substring(2, 3)
+                          prev[3] = pastedText.substring(3, 4)
+                          prev[4] = pastedText.substring(4, 5)
+                          prev[5] = pastedText.substring(5, 6)
+                          return [...prev]
+                        })
+                      }
+                      }
+                      onKeyDown={(e: any) => {
+                        if (/^\d+$/.test(e.key)) {
+                          setOtp((prev) => { prev[5] = e.key; return [...prev] })
+                          setTimeout(() => {
+                            const nextInput = document.getElementById("otp-6")
+                            nextInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Backspace") {
+                          setOtp((prev) => { prev[5] = ""; return [...prev] })
+                          setTimeout(() => {
+                            const prevInput = document.getElementById("otp-5")
+                            prevInput?.focus();
+                          }, 0)
+                        } else if (e.key === "Enter") {
+                          setOtp((prev) => { return [...prev] })
+                          setTimeout(() => {
+                            const submit = document.getElementById("otp-submit")
+                            submit?.focus();
+                          }, 0)
+                        } else if (/^[a-zA-Z]+$/.test(e.key)) {
+                          setOtp((prev) => { prev[5] = ""; return [...prev] })
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+                <span className="text-red-500 text-xs">
+                  {otpError}
+                </span>
               </div>
             )}
             {formType === "login" && (
@@ -311,35 +606,42 @@ const Page = () => {
                 Forgot Password?
               </span>
             )}
-            <Button
-              disabled={loading}
-              type="submit"
-              className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90"
-            >
-              {formType === "login" ? (
-                loading ? (
-                  <Loader_dots text="Logging in" />
-                ) : (
-                  "Login"
-                )
-              ) : formType === "signup" ? (
-                loading ? (
-                  <Loader_dots text="Signing Up" />
-                ) : (
-                  "Sign Up"
-                )
-              ) : formType === "otp" ? (
-                loading ? (
+            {formType === "otp" ?
+              <Button
+                id="otp-submit"
+                disabled={loading}
+                className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90" onClick={handleOTPVerify}>
+                {loading ? (
                   <Loader_dots text="Verifying" />
                 ) : (
                   "Verify"
-                )
-              ) : loading ? (
-                <Loader_dots text="Loading" />
-              ) : (
-                "Reset Password"
-              )}
-            </Button>
+                )}
+              </Button>
+              :
+              <Button
+                disabled={loading}
+                type="submit"
+                className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90"
+              >
+                {formType === "login" ? (
+                  loading ? (
+                    <Loader_dots text="Logging in" />
+                  ) : (
+                    "Login"
+                  )
+                ) : formType === "signup" ? (
+                  loading ? (
+                    <Loader_dots text="Signing Up" />
+                  ) : (
+                    "Sign Up"
+                  )
+                ) : loading ? (
+                  <Loader_dots text="Loading" />
+                ) : (
+                  "Reset Password"
+                )}
+              </Button>
+            }
           </form>
           <motion.div
             initial={{ opacity: 0 }}
@@ -366,7 +668,7 @@ const Page = () => {
           </motion.div>
         </motion.div>
       </AnimatePresence>
-    </div>
+    </div >
   );
 };
 
