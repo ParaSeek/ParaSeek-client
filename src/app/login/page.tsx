@@ -1,25 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { login } from "../../slices/userSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { useForm, Controller } from "react-hook-form";
 import Loader_dots from "@/components/Loader_dots";
 import { useToast } from "@/hooks/use-toast";
+import useLogin from "@/hooks/useLogin"
+import useSignup from "@/hooks/useSignup";
+import useResetPwd from "@/hooks/useResetPwd";
+import useVerifyEmail from "@/hooks/useVerifyEmail";
+import { getCookie } from "cookies-next";
+import LoadUserData from "@/components/LoadUserData";
+
 interface UserData {
   username?: string;
   email?: string;
@@ -29,26 +27,45 @@ interface UserData {
 }
 
 const Page = () => {
-  const [formType, setFormType] = useState<
-    "login" | "signup" | "forgotPassword" | "otp"
-  >("login");
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<UserData>();
+  const [formType, setFormType] = useState<"login" | "signup" | "forgotPassword" | "otp">("login");
+  const { register, handleSubmit, control, formState: { errors }, } = useForm<UserData>();
 
   const toggleForm = (type: "login" | "signup" | "forgotPassword" | "otp") => {
     setFormType(type);
   };
+
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const dispatch = useDispatch();
+  const token = getCookie('accessToken');
+
+  //custom hooks for login, signup, forgetPass,email verification api calls
+  const { performLogin, isLoggingIn } = useLogin();
+  const { performSignup, isSigningUp } = useSignup();
+  const { performResetPwd, isResettingPwd } = useResetPwd();
+  const { verifyEmail, isVerifying } = useVerifyEmail();
+
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
   const [otpError, setOtpError] = useState("")
+
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn);
+
+  const [revalidateData, setRevalidateData] = useState(false)
+
+  //Loading States update from hooks
+  useEffect(() => {
+    setLoading(isSigningUp);
+  }, [isSigningUp])
+  useEffect(() => {
+    setLoading(isVerifying);
+  }, [isVerifying])
+  useEffect(() => {
+    setLoading(isResettingPwd);
+  }, [isResettingPwd])
+  useEffect(() => {
+    setLoading(isLoggingIn)
+  }, [isLoggingIn])
+
   const handleOTPVerify = async () => {
     if (otp[0] == "" || otp[1] == "" || otp[2] == "" || otp[3] == "" || otp[4] == "" || otp[5] == "") {
       setOtpError("Enter 6 digit numeric verification code")
@@ -56,148 +73,67 @@ const Page = () => {
       setOtpError("");
       setLoading(true);
       const data = {
-        activation_code: (otp[0] + otp[1] + otp[2] + otp[3] + otp[4] + otp[5])
+        otp: (otp[0] + otp[1] + otp[2] + otp[3] + otp[4] + otp[5])
       }
-      try {
-        const res = await fetch(
-          "http://localhost:8000/api/v1/auth/activate-user",
-          {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
-        const dataRes = await res.json();
-        console.log(dataRes);
-        if (dataRes.success) {
-          setFormType("login");
-          toast({ title: dataRes.message });
-        } else {
-          toast({ variant: "destructive", title: dataRes.message });
-        }
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: error.message,
-          description: "Internal Server Error",
-        });
-      } finally {
-        setLoading(false);
+      const result = await verifyEmail({ activation_code: data.otp || "" });
+      if (result.success) {
+        setFormType("login");
+        toast({ title: result.message });
+      } else {
+        toast({ variant: 'destructive', title: result.message });
       }
     }
   }
   const onSubmit = async (data: UserData) => {
     if (formType === "login") {
-      setLoading(true);
-      try {
-        const res = await fetch("http://localhost:8000/api/v1/auth/login", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-        const dataRes = await res.json();
-        if (dataRes.success) {
-          console.log(dataRes);
-
-          dispatch(login(dataRes.data));
-          toast({ title: "Logged in successfully!" });
-        } else {
-          toast({ variant: "destructive", title: dataRes.message });
-        }
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: error.message,
-          description: "Internal Server Error",
-        });
-      } finally {
-        setLoading(false);
+      const result = await performLogin({ email: data.email || "", password: data.password || "" });
+      if (result.success) {
+        toast({ title: result.message });
+        setRevalidateData(true);
+      } else {
+        toast({ variant: 'destructive', title: result.message });
       }
     } else if (formType === "signup") {
-      setLoading(true);
-      try {
-        const res = await fetch("http://localhost:8000/api/v1/auth/register", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-        const dataRes = await res.json();
-        console.log(dataRes);
-        if (dataRes.success) {
-          setFormType("otp");
-          toast({ title: dataRes.message });
-        } else {
-          toast({ variant: "destructive", title: dataRes.message });
-        }
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: error.message,
-          description: "Internal Server Error",
-        });
-      } finally {
-        setLoading(false);
+      const result = await performSignup({ username: data.username || "", email: data.email || "", role: data.role || "", password: data.password || "" });
+      if (result.success) {
+        setFormType("otp");
+        toast({ title: result.message });
+      } else {
+        toast({ variant: 'destructive', title: result.message });
       }
     } else if (formType === "forgotPassword") {
-      setLoading(true);
-      console.log("Forgot Password data:", data);
-      try {
-        const res = await fetch(
-          "http://localhost:8000/api/v1/auth/forgotPassword",
-          {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
-        const dataRes = await res.json();
-        console.log(dataRes);
-        if (dataRes.success) {
-          setFormType("login");
-          toast({ title: dataRes.message });
-        } else {
-          toast({ variant: "destructive", title: dataRes.message });
-        }
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: error.message,
-          description: "Internal Server Error",
-        });
-      } finally {
-        setLoading(false);
+      const result = await performResetPwd({ email: data.email || "" });
+      if (result.success) {
+        setFormType("login");
+        toast({ title: result.message });
+      } else {
+        toast({ variant: 'destructive', title: result.message });
       }
     }
   };
 
-  if (userLog) {
-    router.push("/account");
-  }
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (token) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        if (token) {
+          router.push('/account');
+        }
+      }
+    };
 
+    checkAuth();
+  }, [token, router]);
   if (userLog) {
     return (
-      <section className="justify-center">
+      <section className="justify-center bg-background">
         <Loader_dots text="Loading" />
+        {revalidateData && <LoadUserData/>}
       </section>
     );
   }
   return (
-    <div
-      style={{ minHeight: "calc(100vh - 64px)" }}
-      className="flex flex-col items-center justify-center p-2 bg-background/70"
-    >
+    <div style={{ minHeight: "calc(100vh - 64px)" }} className="flex flex-col items-center justify-center p-2 bg-background/70">
       <AnimatePresence>
         <motion.div
           key={formType}
@@ -208,15 +144,7 @@ const Page = () => {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md p-8 bg-white dark:bg-gray-950 rounded-lg shadow-md"
         >
-          <h2 className="mb-6 text-2xl font-bold text-center">
-            {formType === "login"
-              ? "Login"
-              : formType === "signup"
-                ? "Register"
-                : formType === "otp"
-                  ? "Verify OTP"
-                  : "Forgot Password"}
-          </h2>
+          <h2 className="mb-6 text-2xl font-bold text-center">{formType === "login" ? "Login" : formType === "signup" ? "Register" : formType === "otp" ? "Verify OTP" : "Forgot Password"}</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
               {(formType === "signup") && (

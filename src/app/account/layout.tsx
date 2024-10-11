@@ -1,10 +1,11 @@
 "use client";
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useSelector } from 'react-redux'
 import { motion } from 'framer-motion';
 import { RootState } from '@/store/store'
 import { useRouter } from 'next/navigation';
 import Loader_dots from "@/components/Loader_dots";
+import {getCookie} from "cookies-next"
 
 interface LayoutProps {
     children: ReactNode;
@@ -12,11 +13,22 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
     const userData = useSelector((state: RootState) => state.user.data)
-    const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
+    // const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
     const router = useRouter();
-    if (!userLog) {
-        router.push('/login');
-      }
+    const token = getCookie('accessToken');
+    
+    useEffect(() => {
+        const checkAuth = async () => {
+            if (!token) {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                if (!token) {
+                    router.push('/login');
+                }
+            }
+        };
+
+        checkAuth();
+    }, [token, router]);
     
     
       if (!userData) {

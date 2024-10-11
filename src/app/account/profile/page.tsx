@@ -25,9 +25,11 @@ interface User {
     country: string;
 }
 
+
 const ProfilePage = () => {
     const userData = useSelector((state: RootState) => state.user.data)
-    const [user, setUser] = useState<User>({ email: userData.email, firstName: userData.firstName, lastName: userData.lastName, phoneNumber: userData.phoneNumber, username: userData.username, dob: userData.dob, gender: userData.gender, street: userData.location?.street, city: userData.location?.city, state: userData.location?.state, postalCode: userData.location?.postalCode, country: userData.location?.country });
+
+    const [user, setUser] = useState<User>({ email: userData.email, firstName: userData.firstName, lastName: userData.lastName, phoneNumber: userData.phoneNumber, username: userData.username, dob: new Date(userData.dob).toLocaleDateString(), gender: userData.gender, street: userData.location?.street, city: userData.location?.city, state: userData.location?.state, postalCode: userData.location?.postalCode, country: userData.location?.country });
     const [isEditing, setIsEditing] = useState(false);
     const { toast } = useToast();
     const [loading, setLoading] = useState(false)
@@ -46,7 +48,7 @@ const ProfilePage = () => {
     const handleSave = async () => {
         setLoading(true)
         try {
-            const res = await fetch('http://localhost:8000/api/v1/user/update-profile', {
+            const res = await fetch(`${process.env.SERVER_URL}/api/v1/user/update-profile`, {
                 method: 'POST',
                 credentials: "include",
                 headers: {
@@ -80,10 +82,10 @@ const ProfilePage = () => {
         >
             <div className='flex flex-col md:flex-row gap-1 justify-between mb-4'>
                 <div className='flex items-center gap-2'>
-                <Link href="/account" replace><Button variant="outline" size="icon">
-                    <ArrowLeft className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                </Button></Link>
-                <h2 className="sm:text-lg md:text-2xl text-center font-semibold ">Profile Information</h2>
+                    <Link href="/account" replace><Button variant="outline" size="icon">
+                        <ArrowLeft className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+                    </Button></Link>
+                    <h2 className="sm:text-lg md:text-2xl text-center font-semibold ">Profile Information</h2>
                 </div>
                 {isEditing ? (
                     <Button
@@ -159,14 +161,22 @@ const ProfilePage = () => {
             </div>
             <div className="mb-4">
                 <label className="block mb-1">Date of Birth</label>
-                <Input
-                    type="date"
-                    name="dob"
-                    value={user.dob}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
-                />
+                {isEditing ?
+                    <Input
+                        type="date"
+                        name="dob"
+                        value={user.dob}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border rounded-lg"
+                    /> : <Input
+                        type="text"
+                        name="dob"
+                        value={user.dob}
+                        disabled
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border rounded-lg"
+                    />
+                }
             </div>
             <div className="mb-4">
                 <label className="block mb-1">Gender</label>

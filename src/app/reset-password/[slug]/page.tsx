@@ -16,12 +16,10 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Token:', token);
-    console.log('New Password:', newPassword);
     setLoading(true)
     try {
       const res = await fetch(
-        `http://localhost:8000/api/v1/auth/resetPassword/${token}`,
+        `${process.env.SERVER_URL}/api/v1/auth/resetPassword/${token}`,
         {
           method: "POST",
           credentials: "include",
