@@ -5,6 +5,7 @@ import { RootState } from "@/store/store";
 import { useEffect } from "react";
 import { login, toggleLoading } from "@/slices/userSlice";
 import { getCookie } from 'cookies-next';
+import { setQualifications } from '@/slices/qualificationSlice';
 
 const LoadUserData = () => {
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
@@ -25,6 +26,7 @@ const LoadUserData = () => {
       if (dataRes.success) {
         console.log(dataRes.data);
         dispatch(login(dataRes.data));
+        dispatch(setQualifications(dataRes.data.education))
         console.log({ title: "Logged in successfully!" })
       } else {
         console.error({ variant: "destructive", title: dataRes.message })
