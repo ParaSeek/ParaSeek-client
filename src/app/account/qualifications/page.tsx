@@ -36,7 +36,7 @@ interface Qualifications {
   languages: string[]
 }
 
-const page = () => {
+const Page = () => {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
@@ -687,4 +687,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

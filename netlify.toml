@@ -2,7 +2,7 @@
 [build]
   command = "npm run build"
   functions = "netlify/functions"
-  publish = "out"
+  publish = ".next"
 
   #[[redirects]]
   #  from = "/*"
@@ -11,3 +11,7 @@
 
   [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[context.production.environment]
+  NETLIFY_SITE_ID = "646b02d1-1cda-4219-be5e-4cb5e32545b6"
+  NETLIFY_API_TOKEN = "nfp_cVAPK7UuJTKph6F9g4cUvDTkrvz6e6PL2365"
