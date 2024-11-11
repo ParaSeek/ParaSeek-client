@@ -13,6 +13,7 @@ interface salary {
   currency?: string
 }
 interface job {
+  id: string,
   title: string,
   companyName: string,
   location: location,
@@ -42,7 +43,7 @@ const Jobcard = (props: job) => {
           <p className='text-foreground/70 flex items-center gap-1'><FaDollarSign/>{props.salaryRange.minSalary}-{props.salaryRange.maxSalary} {props.salaryRange.currency}/month</p>
           <p className='text-foreground/70 flex items-center gap-1'><FaBusinessTime/>{props.workHours}</p>
           <p className='border p-1 rounded w-fit mt-2'>{props.employmentType}</p>
-          <Link href="" className='text-[#2563eb] cursor-pointer hover:underline block my-2 font-semibold'>View Details</Link>
+          <Link href={`/jobs/${props.id}`} className='text-[#2563eb] cursor-pointer hover:underline block my-2 font-semibold'>View Details</Link>
         </div>
       </div>
     </div>

@@ -24,6 +24,13 @@ const Page = () => {
           Qualifications
         </div>
       </Link>}
+      {userData.role === process.env.EMPLOYER_ID && <Link href="/dashboard">
+        <div
+          className="w-4/5 p-6 my-4 mx-auto bg-card font-bold cursor-pointer hover:bg-accent shadow-lg rounded-lg overflow-hidden"
+        >
+          Employer Dashboard
+        </div>
+      </Link>}
     </div>
   )
 }

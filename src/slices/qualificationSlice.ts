@@ -1,4 +1,4 @@
-// userSlice.ts
+
 import { createSlice } from "@reduxjs/toolkit";
 
 interface Education {

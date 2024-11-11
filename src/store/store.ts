@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit"
 import userReducer from "../slices/userSlice"
 import qualificationReducer from "../slices/qualificationSlice"
+import jobsReducer from "../slices/jobSlice"
 import createSagaMiddleware from "redux-saga";
 import watchQualificationActions from "../slices/sagas";
 
@@ -10,6 +11,7 @@ export const store = configureStore({
     reducer: {
         user: userReducer,
         qualification: qualificationReducer,
+        jobs: jobsReducer,
     },
     middleware:(getDefaultMiddleware) =>
         getDefaultMiddleware().concat(sagaMiddleware),

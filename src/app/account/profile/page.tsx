@@ -112,7 +112,7 @@ const ProfilePage = () => {
                     value={user.firstName}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
             <div className="mb-4">
@@ -123,7 +123,7 @@ const ProfilePage = () => {
                     value={user.lastName}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
             <div className="mb-4">
@@ -134,7 +134,7 @@ const ProfilePage = () => {
                     value={userData.email}
                     onChange={handleChange}
                     disabled
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
             <div className="mb-4">
@@ -145,7 +145,7 @@ const ProfilePage = () => {
                     value={user.phoneNumber}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
             <div className="mb-4">
@@ -156,7 +156,7 @@ const ProfilePage = () => {
                     value={user.username}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
             <div className="mb-4">
@@ -174,7 +174,7 @@ const ProfilePage = () => {
                         value={user.dob}
                         disabled
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded-lg"
+                        className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                     />
                 }
             </div>
@@ -185,7 +185,7 @@ const ProfilePage = () => {
                     disabled={!isEditing}
                     onValueChange={(value) => handleSelectChange('gender', value)}
                 >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full disabled:cursor-default">
                         <SelectValue placeholder="Gender" />
                     </SelectTrigger>
                     <SelectContent>
@@ -203,7 +203,7 @@ const ProfilePage = () => {
                     value={user.street}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
             <div className="mb-4">
@@ -214,7 +214,7 @@ const ProfilePage = () => {
                     value={user.city}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
             <div className="mb-4">
@@ -225,7 +225,7 @@ const ProfilePage = () => {
                     value={user.state}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
             <div className="mb-4">
@@ -236,7 +236,7 @@ const ProfilePage = () => {
                     value={user.postalCode}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
             <div className="mb-4">
@@ -247,7 +247,7 @@ const ProfilePage = () => {
                     value={user.country}
                     onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                 />
             </div>
 

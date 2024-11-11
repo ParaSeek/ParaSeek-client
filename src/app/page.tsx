@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { motion } from "framer-motion";
 import Loader_dots from "@/components/Loader_dots";
+import SearchBar from "@/components/SearchBar";
 export default function Home() {
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
   const userDataLoading = useSelector((state: RootState) => state.user.loading)
@@ -52,27 +53,6 @@ export default function Home() {
                 </button>
               </Link>
             )}
-          </div>
-
-          <div className="mt-6 w-full relative z-10 max-w-3xl">
-            <form className="flex flex-col sm:flex-row items-center justify-center w-full space-y-4 sm:space-y-0 sm:space-x-4">
-              <input
-                type="text"
-                placeholder="Job Title, Keywords, or Company"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <input
-                type="text"
-                placeholder="Location"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button
-                type="submit"
-                className="px-8 py-2 text-lg font-medium text-primary-foreground bg-primary rounded-md hover:bg-primary/90"
-              >
-                Search
-              </button>
-            </form>
           </div>
         </motion.div>}
     </div>
