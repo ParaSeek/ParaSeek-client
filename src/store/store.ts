@@ -2,8 +2,10 @@ import { configureStore } from "@reduxjs/toolkit"
 import userReducer from "../slices/userSlice"
 import qualificationReducer from "../slices/qualificationSlice"
 import jobsReducer from "../slices/jobSlice"
+import preferencesReducer from "../slices/preferencesSlice"
 import createSagaMiddleware from "redux-saga";
-import watchQualificationActions from "../slices/sagas";
+import watchQualificationActions from "../middleware/watchQualifications";
+import watchPreferenceActions from "../middleware/watchPreferences";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -12,12 +14,14 @@ export const store = configureStore({
         user: userReducer,
         qualification: qualificationReducer,
         jobs: jobsReducer,
+        preference: preferencesReducer
     },
     middleware:(getDefaultMiddleware) =>
         getDefaultMiddleware().concat(sagaMiddleware),
 })
 
 sagaMiddleware.run(watchQualificationActions);
+sagaMiddleware.run(watchPreferenceActions);
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch

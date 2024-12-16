@@ -70,11 +70,11 @@ body {
 }
 
 *::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 *::-webkit-scrollbar-track {
-  background: #919191;
+  background: transparent;
 }
 
 *::-webkit-scrollbar-thumb {

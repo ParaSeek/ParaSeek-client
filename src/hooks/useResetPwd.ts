@@ -35,7 +35,7 @@ const useSignup = (): UseResetPwdReturn => {
             }
         } catch (error: any) {
             return ({
-                success: true,
+                success: false,
                 message: error.message,
                 description: 'Internal Server Error',
             });

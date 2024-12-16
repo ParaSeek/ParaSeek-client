@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { useDispatch } from 'react-redux';
@@ -8,10 +8,12 @@ import { logout } from '@/slices/userSlice';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Loader_dots from "@/components/Loader_dots";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { EditIcon } from "lucide-react"
 import { Loader } from "lucide-react"
 import LoadUserData from '../LoadUserData';
+import { useTheme } from 'next-themes';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {FaCalendarDays, FaEnvelope, FaLocationDot, FaPhone, FaUser } from 'react-icons/fa6';
 
 
 const ProfileCard = () => {
@@ -21,6 +23,7 @@ const ProfileCard = () => {
     const { toast } = useToast();
     const dispatch = useDispatch();
     const [revalidateData, setRevalidateData] = useState(false);
+    const { theme } = useTheme();
 
     const handleProfilePicUpdate = async (e: any) => {
         const formData = new FormData();
@@ -43,7 +46,7 @@ const ProfileCard = () => {
             toast({ title: error.message, variant: "destructive" })
         } finally {
             setUploading(false)
-            setTimeout(()=>{
+            setTimeout(() => {
                 setRevalidateData(false)
             }, 10000)
         }
@@ -62,6 +65,7 @@ const ProfileCard = () => {
             if (dataRes.success) {
                 console.log(dataRes);
                 dispatch(logout());
+                localStorage.removeItem("accessToken")
                 toast({ title: dataRes.message })
             } else {
                 toast({ variant: "destructive", title: dataRes.message })
@@ -75,22 +79,25 @@ const ProfileCard = () => {
 
     return (
         <motion.div
-            className="w-4/5 p-6 mx-auto bg-card shadow-lg rounded-lg overflow-hidden"
-            whileHover={{ scale: 1.01 }}
+            style={{ backgroundImage: `linear-gradient(to right,  hsla(${theme == "dark" ? "224, 71.4% ,4.1%, 100%" : "0, 0%, 100% ,100%"}) 0%, hsla(${theme == "dark" ? "224, 71.4% ,4.1%, 10%" : "0, 0%, 100%, 10%"}) 60%), url("${userData.profilePic}")`, backgroundRepeat: "no-repeat", backgroundSize: "300px 100%", objectFit: "contain", backgroundPosition: "right" }}
+            className="w-4/5 h-[300px] p-6 mx-auto bg-card shadow-lg rounded-lg overflow-hidden"
         >
-            <div className="flex items-center flex-col md:flex-row py-4">
-                <div className="relative p-1">
-                    <Avatar className="w-16 h-16 cursor-pointer">
-                        <AvatarImage className='object-contain' src={userData.profilePic} />
-                        <AvatarFallback className="bg-primary text-4xl font-extrabold text-white">{userData.username.substring(0, 1).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div className={`${uploading? "flex": "hidden"} absolute transition-all items-center justify-center right-0 backdrop-blur-sm bg-gray-100/60 dark:bg-gray-900/40 rounded-full bottom-0 w-full h-full`}>
-                        <Loader style={{animationDuration: "3000ms"}} className='w-7 h-7 text-primary dark:text-white animate-spin'/>
+            <div className="relative flex items-center py-4">
+                <div className="absolute right-0 top-0 ">
+                    <div className={`${uploading ? "flex" : "hidden"} absolute transition-all items-center justify-center right-0 backdrop-blur-sm bg-gray-100/60 dark:bg-gray-900/40 rounded-full bottom-0 w-full h-full`}>
+                        <Loader style={{ animationDuration: "3000ms" }} className='w-7 h-7 text-primary dark:text-white animate-spin' />
                     </div>
-                    <div className="absolute right-0 bottom-0 ">
-                        <label htmlFor='profilePic'>
-                            <EditIcon className="w-8 h-8 p-2 bg-card cursor-pointer transition-all duration-300 rounded-full hover:bg-gray-100/80 dark:hover:bg-gray-100/20" />
-                        </label>
+                    <div>
+                        <TooltipProvider>
+                            <Tooltip delayDuration={0}>
+                                <TooltipTrigger asChild><label htmlFor='profilePic'>
+                                    <EditIcon className="w-8 h-8 p-2 bg-card cursor-pointer transition-all duration-300 rounded-full hover:bg-gray-100/80 dark:hover:bg-gray-100/20" />
+                                </label></TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                    <p>Edit ProfilePic</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                         <Input
                             type="file"
                             name="profilePic"
@@ -100,21 +107,24 @@ const ProfileCard = () => {
                         />
                     </div>
                 </div>
-                <div className="ml-4">
-                    <h2 className="text-xl font-semibold">{userData.firstName} {userData.lastName}</h2>
-                    <p>@{userData.username}</p>
-                    <p>{userData.email}</p>
+                <div className="md:ml-4">
+                    <h2 className="text-3xl font-semibold">{userData.firstName} {userData.lastName}</h2>
+                    <span className='flex items-center gap-2'><FaUser/><p>@{userData.username}</p></span>
+                    <span className='flex items-center gap-2'><FaEnvelope/><p>{userData.email}</p></span>
+                    <span className='flex items-center gap-2'><FaPhone/> <p>{userData.phoneNumber || "Phone Number not added"}</p></span>
+                    <span className='flex items-center gap-2'><FaCalendarDays/> <p>{userData.dob? new Date(userData.dob).toLocaleDateString() : "Dob not added"}</p></span>
+                    <span className='flex items-center gap-2'><FaLocationDot/>{userData.location? <p>{userData.location.street}, {userData.location.city}, {userData.location.state}, {userData.location.country} ({userData.location.postalCode})</p> : "Address not added"}</span>
                 </div>
             </div>
             <Button onClick={handleLogout}
                 disabled={loading}
                 type="submit"
-                className="w-[130px] py-2 mt-4 mx-auto text-lg font-medium bg-primary rounded-md hover:bg-primary/90"
+                className="w-[130px] py-2 mt-4 md:ml-4 text-lg font-medium bg-primary rounded-md hover:bg-primary/90"
             >
                 {loading ? <Loader_dots text="Logging Out" /> :
                     "Log out"}
             </Button>
-            {revalidateData && <LoadUserData/>}
+            {revalidateData && <LoadUserData />}
         </motion.div>
     );
 };

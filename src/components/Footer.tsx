@@ -4,7 +4,7 @@ export default function Footer() {
     return (
       <footer className="bg-gray-700 dark:bg-gray-950 text-white py-6 px-2">
         <div className="container mx-auto flex justify-between flex-col md:flex-row">
-          <div className="flex flex-col md:items-start">
+          <div className="flex flex-col items-center text-center md:items-start">
             <h3 className="font-bold">ParaSeek.</h3>
             <p>© 2024 ParaSeek. All rights reserved.</p>
           </div>

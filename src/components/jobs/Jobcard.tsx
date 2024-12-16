@@ -23,7 +23,7 @@ interface job {
 }
 const Jobcard = (props: job) => {
   return (
-    <div className=' p-4 bg-primary rounded-2xl relative overflow-hidden'>
+    <div className=' p-4 bg-primary rounded-2xl relative overflow-hidden max-w-80'>
       <div className='w-40 h-40 bg-blue-600 shadow-[8px_8px_8px] shadow-blue-600 rounded-full absolute top-[-60px] left-[-60px]'></div>
       <div className='w-40 h-40 bg-blue-600 shadow-[-8px_8px_8px] shadow-blue-600 rounded-full absolute top-[-60px] right-[-60px]'></div>
       <div className='p-4 bg-card w-full flex flex-col relative rounded-lg h-full'>

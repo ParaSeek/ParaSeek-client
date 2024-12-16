@@ -31,13 +31,14 @@ const useLogin = (): UseLoginReturn => {
       if (dataRes.success) {
         console.log(dataRes);
         dispatch(loginAction(dataRes.data));
+        localStorage.setItem("accessToken", "loggedIn")
         return ({ success: true, message: dataRes.message });
       } else {
         return ({ success: false, message: dataRes.message });
       }
     } catch (error: any) {
       return({
-        success: true,
+        success: false,
         message: error.message,
         description: 'Internal Server Error',
       });

@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from "lucide-react"
 import Link from 'next/link';
+import { states } from '@/store/suggestions';
 interface User {
     firstName: string;
     lastName: string;
@@ -161,22 +162,23 @@ const ProfilePage = () => {
             </div>
             <div className="mb-4">
                 <label className="block mb-1">Date of Birth</label>
-                {isEditing ?
+                {isEditing &&
                     <Input
                         type="date"
                         name="dob"
                         value={user.dob}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border rounded-lg"
-                    /> : <Input
-                        type="text"
-                        name="dob"
-                        value={user.dob}
-                        disabled
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                     />
                 }
+                <Input
+                    type="text"
+                    name="dob"
+                    value={user.dob}
+                    disabled
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
+                />
             </div>
             <div className="mb-4">
                 <label className="block mb-1">Gender</label>
@@ -219,14 +221,20 @@ const ProfilePage = () => {
             </div>
             <div className="mb-4">
                 <label className="block mb-1">State</label>
-                <Input
-                    type="text"
-                    name="state"
+                <Select
                     value={user.state}
-                    onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
-                />
+                    onValueChange={(value) => handleSelectChange('state', value)}
+                >
+                    <SelectTrigger className="w-full disabled:cursor-default">
+                        <SelectValue placeholder="State" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {states.map((state, index) => {
+                            return <SelectItem key={index} value={state}>{state}</SelectItem>
+                        })}
+                    </SelectContent>
+                </Select>
             </div>
             <div className="mb-4">
                 <label className="block mb-1">Postal Code</label>
@@ -241,14 +249,18 @@ const ProfilePage = () => {
             </div>
             <div className="mb-4">
                 <label className="block mb-1">Country</label>
-                <Input
-                    type="text"
-                    name="country"
+                <Select
                     value={user.country}
-                    onChange={handleChange}
                     disabled={!isEditing}
-                    className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
-                />
+                    onValueChange={(value) => handleSelectChange('country', value)}
+                >
+                    <SelectTrigger className="w-full disabled:cursor-default">
+                        <SelectValue placeholder="Country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="India">India</SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
 
         </motion.div>

@@ -8,7 +8,7 @@ import Link from 'next/link'
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const page = ({ params }: { params: { slug: string } }) => {
+const Page = ({ params }: { params: { slug: string } }) => {
     const param = params.slug
     const rectifiedParam = param.replaceAll(`%22`, `"`).replaceAll(`%3A`, `:`).replaceAll(`%2C`, `,`).replaceAll(`%7B`, `{`).replaceAll(`%7D`, `}`)
     const searchQuery = JSON.parse(rectifiedParam)
@@ -59,7 +59,7 @@ const page = ({ params }: { params: { slug: string } }) => {
     }
 }
 
-export default page
+export default Page
 
 const Recommendedjobs = [
     {

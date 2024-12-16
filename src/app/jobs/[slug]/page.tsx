@@ -7,7 +7,7 @@ import Link from 'next/link'
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const page = ({ params }: { params: { slug: string } }) => {
+const Page = ({ params }: { params: { slug: string } }) => {
     const param = params.slug
     const jobTitle = param.replace('%20', ' ')
     
@@ -71,7 +71,7 @@ const page = ({ params }: { params: { slug: string } }) => {
 }
 }
 
-export default page
+export default Page
 
 // const job = {
 //     "title": "Software Engineer",

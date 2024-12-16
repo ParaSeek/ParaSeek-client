@@ -1,5 +1,5 @@
 import { call, put, takeEvery, select } from "redux-saga/effects";
-import { addEducation, editEducation, deleteEducation, addSkill, editSkill, deleteSkill, addExperience, editExperience, deleteExperience, addCertification, editCertification, deleteCertification, addLanguage, editLanguage, deleteLanguage } from "./qualificationSlice";
+import { addEducation, editEducation, deleteEducation, addSkill, editSkill, deleteSkill, addExperience, editExperience, deleteExperience, addCertification, editCertification, deleteCertification, addLanguage, editLanguage, deleteLanguage } from "../slices/qualificationSlice";
 
 const selectQualifications = (state: any) => state.qualification;
 

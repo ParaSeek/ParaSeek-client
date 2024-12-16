@@ -7,11 +7,17 @@ import { login, toggleLoading } from "@/slices/userSlice";
 import { getCookie } from 'cookies-next';
 import { setQualifications } from '@/slices/qualificationSlice';
 import { setJobs } from '@/slices/jobSlice';
+import { setPreferences } from '@/slices/preferencesSlice';
 
 const LoadUserData = () => {
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
   const dispatch = useDispatch();
-  const token = getCookie("accessToken")
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setToken(localStorage.getItem("accessToken"))     
+    }
+  }, []);
   const [loaded, setLoaded] = useState(false)
   async function loadUser() {
     try {
@@ -28,8 +34,10 @@ const LoadUserData = () => {
         console.log(dataRes.data);
         dispatch(login(dataRes.data));
         dispatch(setQualifications(dataRes.data.qualification))
+        dispatch(setPreferences(dataRes.data.jobPreferences))
         console.log({ title: "Logged in successfully!" })
       } else {
+        localStorage.removeItem('accessToken');
         console.error({ variant: "destructive", title: dataRes.message })
       }
     } catch (error: any) {
@@ -43,10 +51,12 @@ const LoadUserData = () => {
       loadUser();
       setLoaded(true);
     }
+    console.log(token);
+
   }, [userLog, token])
 
 
-  const loadJobs = ()=>{
+  const loadJobs = () => {
     dispatch(setJobs([
       {
         "title": "Software Engineer",
@@ -245,210 +255,210 @@ const LoadUserData = () => {
         "benefits": ["Commission", "Paid Training"],
         "workHours": "9 AM - 5 PM",
         "googleDriveFolderId": "1Z2A3B4C5D"
+      },
+
+      {
+        "title": "Software Engineer",
+        "description": "Develop and maintain software applications.",
+        "companyName": "Tech Innovators",
+        "location": {
+          "city": "New York",
+          "state": "NY",
+          "country": "USA"
         },
-        
-          {
-            "title": "Software Engineer",
-            "description": "Develop and maintain software applications.",
-            "companyName": "Tech Innovators",
-            "location": {
-              "city": "New York",
-              "state": "NY",
-              "country": "USA"
-            },
-            "employmentType": "Full-time",
-            "remote": true,
-            "salaryRange": {
-              "minSalary": 70000,
-              "maxSalary": 100000,
-              "currency": "USD"
-            },
-            "experienceLevel": "Mid Level",
-            "jobType": "Technical",
-            "skills": ["JavaScript", "React", "Node.js"],
-            "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6a')",
-            "postedDate": "2024-10-22T18:27:00.000Z",
-            "applicationDeadline": "2024-12-31T23:59:59.000Z",
-            "isActive": true,
-            "requiredEducation": "Bachelor's Degree",
-            "requiredLanguages": ["English"],
-            "numberOfOpenings": 2,
-            "applicationLink": "https://example.com/apply",
-            "contactEmail": "software+engineer@tech_123.com",
-            "applicationInstructions": "Submit your resume and cover letter online.",
-            "benefits": ["Health Insurance", "Paid Time Off"],
-            "workHours": "9 AM - 5 PM",
-            "googleDriveFolderId": "folder123"
-          },
-          {
-            "title": "Data Analyst",
-            "description": "Analyze and interpret complex data sets.",
-            "companyName": "Data Solutions",
-            "location": {
-              "city": "San Francisco",
-              "state": "CA",
-              "country": "USA"
-            },
-            "employmentType": "Full-time",
-            "remote": false,
-            "salaryRange": {
-              "minSalary": 60000,
-              "maxSalary": 90000,
-              "currency": "USD"
-            },
-            "experienceLevel": "Entry Level",
-            "jobType": "Technical",
-            "skills": ["SQL", "Python", "Data Visualization"],
-            "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6b')",
-            "postedDate": "2024-10-22T18:27:00.000Z",
-            "applicationDeadline": "2024-11-30T23:59:59.000Z",
-            "isActive": true,
-            "requiredEducation": "Bachelor's Degree",
-            "requiredLanguages": ["English"],
-            "numberOfOpenings": 1,
-            "applicationLink": "https://example.com/apply",
-            "contactEmail": "data#analyst@solutions_456.com",
-            "applicationInstructions": "Include a portfolio of your work.",
-            "benefits": ["Retirement Plan", "Gym Membership"],
-            "workHours": "9 AM - 5 PM",
-            "googleDriveFolderId": "folder456"
-          },
-          {
-            "title": "Marketing Manager",
-            "description": "Lead marketing campaigns and strategies.",
-            "companyName": "Creative Corp",
-            "location": {
-              "city": "Los Angeles",
-              "state": "CA",
-              "country": "USA"
-            },
-            "employmentType": "Full-time",
-            "remote": true,
-            "salaryRange": {
-              "minSalary": 80000,
-              "maxSalary": 110000,
-              "currency": "USD"
-            },
-            "experienceLevel": "Senior Level",
-            "jobType": "Marketing",
-            "skills": ["SEO", "Content Marketing", "Social Media"],
-            "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6c')",
-            "postedDate": "2024-10-22T18:27:00.000Z",
-            "applicationDeadline": "2024-12-15T23:59:59.000Z",
-            "isActive": true,
-            "requiredEducation": "Master's Degree",
-            "requiredLanguages": ["English"],
-            "numberOfOpenings": 1,
-            "applicationLink": "https://example.com/apply",
-            "contactEmail": "marketing.manager@creative_789.com",
-            "applicationInstructions": "Submit your marketing portfolio.",
-            "benefits": ["Health Insurance", "Paid Time Off", "Stock Options"],
-            "workHours": "9 AM - 5 PM",
-            "googleDriveFolderId": "folder789"
-          },
-          {
-            "title": "UX Designer",
-            "description": "Design intuitive user experiences.",
-            "companyName": "Design Studios",
-            "location": {
-              "city": "Austin",
-              "state": "TX",
-              "country": "USA"
-            },
-            "employmentType": "Part-time",
-            "remote": false,
-            "salaryRange": {
-              "minSalary": 40000,
-              "maxSalary": 60000,
-              "currency": "USD"
-            },
-            "experienceLevel": "Mid Level",
-            "jobType": "Technical",
-            "skills": ["Wireframing", "Prototyping", "User Research"],
-            "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6d')",
-            "postedDate": "2024-10-22T18:27:00.000Z",
-            "applicationDeadline": "2024-12-01T23:59:59.000Z",
-            "isActive": true,
-            "requiredEducation": "Bachelor's Degree",
-            "requiredLanguages": ["English"],
-            "numberOfOpenings": 1,
-            "applicationLink": "https://example.com/apply",
-            "contactEmail": "ux.designer@studios_321.com",
-            "applicationInstructions": "Provide links to your design portfolio.",
-            "benefits": ["Health Insurance"],
-            "workHours": "9 AM - 2 PM",
-            "googleDriveFolderId": "folder321"
-          },
-          {
-            "title": "Product Manager",
-            "description": "Oversee product development and launch.",
-            "companyName": "Innovatech",
-            "location": {
-              "city": "Seattle",
-              "state": "WA",
-              "country": "USA"
-            },
-            "employmentType": "Full-time",
-            "remote": true,
-            "salaryRange": {
-              "minSalary": 90000,
-              "maxSalary": 120000,
-              "currency": "USD"
-            },
-            "experienceLevel": "Senior Level",
-            "jobType": "Technical",
-            "skills": ["Product Roadmapping", "Agile Methodology", "Stakeholder Management"],
-            "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6e')",
-            "postedDate": "2024-10-22T18:27:00.000Z",
-            "applicationDeadline": "2024-12-31T23:59:59.000Z",
-            "isActive": true,
-            "requiredEducation": "Master's Degree",
-            "requiredLanguages": ["English"],
-            "numberOfOpenings": 1,
-            "applicationLink": "https://example.com/apply",
-            "contactEmail": "product.manager@innovatech_987.com",
-            "applicationInstructions": "Provide a cover letter and resume.",
-            "benefits": ["Health Insurance", "Paid Time Off", "Work From Home Allowance"],
-            "workHours": "9 AM - 5 PM",
-            "googleDriveFolderId": "folder987"
-          },
-          {
-            "title": "HR Specialist",
-            "description": "Manage recruitment and employee relations.",
-            "companyName": "People First",
-            "location": {
-              "city": "Chicago",
-              "state": "IL",
-              "country": "USA"
-            },
-            "employmentType": "Full-time",
-            "remote": false,
-            "salaryRange": {
-              "minSalary": 50000,
-              "maxSalary": 70000,
-              "currency": "USD"
-            },
-            "experienceLevel": "Mid Level",
-            "jobType": "Administrative",
-            "skills": ["HRIS", "Recruitment", "Employee Relations"],
-            "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6f')",
-            "postedDate": "2024-10-22T18:27:00.000Z",
-            "applicationDeadline": "2024-11-30T23:59:59.000Z",
-            "isActive": true,
-            "requiredEducation": "Bachelor's Degree",
-            "requiredLanguages": ["English"],
-            "numberOfOpenings": 1,
-            "applicationLink": "https://example.com/apply",
-            "contactEmail": "hr.specialist@peoplefirst_654.com",
-            "applicationInstructions": "Submit your resume and cover letter.",
-            "benefits": ["Health Insurance", "Retirement Plan"],
-            "workHours": "9 AM - 5 PM",
-            "googleDriveFolderId": "folder654"
-          } 
-         ]
-      ))
+        "employmentType": "Full-time",
+        "remote": true,
+        "salaryRange": {
+          "minSalary": 70000,
+          "maxSalary": 100000,
+          "currency": "USD"
+        },
+        "experienceLevel": "Mid Level",
+        "jobType": "Technical",
+        "skills": ["JavaScript", "React", "Node.js"],
+        "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6a')",
+        "postedDate": "2024-10-22T18:27:00.000Z",
+        "applicationDeadline": "2024-12-31T23:59:59.000Z",
+        "isActive": true,
+        "requiredEducation": "Bachelor's Degree",
+        "requiredLanguages": ["English"],
+        "numberOfOpenings": 2,
+        "applicationLink": "https://example.com/apply",
+        "contactEmail": "software+engineer@tech_123.com",
+        "applicationInstructions": "Submit your resume and cover letter online.",
+        "benefits": ["Health Insurance", "Paid Time Off"],
+        "workHours": "9 AM - 5 PM",
+        "googleDriveFolderId": "folder123"
+      },
+      {
+        "title": "Data Analyst",
+        "description": "Analyze and interpret complex data sets.",
+        "companyName": "Data Solutions",
+        "location": {
+          "city": "San Francisco",
+          "state": "CA",
+          "country": "USA"
+        },
+        "employmentType": "Full-time",
+        "remote": false,
+        "salaryRange": {
+          "minSalary": 60000,
+          "maxSalary": 90000,
+          "currency": "USD"
+        },
+        "experienceLevel": "Entry Level",
+        "jobType": "Technical",
+        "skills": ["SQL", "Python", "Data Visualization"],
+        "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6b')",
+        "postedDate": "2024-10-22T18:27:00.000Z",
+        "applicationDeadline": "2024-11-30T23:59:59.000Z",
+        "isActive": true,
+        "requiredEducation": "Bachelor's Degree",
+        "requiredLanguages": ["English"],
+        "numberOfOpenings": 1,
+        "applicationLink": "https://example.com/apply",
+        "contactEmail": "data#analyst@solutions_456.com",
+        "applicationInstructions": "Include a portfolio of your work.",
+        "benefits": ["Retirement Plan", "Gym Membership"],
+        "workHours": "9 AM - 5 PM",
+        "googleDriveFolderId": "folder456"
+      },
+      {
+        "title": "Marketing Manager",
+        "description": "Lead marketing campaigns and strategies.",
+        "companyName": "Creative Corp",
+        "location": {
+          "city": "Los Angeles",
+          "state": "CA",
+          "country": "USA"
+        },
+        "employmentType": "Full-time",
+        "remote": true,
+        "salaryRange": {
+          "minSalary": 80000,
+          "maxSalary": 110000,
+          "currency": "USD"
+        },
+        "experienceLevel": "Senior Level",
+        "jobType": "Marketing",
+        "skills": ["SEO", "Content Marketing", "Social Media"],
+        "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6c')",
+        "postedDate": "2024-10-22T18:27:00.000Z",
+        "applicationDeadline": "2024-12-15T23:59:59.000Z",
+        "isActive": true,
+        "requiredEducation": "Master's Degree",
+        "requiredLanguages": ["English"],
+        "numberOfOpenings": 1,
+        "applicationLink": "https://example.com/apply",
+        "contactEmail": "marketing.manager@creative_789.com",
+        "applicationInstructions": "Submit your marketing portfolio.",
+        "benefits": ["Health Insurance", "Paid Time Off", "Stock Options"],
+        "workHours": "9 AM - 5 PM",
+        "googleDriveFolderId": "folder789"
+      },
+      {
+        "title": "UX Designer",
+        "description": "Design intuitive user experiences.",
+        "companyName": "Design Studios",
+        "location": {
+          "city": "Austin",
+          "state": "TX",
+          "country": "USA"
+        },
+        "employmentType": "Part-time",
+        "remote": false,
+        "salaryRange": {
+          "minSalary": 40000,
+          "maxSalary": 60000,
+          "currency": "USD"
+        },
+        "experienceLevel": "Mid Level",
+        "jobType": "Technical",
+        "skills": ["Wireframing", "Prototyping", "User Research"],
+        "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6d')",
+        "postedDate": "2024-10-22T18:27:00.000Z",
+        "applicationDeadline": "2024-12-01T23:59:59.000Z",
+        "isActive": true,
+        "requiredEducation": "Bachelor's Degree",
+        "requiredLanguages": ["English"],
+        "numberOfOpenings": 1,
+        "applicationLink": "https://example.com/apply",
+        "contactEmail": "ux.designer@studios_321.com",
+        "applicationInstructions": "Provide links to your design portfolio.",
+        "benefits": ["Health Insurance"],
+        "workHours": "9 AM - 2 PM",
+        "googleDriveFolderId": "folder321"
+      },
+      {
+        "title": "Product Manager",
+        "description": "Oversee product development and launch.",
+        "companyName": "Innovatech",
+        "location": {
+          "city": "Seattle",
+          "state": "WA",
+          "country": "USA"
+        },
+        "employmentType": "Full-time",
+        "remote": true,
+        "salaryRange": {
+          "minSalary": 90000,
+          "maxSalary": 120000,
+          "currency": "USD"
+        },
+        "experienceLevel": "Senior Level",
+        "jobType": "Technical",
+        "skills": ["Product Roadmapping", "Agile Methodology", "Stakeholder Management"],
+        "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6e')",
+        "postedDate": "2024-10-22T18:27:00.000Z",
+        "applicationDeadline": "2024-12-31T23:59:59.000Z",
+        "isActive": true,
+        "requiredEducation": "Master's Degree",
+        "requiredLanguages": ["English"],
+        "numberOfOpenings": 1,
+        "applicationLink": "https://example.com/apply",
+        "contactEmail": "product.manager@innovatech_987.com",
+        "applicationInstructions": "Provide a cover letter and resume.",
+        "benefits": ["Health Insurance", "Paid Time Off", "Work From Home Allowance"],
+        "workHours": "9 AM - 5 PM",
+        "googleDriveFolderId": "folder987"
+      },
+      {
+        "title": "HR Specialist",
+        "description": "Manage recruitment and employee relations.",
+        "companyName": "People First",
+        "location": {
+          "city": "Chicago",
+          "state": "IL",
+          "country": "USA"
+        },
+        "employmentType": "Full-time",
+        "remote": false,
+        "salaryRange": {
+          "minSalary": 50000,
+          "maxSalary": 70000,
+          "currency": "USD"
+        },
+        "experienceLevel": "Mid Level",
+        "jobType": "Administrative",
+        "skills": ["HRIS", "Recruitment", "Employee Relations"],
+        "postedBy": "ObjectId('5f50c31b5c9f4e5d3b5c4f6f')",
+        "postedDate": "2024-10-22T18:27:00.000Z",
+        "applicationDeadline": "2024-11-30T23:59:59.000Z",
+        "isActive": true,
+        "requiredEducation": "Bachelor's Degree",
+        "requiredLanguages": ["English"],
+        "numberOfOpenings": 1,
+        "applicationLink": "https://example.com/apply",
+        "contactEmail": "hr.specialist@peoplefirst_654.com",
+        "applicationInstructions": "Submit your resume and cover letter.",
+        "benefits": ["Health Insurance", "Retirement Plan"],
+        "workHours": "9 AM - 5 PM",
+        "googleDriveFolderId": "folder654"
+      }
+    ]
+    ))
   }
-  useEffect(()=>{
+  useEffect(() => {
     loadJobs();
   })
   return (
