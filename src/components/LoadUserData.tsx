@@ -8,6 +8,7 @@ import { getCookie } from 'cookies-next';
 import { setQualifications } from '@/slices/qualificationSlice';
 import { setJobs } from '@/slices/jobSlice';
 import { setPreferences } from '@/slices/preferencesSlice';
+import { setCompanies } from '@/slices/companySlice';
 
 const LoadUserData = () => {
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
@@ -15,7 +16,7 @@ const LoadUserData = () => {
   const [token, setToken] = useState<string | null>(null);
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setToken(localStorage.getItem("accessToken"))     
+      setToken(localStorage.getItem("accessToken"))
     }
   }, []);
   const [loaded, setLoaded] = useState(false)
@@ -41,6 +42,7 @@ const LoadUserData = () => {
         console.error({ variant: "destructive", title: dataRes.message })
       }
     } catch (error: any) {
+      localStorage.removeItem('accessToken');
       console.error({ variant: "destructive", title: error.message, description: "Internal Server Error" });
     } finally {
       dispatch(toggleLoading(false));
@@ -458,8 +460,31 @@ const LoadUserData = () => {
     ]
     ))
   }
+
+  const loadCompanies = async () => {
+    try {
+      const res = await fetch(`${process.env.SERVER_URL}/api/v1/company/get-all-company`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const dataRes = await res.json();
+      if (dataRes.success) {
+        console.log(dataRes.data);
+        dispatch(setCompanies(dataRes.data))
+        console.log({ title: "Companies Loaded" })
+      } else {
+        console.error({ variant: "destructive", title: dataRes.message })
+      }
+    } catch (error: any) {
+      console.error({ variant: "destructive", title: error.message, description: "Internal Server Error" });
+    }
+  }
   useEffect(() => {
     loadJobs();
+    loadCompanies();
   })
   return (
     <div></div>

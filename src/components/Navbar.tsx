@@ -42,7 +42,7 @@ export const Navbar = () => {
     setActiveLink(pathname);
   }, [pathname]);
   return (
-    <header className="bg-background flex flex-col items-center sticky z-50 h-16 px-2 top-0 left-0 backdrop-blur-sm">
+    <header onMouseLeave={() => { if (!navPinned) setNavTop(0) }} className="bg-background flex flex-col items-center sticky z-50 h-16 px-2 top-0 left-0 backdrop-blur-sm">
       <div className="container relative z-10 bg-background h-16 flex justify-between mx-auto items-center" onMouseOver={() => setNavTop(16)}>
         <div className="md:hidden flex items-center justify-start w-[25vw]">
           <div

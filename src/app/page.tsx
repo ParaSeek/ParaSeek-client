@@ -17,15 +17,13 @@ export default function Home() {
         className="main-bg flex py-8 bg-secondary dark:bg-background/85"
       >
         <div
-
-          className="w-1/4 h-full px-8"
-
+          className="w-1/4 h-full pl-8 pr-2"
         >
           <motion.aside
             initial={{ opacity: 0, x: -100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="h-[300px] dark:bg-secondary/50 bg-background/90 w-full rounded-xl p-4 overflow-hidden flex flex-col items-center">
+            className="relative z-10 bg-card dark:border-muted dark:border shadow-black/20 shadow-[0px_0px_10px] w-full rounded-xl p-4 overflow-hidden flex flex-col items-center">
             <motion.h2
               initial={{ opacity: 0, x: 200 }}
               animate={{ opacity: 1, x: 0 }}
@@ -38,7 +36,7 @@ export default function Home() {
             initial={{ opacity: 0, x: 200 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white dark:bg-background/90 rounded-full p-2"
+            className="bg-white dark:bg-background/90 rounded-full mt-2 p-1 w-18 h-18 border-[3px] border-muted"
             >
             <Avatar className="w-16 h-16">
               <AvatarImage className='object-contain' src={userData.profilePic} />
@@ -46,6 +44,25 @@ export default function Home() {
             </Avatar>
             </motion.div>
           </motion.aside>
+        </div>
+        <div
+          className="w-3/4 h-full pl-2 pr-8 flex flex-col gap-6"
+        >
+          <motion.div
+            initial={{ opacity: 0, x: -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="relative z-10 bg-card dark:border dark:border-muted shadow-black/20 shadow-[0px_0px_10px] w-full rounded-xl p-4 overflow-hidden flex flex-col items-center">
+            <motion.h2> first div</motion.h2>
+            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="relative z-10 bg-card dark:border dark:border-muted shadow-black/20 shadow-[0px_0px_10px] w-full rounded-xl p-4 overflow-hidden flex flex-col items-center">
+            <motion.h2> second div</motion.h2>
+            </motion.div>
+
         </div>
       </div>
     )

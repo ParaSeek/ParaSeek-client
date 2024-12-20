@@ -10,8 +10,10 @@ import { useSelector } from 'react-redux'
 
 const Page = ({ params }: { params: { slug: string } }) => {
     const param = params.slug
-    const rectifiedParam = param.replaceAll(`%22`, `"`).replaceAll(`%3A`, `:`).replaceAll(`%2C`, `,`).replaceAll(`%7B`, `{`).replaceAll(`%7D`, `}`)
+    const rectifiedParam = param.replaceAll(`%22`, `"`).replaceAll(`%3A`, `:`).replaceAll(`%2C`, `,`).replaceAll(`%7B`, `{`).replaceAll(`%7D`, `}`).replaceAll(`%20`, ` `)
     const searchQuery = JSON.parse(rectifiedParam)
+
+    console.log(searchQuery);
 
     const jobs = useSelector((state: RootState) => state.jobs);
 
