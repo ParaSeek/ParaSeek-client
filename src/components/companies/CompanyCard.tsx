@@ -69,7 +69,7 @@ const CompanyCard = (props: any) => {
               props.companyLogo && props.companyLogo.includes("https://") ?
                 <img width="48px" height="48px" className='rounded-sm' src={props.companyLogo} alt={props.companyName.charAt(0)} />
                 :
-                <p className='w-12 h-12 bg-primary rounded-sm grid place-items-center text-3xl font-semibold'>
+                <p className='w-12 h-12 bg-primary text-white rounded-sm grid place-items-center text-3xl font-semibold'>
                   {props.companyName.charAt(0)}
                 </p>
             }
@@ -107,7 +107,7 @@ const CompanyCard = (props: any) => {
               props.companyLogo && props.companyLogo.includes("https://") ?
                 <img width="100px" height="100px" className='rounded-sm' src={props.companyLogo} alt={props.companyName.charAt(0)} />
                 :
-                <p className='w-[100px] h-[100px] bg-primary rounded-sm grid place-items-center text-3xl font-semibold'>
+                <p className='w-[100px] h-[100px] text-white bg-primary rounded-sm grid place-items-center text-3xl font-semibold'>
                   {props.companyName.charAt(0)}
                 </p>
             }

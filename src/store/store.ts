@@ -7,6 +7,7 @@ import createSagaMiddleware from "redux-saga";
 import watchQualificationActions from "../middleware/watchQualifications";
 import watchPreferenceActions from "../middleware/watchPreferences";
 import companiesReducer from "../slices/companySlice"
+import myCompaniesReducer from "../slices/companySlice"
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -17,6 +18,7 @@ export const store = configureStore({
         jobs: jobsReducer,
         preference: preferencesReducer,
         companies: companiesReducer,
+        myCompanies: myCompaniesReducer
     },
     middleware:(getDefaultMiddleware) =>
         getDefaultMiddleware().concat(sagaMiddleware),

@@ -66,7 +66,7 @@ const CreateCompanyForm = (props: any) => {
         }
     }
     return (
-        <div className='fixed top-0 left-0 h-screen w-screen flex items-center justify-center backdrop-blur-sm'>
+        <div className='fixed top-0 left-0 h-screen w-screen flex items-center justify-center backdrop-blur-sm z-10'>
             <form className='w-4/5 max-w-xl mt-12 bg-card p-5 rounded-xl shadow-[0px_0px_10px] shadow-black/20 dark:border dark:border-muted' onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4 flex justify-between items-center">
                     <h2 className='text-xl font-semibold ml-2'>{props.actionType == "create" ? "Fill your company details" : "Fill the details you want to edit"}</h2>

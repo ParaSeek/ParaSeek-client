@@ -10,11 +10,11 @@ const page = () => {
 
   return (
     <section className='bg-background/70 px-[5%] py-16 '>
-      {companies[0].companyName == "" && <Loader_dots text='Loading Companies' />}
+      {companies[0]?.companyName == "" && <Loader_dots text='Loading Companies' />}
       <div className='grid w-full grid-cols-1 place-items-center xl:grid-cols-2 gap-3'>
-      {companies[0].companyName != "" && companies.map((company, index) => {
+      {companies[0]? companies[0].companyName != "" && companies.map((company, index) => {
         return <CompanyCard key={index} id={company._id} companyLogo={company.companyLogo} companyName={company.companyName} headquarters={company.Headquarters} followers={company.followers} jobs={company.jobs} description={company.description} website = {company.websiteLink} />
-      })}
+      }): "No Companies to show"}
       </div>
     </section>
   )
