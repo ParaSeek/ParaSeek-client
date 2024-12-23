@@ -5,7 +5,7 @@ import { RootState } from '@/store/store';
 import React from 'react'
 import { useSelector } from 'react-redux';
 
-const page = () => {
+const Page = () => {
   const companies = useSelector((state: RootState) => state.companies)
 
   return (
@@ -20,4 +20,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react"
 import CreateCompanyForm from "@/components/companies/createCompanyForm";
-import { Divide, Edit, Loader, Pencil, Plus, Trash } from "lucide-react";
+import { Edit, Loader, Pencil, Plus, Trash } from "lucide-react";
 import {
     Table,
     TableBody,
@@ -14,16 +14,14 @@ import {
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { setMyCompanies as setMyCompaniesInStore } from "@/slices/myCompaniesSlice";
-
+import { useFetchCompanies } from "@/contexts/FetchCompaniesContext";
 
 const Page = () => {
-
+    const { fetchCompanies } = useFetchCompanies();
     const [showCompanyUploadForm, setShowCompanyUploadForm] = useState(false);
     const [showCompanyEditForm, setShowCompanyEditForm] = useState(false);
-    const [myCompanies, setMyCompanies] = useState([]);
     const [editCompany, setEditCompany] = useState([]);
     const [uploading, setUploading] = useState<string | null>(null);
     const [revalidateData, setRevalidateData] = useState(false);
@@ -34,8 +32,8 @@ const Page = () => {
     const [hiring, setHiring] = useState(false);
 
     const user = useSelector((state: RootState) => state.user.data);
+    const myCompanies = useSelector((state: RootState) => state.myCompanies);
 
-    const dispatch = useDispatch();
     const { toast } = useToast();
     function closeForm() {
         setShowCompanyUploadForm(false);
@@ -74,37 +72,13 @@ const Page = () => {
     }
 
 
-    const fetchCompanies = async () => {
-        try {
-            const res = await fetch(`${process.env.SERVER_URL}/api/v1/company/get-my-companies`, {
-                method: 'GET',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const dataRes = await res.json();
-            if (dataRes.success) {
-                setMyCompanies(dataRes.data);
-                dispatch(setMyCompaniesInStore(dataRes.data))
-                console.log(dataRes);
-            } else {
-                console.log(dataRes.message)
-            }
-        } catch (error: any) {
-            console.error(error)
-        } finally {
-            setRevalidateData(false)
-        }
-    }
+  
     useEffect(() => {
         if (revalidateData) {
             fetchCompanies();
         }
     }, [revalidateData])
-    useEffect(() => {
-        fetchCompanies();
-    }, [])
+   
 
     const handleDeleteCompany = async (id: string) => {
         try {
@@ -148,6 +122,8 @@ const Page = () => {
             const result = await res.json();
             if (result.success) {
                 toast({ title: result.message });
+                setOpenHiringInput(false);
+                setHiringUserName("");
             } else {
                 toast({ title: result.message, variant: "destructive" });
             }
@@ -155,8 +131,6 @@ const Page = () => {
             toast({ title: error.message, variant: "destructive" })
         } finally {
             setHiring(false);
-            setHiringUserName("");
-            setOpenHiringInput(false);
         }
     }
 

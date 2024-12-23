@@ -2,12 +2,13 @@ import { configureStore } from "@reduxjs/toolkit"
 import userReducer from "../slices/userSlice"
 import qualificationReducer from "../slices/qualificationSlice"
 import jobsReducer from "../slices/jobSlice"
+import myJobsReducer from "../slices/myJobsSlice"
 import preferencesReducer from "../slices/preferencesSlice"
 import createSagaMiddleware from "redux-saga";
 import watchQualificationActions from "../middleware/watchQualifications";
 import watchPreferenceActions from "../middleware/watchPreferences";
 import companiesReducer from "../slices/companySlice"
-import myCompaniesReducer from "../slices/companySlice"
+import myCompaniesReducer from "../slices/myCompaniesSlice"
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -16,6 +17,7 @@ export const store = configureStore({
         user: userReducer,
         qualification: qualificationReducer,
         jobs: jobsReducer,
+        myJobs: myJobsReducer,
         preference: preferencesReducer,
         companies: companiesReducer,
         myCompanies: myCompaniesReducer

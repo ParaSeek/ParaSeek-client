@@ -272,7 +272,6 @@ export const levelOfEducation = [
     "Graduate",
     "Post Graduate",
     "Doctoral",
-    "Other"
 ]
 
 export const fieldOfStudy = [
@@ -864,4 +863,54 @@ export const industries = [
     "E-commerce", "Online Retail", "Payment Processing", "Digital Marketing",
     "Blockchain", "Cryptocurrency", "Smart Contracts", "Supply Chain Management",
     "Robotics", "Industrial Automation", "Service Robots", "Medical Robotics"
+]
+
+export const employmentTypes = [
+    "Full-time",
+    "Part-time",
+    "Internship",
+    "Contract",
+    "Freelance",
+]
+
+export const jobTypes = [
+    "Technical",
+    "Marketing",
+    "Sales",
+    "Customer Support",
+    "Finance",
+    "Human Resources",
+    "Operations",
+]
+
+export const skills = [
+    "Python",
+    "Java",
+    "JavaScript",
+    "C++",
+    "C#",
+    "Ruby",
+    "Swift",
+    "PHP",
+    "Go",
+    "Kotlin",
+    "Rust",
+    "TypeScript",
+    "SQL",
+    "NoSQL",
+    "HTML",
+    "CSS",
+    "React",
+    "Angular",
+    "Vue",
+    "Django",
+    "Flask",
+    "Spring",
+    "Node.js",
+    "AWS",
+    "Azure",
+    "Google Cloud",
+    "Next js",
+    "React Native",
+    "Redux"
 ]
