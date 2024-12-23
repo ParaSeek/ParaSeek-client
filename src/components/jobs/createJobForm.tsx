@@ -382,7 +382,6 @@ const CreateJobForm = (props: any) => {
                                     return <SelectItem key={index} value={level}>{level}</SelectItem>
                                 })
                             }
-                            <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

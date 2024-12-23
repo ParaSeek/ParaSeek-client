@@ -122,7 +122,7 @@ const Page = () => {
           {selectedCompany.jobs.map((job: string, index: number) => (
             <TableRow key={index}>
               <TableCell>{index + 1}</TableCell>
-              <TableCell>{job}</TableCell>
+              <TableCell>{}</TableCell>
             </TableRow>
           ))}
         </TableBody>
