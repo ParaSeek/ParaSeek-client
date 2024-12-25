@@ -7,6 +7,7 @@ import { Plus } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import CompanyDetailsPopup from './companyDetailsPopup';
 
 const CompanyCard = (props: any) => {
 
@@ -44,7 +45,6 @@ const CompanyCard = (props: any) => {
       });
       const dataRes = await res.json();
       if (dataRes.success) {
-        console.log(dataRes.data);
         toast({ title: `${following ? "Unfollowed" : "Following"} ${props.companyName}!` })
         if (following) {
           setNumberOFFollowers((prev: number) => prev - 1)
@@ -53,10 +53,10 @@ const CompanyCard = (props: any) => {
         }
         setFollowing(!following);
       } else {
-        console.error({ variant: "destructive", title: dataRes.message })
+        toast({ title: dataRes.message, description:"Please log in first" });
       }
     } catch (error: any) {
-      console.error({ variant: "destructive", title: error.message, description: "Internal Server Error" });
+      toast({ variant: "destructive", title: error.message, description: "Internal Server Error" });
     }
   }
 
@@ -98,30 +98,11 @@ const CompanyCard = (props: any) => {
         <button onClick={() => setCompanyDetailsOpen(true)} className='text-primary font-semibold hover:underline'>See more...</button>
       </div>
 
-      {/* company details popup */}
-      <div className={`${companyDetailsOpen ? "w-[100vw] h-[95vh] fixed top-16 left-0 backdrop-blur-sm overflow-scroll " : "w-0 h-0 overflow-hidden"} transition-all duration-300 flex items-center justify-center`}>
-        <div className='h-[80vh] w-[80vw] bg-card rounded-lg shadow-[0px_0px_10px] dark:border dark:border-muted shadow-black/20 p-6'>
-          <div className='flex justify-between'>
-            <div className='flex items-center gap-3'>
-            {
-              props.companyLogo && props.companyLogo.includes("https://") ?
-                <img width="100px" height="100px" className='rounded-sm' src={props.companyLogo} alt={props.companyName.charAt(0)} />
-                :
-                <p className='w-[100px] h-[100px] text-white bg-primary rounded-sm grid place-items-center text-3xl font-semibold'>
-                  {props.companyName.charAt(0)}
-                </p>
-            }
-              <span className='h-[64px] w-[2px] rounded-full bg-muted '></span>
-              <div>
-                <h1 className='text-lg font-semibold'>{props.companyName}</h1>
-                <p>{props.headquarters}</p>
-              </div>
-            </div>
-            <Button onClick={() => setCompanyDetailsOpen(false)} className='text-xl font-semibold' variant="outline" size="icon">x</Button>
-
-          </div>
-        </div>
-      </div>
+     <CompanyDetailsPopup
+        company = {props}
+        companyDetailsOpen = {companyDetailsOpen}
+        setCompanyDetailsOpen = {setCompanyDetailsOpen}
+      />
     </div>
   )
 }

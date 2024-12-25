@@ -12,7 +12,7 @@ interface Preferences {
     jobTypes: string[],
     workSchedule: WorkSchedule,
     minimumBasePay: MinimumBasePay,
-    remote: string
+    remote: boolean
 }
 const initialState:Preferences = {
     jobTitles: [],
@@ -25,7 +25,7 @@ const initialState:Preferences = {
         amount: 0,
         payPeriod: '',
     },
-    remote: "",
+    remote: false,
 }
 const preferencesSlice = createSlice({
     name: "preference",
@@ -86,9 +86,6 @@ const preferencesSlice = createSlice({
         setRemote(state, action){
             state.remote = action.payload
         },
-        deleteRemote(state) {
-            state.remote = ""
-        },
     }
 });
 
@@ -105,6 +102,5 @@ export const {
     setMinimumBasePay,
     deleteMinimumBasePay,
     setRemote,
-    deleteRemote,
 } = preferencesSlice.actions;
 export default preferencesSlice.reducer;

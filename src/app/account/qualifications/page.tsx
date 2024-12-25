@@ -46,7 +46,6 @@ const Page = () => {
   const experience = useSelector((state: RootState) => state.qualification.experience)
   const certifications = useSelector((state: RootState) => state.qualification.certifications)
   const languages = useSelector((state: RootState) => state.qualification.languages)
-  console.log(education, skills, experience, certifications, languages);
 
   //Add, update education data
   const [edLevel, setEdlevel] = useState("")

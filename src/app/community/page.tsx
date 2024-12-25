@@ -5,7 +5,7 @@ const Page = () => {
 
     return (
         <div className='py-12'>
-            <h1 className='text-2xl font-semibold'>Welcome to ParaSeek Community Forum!</h1>
+            <h1 className='text-2xl font-semibold'>Community Forum coming soon!</h1>
         </div>
 
 

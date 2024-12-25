@@ -1,5 +1,5 @@
 import { call, put, takeEvery, select } from "redux-saga/effects";
-import { addJobTitle, editJobTitle, deleteJobTitle, addJobType, editJobType, deleteJobType, setWorkSchedule, deleteWorkSchedule, setMinimumBasePay, deleteMinimumBasePay, setRemote, deleteRemote } from "../slices/preferencesSlice";
+import { addJobTitle, editJobTitle, deleteJobTitle, addJobType, editJobType, deleteJobType, setWorkSchedule, deleteWorkSchedule, setMinimumBasePay, deleteMinimumBasePay, setRemote } from "../slices/preferencesSlice";
 
 const selectPreferences = (state: any) => state.preference;
 
@@ -36,7 +36,6 @@ function* watchPreferenceActions() {
         setMinimumBasePay.type,
         deleteMinimumBasePay.type,
         setRemote.type,
-        deleteRemote.type,
     ], sendPreferencesToServer);
 }
 

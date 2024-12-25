@@ -24,7 +24,6 @@ const Page = () => {
     const [showCompanyEditForm, setShowCompanyEditForm] = useState(false);
     const [editCompany, setEditCompany] = useState([]);
     const [uploading, setUploading] = useState<string | null>(null);
-    const [revalidateData, setRevalidateData] = useState(false);
     const [companyOpen, setCompanyOpen] = useState(false);
     const [company, setCompany] = useState<any>({});
     const [openHiringInput, setOpenHiringInput] = useState(false);
@@ -39,10 +38,6 @@ const Page = () => {
         setShowCompanyUploadForm(false);
         setShowCompanyEditForm(false);
     }
-    function RevalidateData() {
-        setRevalidateData(true);
-    }
-
 
     const handleLogoUpdate = async (e: any, id: string) => {
         const formData = new FormData();
@@ -56,7 +51,7 @@ const Page = () => {
             });
             const result = await res.json();
             if (result.success) {
-                setRevalidateData(true)
+                fetchCompanies();
                 toast({ title: result.message });
             } else {
                 toast({ title: result.message, variant: "destructive" });
@@ -64,21 +59,10 @@ const Page = () => {
         } catch (error: any) {
             toast({ title: error.message, variant: "destructive" })
         } finally {
-            setUploading(null)
-            setTimeout(() => {
-                setRevalidateData(false)
-            }, 1000)
+            setUploading(null);
         }
     }
 
-
-  
-    useEffect(() => {
-        if (revalidateData) {
-            fetchCompanies();
-        }
-    }, [revalidateData])
-   
 
     const handleDeleteCompany = async (id: string) => {
         try {
@@ -92,16 +76,13 @@ const Page = () => {
             const dataRes = await res.json();
             if (dataRes.success) {
                 toast({ title: dataRes.message })
-                setTimeout(() => {
-                    RevalidateData();
-                }, 200)
             } else {
                 toast({ title: dataRes.message, variant: "destructive" });
             }
         } catch (error: any) {
-            console.log(error)
+            console.error(error)
         } finally {
-            setRevalidateData(false)
+            fetchCompanies();
         }
     }
 
@@ -122,6 +103,7 @@ const Page = () => {
             const result = await res.json();
             if (result.success) {
                 toast({ title: result.message });
+                fetchCompanies();
                 setOpenHiringInput(false);
                 setHiringUserName("");
             } else {
@@ -150,6 +132,7 @@ const Page = () => {
             });
             const result = await res.json();
             if (result.success) {
+                fetchCompanies();
                 toast({ title: result.message });
             } else {
                 toast({ title: result.message, variant: "destructive" });
@@ -157,7 +140,6 @@ const Page = () => {
         } catch (error: any) {
             toast({ title: error.message, variant: "destructive" })
         } finally {
-            RevalidateData();
             setHiring(false);
         }
     }
@@ -254,8 +236,8 @@ const Page = () => {
                     <Button className="mt-8" onClick={() => setShowCompanyUploadForm(true)}>Add Company</Button>
                 </div>
             }
-            {showCompanyUploadForm && <CreateCompanyForm actionType="create" close={closeForm} revalidate={RevalidateData} />}
-            {showCompanyEditForm && <CreateCompanyForm actionType="update" company={editCompany} close={closeForm} revalidate={RevalidateData} />}
+            {showCompanyUploadForm && <CreateCompanyForm actionType="create" close={closeForm} />}
+            {showCompanyEditForm && <CreateCompanyForm actionType="update" company={editCompany} close={closeForm} />}
 
             <div className={`overflow-hidden transition-all duration-300 ${companyOpen ? "w-full" : "w-0"}`}>
                 <div className="bg-card shadow-[0px_0px_10px] p-6 shadow-black/20 dark:border dark:border-muted w-full mt-8 rounded-lg ">

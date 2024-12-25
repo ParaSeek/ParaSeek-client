@@ -25,7 +25,6 @@ const Page = () => {
   const onSubmit = (data: contactFormData) => {
     setLoading(true);
     setTimeout(() => {
-      console.log(data);
       toast({variant:"destructive",title:"An Error Occurred"})
       setLoading(false);
     }, 3000);

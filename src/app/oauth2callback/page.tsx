@@ -1,6 +1,8 @@
 "use client";
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 const Page = () => {
@@ -8,8 +10,9 @@ const Page = () => {
   const url = window.location.href;
   const code = url.substring(36);
   const [error, setError] = useState(true);
-
-  useEffect(()=>{
+  const { toast } = useToast();
+  const router = useRouter();
+  useEffect(() => {
     if (code.substring(1, 5) == "code") {
       setError(false)
     }
@@ -25,9 +28,12 @@ const Page = () => {
         credentials: "include"
       });
       const response = await res.json();
-      console.log(response);
-
-
+      if (response.success) {
+        toast({ title: "Drive Linked Successfully", description: response.message })
+        router.push("/dashboard/postjob");
+      } else {
+        toast({ title: "Error while Linking Drive", description: response.message, variant: "destructive" })
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     }

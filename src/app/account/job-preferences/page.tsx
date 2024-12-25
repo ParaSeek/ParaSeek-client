@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { addJobTitle, editJobTitle, deleteJobTitle, addJobType, editJobType, deleteJobType, setWorkSchedule, deleteWorkSchedule, setMinimumBasePay, deleteMinimumBasePay, deleteRemote, setRemote } from '@/slices/preferencesSlice';
+import { addJobTitle, editJobTitle, deleteJobTitle, addJobType, editJobType, deleteJobType, setWorkSchedule, deleteWorkSchedule, setMinimumBasePay, deleteMinimumBasePay, setRemote } from '@/slices/preferencesSlice';
 import { PopoverClose } from '@radix-ui/react-popover';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -40,8 +40,7 @@ const Page = () => {
     const workSchedule = useSelector((state: RootState) => state.preference.workSchedule)
     const minimumBasePay = useSelector((state: RootState) => state.preference.minimumBasePay)
     const remote = useSelector((state: RootState) => state.preference.remote)
-    console.log(jobTitles, jobTypes, workSchedule, minimumBasePay, remote);
-
+    
     //Add, update Job Titles
     const [jtitle, setJtitle] = useState("")
 
@@ -55,9 +54,6 @@ const Page = () => {
     //set amount and payperiod of minimum base pay
     const [amt, setAmt] = useState(0)
     const [pp, setPp] = useState("")
-
-    //Add, update remote data
-    const [rm, setRm] = useState("")
 
     //Add, update, delete Job titles
     const handleAddJobTitle = () => {
@@ -126,20 +122,9 @@ const Page = () => {
         }
     }
     const handleDeleteMinimumBasePay = () => {
-        dispatch(deleteWorkSchedule())
+        dispatch(deleteMinimumBasePay())
     }
-    //Add, update, delete remote
-    const handleSetRemote = () => {
-        if (rm.trim() != "") {
-            dispatch(setRemote(rm))
-            setRm("")
-        } else {
-            toast({ title: "Field should not be empty", variant: "destructive" })
-        }
-    }
-    const handleDeleteRemote = (index: number) => {
-        dispatch(deleteRemote())
-    }
+
 
 
 
@@ -404,12 +389,12 @@ const Page = () => {
                                 <div className="space-y-2">
                                     <h4 className="font-medium leading-none">Add Pay</h4>
                                     <p className="text-sm text-muted-foreground">
-                                    What is the minimum pay you'll consider in your search?
+                                        What is the minimum pay you'll consider in your search?
                                     </p>
                                 </div>
                                 <div className="grid gap-2">
                                     <div className="flex flex-col items-center gap-4">
-                                    <Label htmlFor="mbp">Minimum Base Pay (in rupees)</Label>
+                                        <Label htmlFor="mbp">Minimum Base Pay (in rupees)</Label>
                                         <Input
                                             id="mbp"
                                             value={amt}
@@ -441,11 +426,11 @@ const Page = () => {
                     </Popover>
                 </div>
                 <div className='flex gap-1 flex-col'>
-                    {minimumBasePay.amount !=0 && <p>
+                    {minimumBasePay.amount != 0 && <p>
                         Minimum Base Pay: ₹{minimumBasePay.amount}
                     </p>}
-                    {minimumBasePay.payPeriod&& <p>
-                       Pay Period: {minimumBasePay.payPeriod}
+                    {minimumBasePay.payPeriod && <p>
+                        Pay Period: {minimumBasePay.payPeriod}
                     </p>}
                 </div>
             </div>
@@ -454,41 +439,9 @@ const Page = () => {
             <div
                 className="w-full py-2 px-6 my-4 mx-auto border dark:border-gray-800 cursor-pointer hover:bg-accent rounded-lg overflow-hidden"
             >
-                <div className="flex justify-between font-semibold">
-                    <Popover>
-                        <span>{remote != "" ? "Preferred Remote Setting" : "Add Preferred Remote Setting"}</span>
-                        <span className='flex gap-1'><PopoverTrigger>{remote !=""? <Pencil className='w-5 hover:scale-125 transition-all duration-200'></Pencil> : <Plus className='hover:scale-125 transition-all duration-200' />}</PopoverTrigger>{remote !="" && <Trash onClick={() => handleDeleteMinimumBasePay()} className='w-5 text-red-500 hover:scale-110 transition-all duration-200' />}</span>
-                        <PopoverContent className='w-full'>
-                            <div className="grid gap-4">
-                                <div className="space-y-2">
-                                    <h4 className="font-medium leading-none">  Desired Remote Setting</h4>
-                                </div>
-                                <div className="grid gap-2">
-                                    <div className="grid grid-cols-3 items-center gap-4">
-                                        <Select value={rm} onValueChange={(value) => setRm(value)}>
-                                            <SelectTrigger className="col-span-2 h-8">
-                                                <SelectValue placeholder="Select" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="Remote">Remote</SelectItem>
-                                                <SelectItem value="on-site">on-site</SelectItem>
-                                                <SelectItem value="Hybrid">Hybrid</SelectItem>
-                                                <SelectItem value="Temporary Remote">Temporary Remote</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-                                <PopoverClose>
-                                    <Button onClick={handleSetRemote}>
-                                        Set
-                                    </Button>
-                                </PopoverClose>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                </div>
-                <div className='flex gap-1 flex-col'>
-                    {remote}
+                <span className='font-semibold'>Preferred Remote Setting</span>
+                <div className='flex items-center justify-between'>
+                    Remote? <Input className='w-3' type='checkbox' checked={remote} onChange={() => dispatch(setRemote(!remote))} />
                 </div>
             </div>
 

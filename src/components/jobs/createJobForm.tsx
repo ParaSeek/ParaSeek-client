@@ -5,13 +5,13 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { employmentTypes, industries, jobTitles, jobTypes, levelOfEducation, states } from '@/store/suggestions';
-import { Plus, Trash, X } from 'lucide-react';
+import { employmentTypes, jobTitles, jobTypes, levelOfEducation, states } from '@/store/suggestions';
+import { Plus, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Label } from '../ui/label';
 import { PopoverClose } from '@radix-ui/react-popover';
+import { useFetchCompanies } from '@/contexts/FetchCompaniesContext';
 
 interface Location {
     city: string,
@@ -51,26 +51,26 @@ const CreateJobForm = (props: any) => {
     const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm<Job>();
     const { toast } = useToast();
     const [showTitleSuggestions, setShowTitleSuggestions] = useState(false);
-    const [jobTitleValue, setJobTitleValue] = useState("");
-
+    const [jobTitleValue, setJobTitleValue] = useState(props.job && props.job.title || "");
+    const { fetchCompanies } = useFetchCompanies();
     //location Group
-    const [city, setCity] = useState("");
-    const [state, setState] = useState("");
+    const [city, setCity] = useState((props.job && props.job.location && props.job.location.city) || "");
+    const [state, setState] = useState((props.job && props.job.location && props.job.location.state) || "");
     const [country, setCountry] = useState("India");
     useEffect(() => {
         setValue("location", { city, state, country });
     }, [city, state, country])
 
     //Salary Group
-    const [minSalary, setMinSalary] = useState(0);
-    const [maxSalary, setMaxSalary] = useState(0);
+    const [minSalary, setMinSalary] = useState(props.job && props.job.salaryRange && props.job.salaryRange.minSalary || 0);
+    const [maxSalary, setMaxSalary] = useState(props.job && props.job.salaryRange && props.job.salaryRange.maxSalary || 0);
     const [currency, setCurrency] = useState("INR");
     useEffect(() => {
         setValue("salaryRange", { minSalary, maxSalary, currency });
     }, [minSalary, maxSalary, currency])
 
     //skills array
-    const [skills, setSkills] = useState<string[]>([]);
+    const [skills, setSkills] = useState<string[]>(props.job && props.job.skills || []);
     const [skillPopover, setSkillPopover] = useState("");
     const handleSkillRemove = (index: number) => {
         let newSkills = [...skills];
@@ -82,7 +82,7 @@ const CreateJobForm = (props: any) => {
     }, [skills])
 
     //benefits array
-    const [benefits, setBenefits] = useState<string[]>([]);
+    const [benefits, setBenefits] = useState<string[]>(props.job && props.job.benefits || []);
     const [benefitPopover, setBenefitPopover] = useState("");
     const handleBenefitRemove = (index: number) => {
         let newBenefits = [...benefits];
@@ -94,7 +94,7 @@ const CreateJobForm = (props: any) => {
     }, [benefits])
 
     //benefits array
-    const [languages, setLanguages] = useState<string[]>([]);
+    const [languages, setLanguages] = useState<string[]>(props.job && props.job.requiredLanguages || []);
     const [languagePopover, setLanguagePopover] = useState("");
     const handleLanguageRemove = (index: number) => {
         let newLanguages = [...languages];
@@ -111,9 +111,8 @@ const CreateJobForm = (props: any) => {
     }, [jobTitleValue])
     useEffect(() => {
         setValue('companyName', props.companyName);
-    }, [])
+    }, [props.companyName])
     const onSubmit = async (data: Job) => {
-        console.log(data);
         if (jobTitleValue.trim() === "") {
             toast({ title: "Please enter a job title", variant: "destructive" });
         } else if (city.trim() === "" || state.trim() === "" || country.trim() === "") {
@@ -142,8 +141,8 @@ const CreateJobForm = (props: any) => {
                 if (dataRes.success) {
                     toast({ title: dataRes.message })
                     setTimeout(() => {
-                        props.revalidate();
                         if (props.actionType == "update") {
+                            fetchCompanies();
                             props.close();
                         }
                     }, 200)
@@ -151,20 +150,20 @@ const CreateJobForm = (props: any) => {
                     toast({ title: dataRes.message, variant: "destructive" });
                 }
             } catch (error: any) {
-                console.log(error)
+                console.error(error)
             }
         }
     }
     return (
-        <div className={`${props.actionType == "update" ? "fixed top-0 left-0 h-screen w-screen backdrop-blur-sm z-10" : "w-full"} flex items-center justify-center `}>
-            <form className={`${props.actionType=="update" ? "w-4/5 max-w-xl max-h-[88vh] overflow-y-scroll mt-12 " : "w-full"} bg-card p-5 pt-0 rounded-xl shadow-[0px_0px_10px] shadow-black/20 dark:border dark:border-muted`} onSubmit={handleSubmit(onSubmit)}>
+        <div className="fixed top-0 left-0 h-screen w-screen backdrop-blur-sm z-10 flex items-center justify-center">
+            <form className="w-4/5 max-w-xl max-h-[88vh] overflow-y-scroll mt-12 bg-card p-5 pt-0 rounded-xl shadow-[0px_0px_10px] shadow-black/20 dark:border dark:border-muted" onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4 flex justify-between items-center sticky top-0 backdrop-blur-sm z-[15] pt-5">
-                    <h2 className='text-xl font-semibold ml-2'>{props.actionType == "create" ? "Fill the Job details" : "Fill the details you want to edit"}</h2>
-                    {props.actionType == "update" && <Button onClick={() => props.close()} type='button' size="icon" variant="outline" className='mb-4 ml-auto text-bold font-bold text-lg'>
-                        x
-                    </Button>}
+                    <h2 className='text-xl font-semibold ml-1'>{props.actionType == "create" ? "Fill the Job details" : "Fill the details you want to edit"}</h2>
+                    <Button onClick={() => props.close()} type='button' size="icon" variant="outline" className='mb-4 ml-auto'>
+                        <X />
+                    </Button>
                 </div>
-
+                <p className='mb-4 ml-1'>Company: <span className='font-semibold'>{props.companyName}</span></p>
                 <div className="mb-4 relative">
                     <Input
                         type="text"
@@ -173,9 +172,8 @@ const CreateJobForm = (props: any) => {
                         id='jobTitle'
                         onFocus={() => setShowTitleSuggestions(true)}
                         onBlur={() => setTimeout(() => { setShowTitleSuggestions(false) }, 200)}
-                        value={jobTitleValue}
+                        value={jobTitleValue == "" ? props.job && props.job.title : jobTitleValue}
                         onChange={(e) => { setJobTitleValue(e.target.value); }}
-                        defaultValue={props.job && props.job.title}
                     />
                     {showTitleSuggestions &&
                         <div className="absolute top-12 z-[15] max-h-[360px] overflow-y-scroll left-0 w-full backdrop-blur-lg border-muted border rounded-lg">
@@ -247,15 +245,13 @@ const CreateJobForm = (props: any) => {
                             type="text"
                             name="city"
                             placeholder='city'
-                            defaultValue={props.job && props.job.location && props.job.location.city}
-                            value={city}
+                            value={city == "" ? props.job && props.job.location && props.job.location.city : city}
                             onChange={(e) => setCity(e.target.value)}
                             className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                         />
 
                         <Select
-                            defaultValue={props.job && props.job.location && props.job.location.state}
-                            value={state}
+                            value={state == "" ? props.job && props.job.location && props.job.location.state : state}
                             onValueChange={(value) => setState(value)}
                         >
                             <SelectTrigger className="w-full disabled:cursor-default">
@@ -268,8 +264,7 @@ const CreateJobForm = (props: any) => {
                             </SelectContent>
                         </Select>
                         <Select
-                            value={country}
-                            defaultValue={props.job && props.job.location && props.job.location.country}
+                            value={country == " " ? props.job && props.job.location && props.job.location.country : country}
                             onValueChange={(value) => setCountry(value)}
                         >
                             <SelectTrigger className="w-full disabled:cursor-default">
@@ -290,8 +285,7 @@ const CreateJobForm = (props: any) => {
                             type="number"
                             name="min-salary"
                             placeholder='Minimum Salary'
-                            defaultValue={props.job && props.job.salaryRange && props.job.salaryRange.minSalary}
-                            value={minSalary}
+                            value={minSalary == 0 ? props.job && props.job.salaryRange && props.job.salaryRange.minSalary : minSalary}
                             onChange={(e) => setMinSalary(Number(e.target.value))}
                             className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                         />
@@ -300,15 +294,13 @@ const CreateJobForm = (props: any) => {
                             type="number"
                             name="max-salary"
                             placeholder='Maximum Salary'
-                            defaultValue={props.job && props.job.salaryRange && props.job.salaryRange.maxSalary}
-                            value={maxSalary}
+                            value={maxSalary == 0 ? props.job && props.job.salaryRange && props.job.salaryRange.maxSalary : maxSalary}
                             onChange={(e) => setMaxSalary(Number(e.target.value))}
                             className="w-full px-3 py-2 border rounded-lg disabled:cursor-default"
                         />
 
                         <Select
-                            value={currency}
-                            defaultValue={props.job && props.job.salaryRange && props.job.salaryRange.currency}
+                            value={currency == "" ? props.job && props.job.salaryRange && props.job.salaryRange.currency : currency}
                             onValueChange={(value) => setCurrency(value)}
                         >
                             <SelectTrigger className="w-full disabled:cursor-default">
@@ -454,7 +446,6 @@ const CreateJobForm = (props: any) => {
                     <label className="block absolute right-1 py-1 px-3 bg-card z-[12] shadow-card shadow-[0px_0px_5px]">Application Deadline</label>
                     <Input
                         type="date"
-                        value={props.job && props.job.applicationDeadline}
                         {...register("applicationDeadline", {
                             required: true,
                         })}
@@ -547,13 +538,18 @@ const CreateJobForm = (props: any) => {
                         placeholder="Number of openings"
                         className="w-full"
                         defaultValue={props.job && props.job.numberOfOpenings}
-                        {...register("numberOfOpenings")}
+                        {...register("numberOfOpenings", { required: true })}
                     />
+                    {errors.numberOfOpenings && (
+                        <span className="text-red-500 text-xs">
+                            Number of openings is required
+                        </span>
+                    )}
                 </div>
                 <div className="mb-4">
                     <Input
                         type="text"
-                        placeholder="Application Link"
+                        placeholder="Application Link (if any)"
                         className="w-full"
                         defaultValue={props.job && props.job.applicationLink}
                         {...register("applicationLink")}

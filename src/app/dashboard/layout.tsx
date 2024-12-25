@@ -37,7 +37,6 @@ const Layout = ({ children }: LayoutProps) => {
             const dataRes = await res.json();
             if (dataRes.success) {
                 dispatch(setMyCompanies(dataRes.data));
-                console.log(dataRes);
             } else {
                 console.error(dataRes.message);
             }
@@ -46,35 +45,35 @@ const Layout = ({ children }: LayoutProps) => {
         }
     };
 
-    const fetchJobs = async () => {
-        if (userData && userData._id) {
-            try {
-                const res = await fetch(`${process.env.SERVER_URL}/api/v1/job/get-employer-jobs/${userData._id}`, {
-                    method: 'GET',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                const dataRes = await res.json();
-                if (dataRes.success) {
-                    dispatch(setMyJobs(dataRes.data));
-                    console.log(dataRes);
-                } else {
-                    console.log(dataRes.message);
-                }
-            } catch (error: any) {
-                console.error(error);
-            }
-        }
-    };
+    // const fetchJobs = async () => {
+    //     if (userData && userData._id) {
+    //         try {
+    //             const res = await fetch(`${process.env.SERVER_URL}/api/v1/job/get-employer-jobs/${userData._id}`, {
+    //                 method: 'GET',
+    //                 credentials: 'include',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //             });
+    //             const dataRes = await res.json();
+    //             if (dataRes.success) {
+    //                 dispatch(setMyJobs(dataRes.data));
+    //                 console.log(dataRes);
+    //             } else {
+    //                 console.log(dataRes.message);
+    //             }
+    //         } catch (error: any) {
+    //             console.error(error);
+    //         }
+    //     }
+    // };
 
     useEffect(() => {
-        fetchJobs();
+        // fetchJobs();
     }, [userData]);
     useEffect(() => {
         fetchCompanies();
-        fetchJobs();
+        // fetchJobs();
     }, []);
 
     if (!userData) {

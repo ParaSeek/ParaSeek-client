@@ -63,7 +63,6 @@ const ProfileCard = () => {
             });
             const dataRes = await res.json();
             if (dataRes.success) {
-                console.log(dataRes);
                 dispatch(logout());
                 localStorage.removeItem("accessToken")
                 toast({ title: dataRes.message })

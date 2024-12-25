@@ -33,7 +33,6 @@ const Page = ({ params }: { params: { slug: string } }) => {
         }
       );
       const dataRes = await res.json();
-      console.log(dataRes);
       if (dataRes.success) {
         router.push("/dashboard");
         toast({ title: dataRes.message });

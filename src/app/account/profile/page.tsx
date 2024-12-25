@@ -59,7 +59,6 @@ const ProfilePage = () => {
             });
             const dataRes = await res.json();
             if (dataRes.success) {
-                console.log(dataRes);
                 toast({ title: "Profile Updated" })
             } else {
                 toast({ title: "Profile not updated", description: dataRes.message, variant: "destructive" })

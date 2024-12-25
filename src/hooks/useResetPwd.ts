@@ -27,7 +27,6 @@ const useSignup = (): UseResetPwdReturn => {
                 }
             );
             const dataRes = await res.json();
-            console.log(dataRes);
             if (dataRes.success) {
                 return ({ success: true, message: dataRes.message });
             } else {

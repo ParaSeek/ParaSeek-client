@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useFetchCompanies } from '@/contexts/FetchCompaniesContext';
 import { useToast } from '@/hooks/use-toast';
 import { industries } from '@/store/suggestions';
+import { X } from 'lucide-react';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -26,7 +28,7 @@ const CreateCompanyForm = (props: any) => {
     const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm<Company>();
     const [verifyingGST, setVerifyingGST] = useState(false);
     const { toast } = useToast();
-
+    const { fetchCompanies } = useFetchCompanies();
     const handleVerifyGST = async () => {
         setVerifyingGST(true);
         try {
@@ -54,15 +56,15 @@ const CreateCompanyForm = (props: any) => {
             const dataRes = await res.json();
             if (dataRes.success) {
                 toast({ title: dataRes.message })
+                fetchCompanies();
                 setTimeout(() => {
-                    props.revalidate();
                     props.close();
                 }, 200)
             } else {
                 toast({ title: dataRes.message, variant: "destructive" });
             }
         } catch (error: any) {
-            console.log(error)
+            console.error(error)
         }
     }
     return (
@@ -71,7 +73,7 @@ const CreateCompanyForm = (props: any) => {
                 <div className="mb-4 flex justify-between items-center">
                     <h2 className='text-xl font-semibold ml-2'>{props.actionType == "create" ? "Fill your company details" : "Fill the details you want to edit"}</h2>
                     <Button onClick={() => props.close()} type='button' size="icon" variant="outline" className='mb-4 ml-auto text-bold font-bold text-lg'>
-                        x
+                        <X />
                     </Button>
                 </div>
                 <div className="mb-4">

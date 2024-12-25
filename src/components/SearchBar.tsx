@@ -20,7 +20,8 @@ const SearchBar = () => {
     useEffect(() => {
         const url = {
             title: searchTitle,
-            location: searchLocation
+            location: searchLocation,
+            skill: ""
         }
         setSearchUrl(`/search/${JSON.stringify(url)}`)
     }, [searchTitle, searchLocation])

@@ -29,7 +29,6 @@ const useLogin = (): UseLoginReturn => {
       });
       const dataRes = await res.json();
       if (dataRes.success) {
-        console.log(dataRes);
         dispatch(loginAction(dataRes.data));
         localStorage.setItem("accessToken", "loggedIn")
         return ({ success: true, message: dataRes.message });
