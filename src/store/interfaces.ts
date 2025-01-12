@@ -19,8 +19,10 @@ export interface User {
 export interface Education {
     levelOfEducation: string;
     fieldOfStudy: string;
-    fromYear: string; //new
-    toYear: string; //new
+    boardOrUniversity?: string; //new
+    institute?: string; //new
+    fromYear?: string; //new
+    toYear?: string; //new
 }
 
 export interface Experience {
@@ -77,13 +79,20 @@ export interface ResumeTemplate {
     image: string
 }
 
+
 export interface resumeProfile {
+    //resume-header
     name: string;
     email: string;
     phone: string;
     address: string;
     linkedin: string;
     github: string;
+
+    //personal-info section-2
+    gender: string;
+    dob: string;
+    nationality: string;
 }
 
 export interface ResumeDraft {

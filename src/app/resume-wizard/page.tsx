@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Plus, Trash } from 'lucide-react';
 import { FaBriefcase, FaEnvelope, FaGraduationCap, FaPhone, FaUser } from 'react-icons/fa6';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas'
@@ -9,6 +9,8 @@ import { ResumeTemplate, ResumeDraft, resumeProfile } from '@/store/interfaces';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import Template_blank from '@/components/resume-templates/Template_blank';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function ResumeWizard() {
 
@@ -25,7 +27,10 @@ export default function ResumeWizard() {
     phone: "xxxxxx7890",
     linkedin: "",
     github: "",
-    address: "Your Address"
+    address: "Your Address",
+    gender: "Male/Female",
+    dob: "xx-xx-xxxx",
+    nationality: "Indian",
   })
   const qualifications = useSelector((state: RootState) => state.qualification);
   const [resumeDraft, setResumeDraft] = useState<ResumeDraft>({
@@ -42,9 +47,12 @@ export default function ResumeWizard() {
       name: userData?.firstName + userData?.lastName,
       email: userData?.email as string,
       phone: userData?.phoneNumber as string,
-      linkedin: "",
-      github: "",
-      address: userData?.location?.city + ", " + userData?.location?.state + "(" + userData?.location?.postalCode + ")"
+      linkedin: "https://linkedin.com/xxxxxx",
+      github: "https://github.com/xxxxxx",
+      address: userData?.location?.city + ", " + userData?.location?.state + "(" + userData?.location?.postalCode + ")",
+      gender: userData?.gender,
+      dob: new Date(userData?.dob).toLocaleDateString(),
+      nationality: "Indian",
     })
   }, [userData])
   useEffect(() => {
@@ -153,39 +161,39 @@ export default function ResumeWizard() {
     );
   } else {
     return (
-      <div className="flex flex-col md:flex-row min-h-screen pt-16">
+      <div className="flex flex-col md:flex-row min-h-screen pt-20 pb-12 px-4 gap-2">
         {/* Input Panel */}
-        <div className="md:w-1/2 w-full p-8 bg-background space-y-6">
+        <div className="md:w-1/2 w-full p-8 bg-card space-y-6 rounded-lg">
           <h1 className="text-3xl font-bold mb-6 text-center">Resume Wizard</h1>
 
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <FaUser className="text-gray-400" />
-              <input
+              <FaUser />
+              <Input
                 type="text"
                 placeholder="Full Name"
                 value={resumeDraft.profile.name}
-                className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                className="w-full"
               />
             </div>
 
             <div className="flex items-center space-x-3">
-              <FaEnvelope className="text-gray-400" />
-              <input
+              <FaEnvelope />
+              <Input
                 type="email"
                 placeholder="Email"
                 value={resumeDraft.profile.email}
-                className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                className="w-full"
               />
             </div>
 
             <div className="flex items-center space-x-3">
-              <FaPhone className="text-gray-400" />
-              <input
+              <FaPhone />
+              <Input
                 type="tel"
                 placeholder="Phone Number"
                 value={resumeDraft.profile.phone}
-                className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                className="w-full"
               />
             </div>
           </div>
@@ -196,20 +204,53 @@ export default function ResumeWizard() {
               <h2 className="text-xl flex items-center">
                 <FaGraduationCap className="mr-2" /> Education
               </h2>
-              <button
-                className="bg-blue-600  px-3 py-1 rounded-lg hover:bg-blue-700"
-              >
-                Add
-              </button>
+              <Plus role='button' />
             </div>
             {resumeDraft.qualifications.education.map((edu, index) => (
-              <input
+              <div
+                className='flex flex-col border-b border-b-border2 py-2'
                 key={index}
-                type="text"
-                placeholder="Degree, Institution, Year"
-                value={edu.fieldOfStudy}
-                className="w-full bg-card  p-2 rounded-lg mb-2 focus:ring-2 focus:ring-primary outline-none"
-              />
+              >
+                <div className='flex justify-between mb-2 items-center'>
+                  <h3 className='text-lg font-medium'>{edu.levelOfEducation}</h3>
+                  <Trash role='button' className='w-5 h-5' />
+
+                </div>
+                <div className='grid grid-cols-2 gap-3'>
+                  <Label className='flex flex-col gap-1'>
+                    Field of Study
+                    <Input
+                      type="text"
+                      value={edu.fieldOfStudy}
+                      className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                    />
+                  </Label>
+                  <Label className='flex flex-col gap-1'>
+                    Level of Education
+                    <Input
+                      type="text"
+                      value={edu.levelOfEducation}
+                      className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                    />
+                  </Label>
+                  <Label className='flex flex-col gap-1'>
+                    From
+                    <Input
+                      type="text"
+                      value={edu.fromYear}
+                      className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                    />
+                  </Label>
+                  <Label className='flex flex-col gap-1'>
+                    To
+                    <Input
+                      type="text"
+                      value={edu.toYear}
+                      className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                    />
+                  </Label>
+                </div>
+              </div>
             ))}
           </div>
 
@@ -226,7 +267,7 @@ export default function ResumeWizard() {
               </button>
             </div>
             {resumeDraft.qualifications.experience.map((exp, index) => (
-              <input
+              <Input
                 key={index}
                 type="text"
                 placeholder="Job Title, Company, Duration"
