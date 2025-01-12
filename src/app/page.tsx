@@ -113,8 +113,7 @@ export default function Home() {
   if (userLog && userData.role == process.env.JOBSEEKER_ID) {
     return (
       <div
-        style={{ minHeight: "calc(100vh - 64px)" }}
-        className="main-bg bg-background"
+        className="main-bg bg-background min-h-screen pt-16"
       >
         <div className="backdrop-blur-2xl relative z-[10] bg-transparent">
 
@@ -233,9 +232,9 @@ export default function Home() {
 
           </div>
           <div className="w-full px-6 flex flex-col relative z-[15]">
-            <div className="w-full md:block hidden pt-4 max-w-3xl mx-auto">
+            {/* <div className="w-full md:block hidden pt-4 max-w-3xl mx-auto">
               <SearchBar />
-            </div>
+            </div> */}
             {/* Job Recommendations */}
             <div className="flex flex-col justify-center p-6 rounded-lg">
               <h1 className="text-xl font-semibold">Top Job Recommendations</h1>
@@ -278,8 +277,7 @@ export default function Home() {
   } else {
     return (
       <div
-        style={{ minHeight: "calc(100vh - 64px)" }}
-        className="main-bg flex flex-col items-center justify-center py-8 bg-card"
+        className="main-bg flex flex-col min-h-screen items-center justify-center py-8 bg-card"
       >
         <BackgroundBeamsWithCollision>
 

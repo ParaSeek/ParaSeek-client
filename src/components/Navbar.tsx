@@ -82,8 +82,8 @@ export const Navbar = () => {
     return null;
   }
   else return (
-    <header className={`bg-background flex flex-col items-center sticky z-20 h-16 px-2 top-0 left-0 backdrop-blur-sm`}>
-      <div className="container relative z-10 bg-background h-16 flex justify-between mx-auto items-center">
+    <header className={`flex flex-col items-center bg-card/50 fixed w-full z-20 h-16 px-2 top-0 left-0 backdrop-blur-sm`}>
+      <div className="container relative z-10 h-16 flex justify-between mx-auto items-center">
         {/* <div className="flex items-center justify-between w-[25vw] md:w-[8vw]">
           <div className="flex items-center">
             <div

@@ -12,29 +12,8 @@ import { Input } from '@/components/ui/input';
 import { addCertification, addEducation, addExperience, addLanguage, addSkill, deleteCertification, deleteEducation, deleteExperience, deleteLanguage, deleteSkill, editCertification, editEducation, editExperience, editLanguage, editSkill } from '@/slices/qualificationSlice';
 import { PopoverClose } from '@radix-ui/react-popover';
 import { useToast } from '@/hooks/use-toast';
+import { Education, Experience, Certifications } from '@/store/interfaces';
 
-interface Education {
-  levelOfEducation: string;
-  fieldOfStudy: string;
-}
-
-interface Experience {
-  jobTitle: string,
-  companyName: string,
-  certificate: string,
-}
-interface Certifications {
-  certificationName: string,
-  link: string,
-}
-
-interface Qualifications {
-  education: Education[],
-  skills: string[],
-  experience: Experience[],
-  certifications: Certifications[],
-  languages: string[]
-}
 
 const Page = () => {
   const dispatch = useDispatch();

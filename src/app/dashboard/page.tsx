@@ -94,10 +94,12 @@ const Page = () => {
     useEffect(() => {
         if (myCompanies[0])
             setCompany(myCompanies[0])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [myCompanies])
 
     useEffect(() => {
         setHeaderTitle("Dashboard");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleFireEmployer = async (id: string) => {

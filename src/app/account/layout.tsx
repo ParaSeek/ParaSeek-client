@@ -38,7 +38,7 @@ const Layout = ({ children }: LayoutProps) => {
       }
     return (
 
-        <div style={{minHeight: "calc(100vh - 64px)"}} className="flex bg-background/70">
+        <div className="flex bg-background/70 min-h-screen">
             <motion.main
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

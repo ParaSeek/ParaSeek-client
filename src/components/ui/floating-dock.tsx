@@ -17,7 +17,6 @@ import {
 } from "framer-motion";
 import Link from "next/link";
 import { useRef, useState } from "react";
-
 export const FloatingDock = ({
   items,
   desktopClassName,
@@ -103,7 +102,7 @@ const FloatingDockDesktop = ({
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        "mx-auto hidden md:flex h-16 gap-4 items-end  rounded-2xl bg-background px-4 pb-3",
+        "mx-auto hidden md:flex h-16 gap-4 items-end rounded-2xl bg-card px-4 pb-3",
         className
       )}
     >

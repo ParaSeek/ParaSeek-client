@@ -5,7 +5,7 @@ type Props = {}
 
 const Search = (props: Props) => {
     return (
-        <section className='bg-background relative z-0'>
+        <section className='bg-background pt-16 relative z-0'>
             <div className="w-full pt-4 max-w-3xl mx-auto">
                 <SearchBar />
             </div>

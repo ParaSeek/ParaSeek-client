@@ -49,7 +49,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   return (
     <div
-      style={{ minHeight: "calc(100vh - 64px)" }}
+      style={{ minHeight: "" }}
       className="flex flex-col items-center justify-center py-2 bg-secondary"
     >
       <AnimatePresence>

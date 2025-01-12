@@ -13,22 +13,7 @@ import { addJobTitle, editJobTitle, deleteJobTitle, addJobType, editJobType, del
 import { PopoverClose } from '@radix-ui/react-popover';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
-interface WorkSchedule {
-    days: string,
-    shifts: string
-}
-interface MinimumBasePay {
-    amount: number,
-    payPeriod: string
-}
-interface Preferences {
-    jobTitles: string[],
-    jobTypes: string[],
-    workSchedule: WorkSchedule,
-    minimumBasePay: MinimumBasePay,
-    remote: string
-}
+import {Preferences} from '@/store/interfaces'
 
 const Page = () => {
     const dispatch = useDispatch();

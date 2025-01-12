@@ -1,35 +1,14 @@
 
 import { createSlice } from "@reduxjs/toolkit";
-
-interface Education {
-    levelOfEducation: string;
-    fieldOfStudy: string;
-}
-
-interface Experience {
-    jobTitle: string,
-    companyName: string,
-    certificate: string,
-}
-interface Certifications {
-    certificationName: string,
-    link: string,
-}
-
-interface Qualifications {
-    education: Education[],
-    skills: string[],
-    experience: Experience[],
-    certifications: Certifications[],
-    languages: string[]
-}
+import { Qualifications } from "@/store/interfaces";
 
 const initialState: Qualifications = {
     education: [],
     skills: [],
     experience: [],
     certifications: [],
-    languages: []
+    languages: [],
+    projects: []
 };
 
 const qualificationSlice = createSlice({

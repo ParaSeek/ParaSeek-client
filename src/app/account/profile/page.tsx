@@ -11,21 +11,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from "lucide-react"
 import Link from 'next/link';
 import { states } from '@/store/suggestions';
-interface User {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-    username: string;
-    dob: string;
-    gender: string;
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-}
-
+import {User} from '@/store/interfaces';
 
 const ProfilePage = () => {
     const userData = useSelector((state: RootState) => state.user.data)
