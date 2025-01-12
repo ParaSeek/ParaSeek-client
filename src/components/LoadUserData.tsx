@@ -9,6 +9,7 @@ import { setQualifications } from '@/slices/qualificationSlice';
 import { setJobs } from '@/slices/jobSlice';
 import { setPreferences } from '@/slices/preferencesSlice';
 import { setCompanies } from '@/slices/companySlice';
+import { setRecommendedJobs } from '@/slices/RecommendedJobsSlice';
 
 const LoadUserData = () => {
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
@@ -49,10 +50,32 @@ const LoadUserData = () => {
   useEffect(() => {
     if (!loaded && token) {
       loadUser();
+      loadRecommendedJobs();
       setLoaded(true);
     }
   }, [userLog, token])
 
+  const loadRecommendedJobs = async () => {
+    try {
+      const res = await fetch(`${process.env.SERVER_URL}/api/v1/job/recommendations`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      const dataRes = await res.json();
+      if (dataRes.success) {
+        dispatch(setRecommendedJobs(dataRes.data.filter((job: any) => {
+          return job.score > 0
+        })));
+      } else {
+        console.error(dataRes.message)
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
 
   const loadJobs = async () => {
     try {
@@ -96,7 +119,7 @@ const LoadUserData = () => {
   useEffect(() => {
     loadJobs();
     loadCompanies();
-  },[])
+  }, [])
   return (
     <div></div>
   )

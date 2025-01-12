@@ -1,16 +1,15 @@
 "use client";
-import CreateJobForm from '@/components/jobs/createJobForm';
+import CreateJobForm from '@/components/dashboard/jobs/createJobForm';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { FetchCompaniesContext, useFetchCompanies } from '@/contexts/FetchCompaniesContext';
+import { useDashboardContext } from '@/contexts/DashboardContext';
 import { RootState } from '@/store/store'
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
-import { FaGoogleDrive } from 'react-icons/fa6';
+import { FaArrowRightLong, FaGoogleDrive } from 'react-icons/fa6';
 import { useSelector } from 'react-redux'
 
 const Page = () => {
@@ -20,7 +19,10 @@ const Page = () => {
   const [selectedCompany, setSelectedCompany] = useState(myCompanies[0]?.companyName)
   const [createJobFormOpen, setCreateJobFormOpen] = useState(false)
   const [link, setLink] = useState("");
-
+  const { setHeaderTitle } = useDashboardContext();
+  useEffect(() => {
+    setHeaderTitle("Post a Job");
+  }, [])
   const close = () => {
     setCreateJobFormOpen(false)
   }
@@ -57,7 +59,7 @@ const Page = () => {
         defaultValue={selectedCompany}
         onValueChange={(value) => setSelectedCompany(value)}
       >
-        <SelectTrigger className="w-full disabled:cursor-default">
+        <SelectTrigger className="w-fit flex gap-2 disabled:cursor-default">
           <SelectValue placeholder="Select Company" />
         </SelectTrigger>
         <SelectContent>
@@ -82,18 +84,24 @@ const Page = () => {
         </div>
         {!userData.tokens && <Button onClick={handleDriveLink} variant="outline" size="icon" className="w-28 h-28 mt-2" ><FaGoogleDrive className='h-8 w-8' /></Button>}
         {userData.tokens && <Button onClick={handleDriveLink} className="mt-2" >Change Linked account</Button>}
-        {link !== "" && <Link className='underline hover:text-primary dark:hover:text-purple-400' href={link}>Click Here to authenticate with Google Drive</Link>}
+        {link !== "" && <Link className='underline flex items-center gap-2 hover:text-primary mt-2 dark:hover:text-purple-400' href={link}>Click Here to authenticate with Google Drive {<FaArrowRightLong />}</Link>}
       </div>
 
       {userData.tokens &&
         <div>
-          <h1 className="text-3xl font-semibold mt-12 mb-4">Create a Job Post</h1>
-          <Button onClick={() => setCreateJobFormOpen(true)} variant="outline" size="icon" className="w-28 h-28 mt-2" ><Plus className='h-8 w-8' /></Button>
+          <div className="w-full md:max-w-[66%] mt-8 bg-muted p-[25px] cursor-pointer hover:bg-[#ecdcff0a] flex items-center gap-[24px] rounded-xl" onClick={() => setCreateJobFormOpen(true)}>
+            <span className="rounded-full bg-background border p-[12px] dark:border-white border-black">
+              <Plus width="24" height="24" />
+            </span>
+            <div className="flex flex-col justify-center gap-2">
+              <h3 className="font-medium text-xl">Create a Job Post</h3>
+            </div>
+          </div>
           {createJobFormOpen && <CreateJobForm companyName={selectedCompany} actionType="create" close={close} />}
         </div>
       }
 
-    </div>
+    </div >
   )
 }
 

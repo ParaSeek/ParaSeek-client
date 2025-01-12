@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
@@ -117,7 +117,7 @@ const Page = () => {
       if (token) {
         await new Promise(resolve => setTimeout(resolve, 2000));
         if (token) {
-          router.push('/account');
+          router.push('/');
         }
       }
     };
@@ -142,7 +142,7 @@ const Page = () => {
           exit={{ opacity: 0, y: -50 }}
           layout="position"
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md p-8 bg-white dark:bg-gray-950 rounded-lg shadow-md"
+          className="w-full max-w-md p-8 bg-card rounded-lg shadow-md"
         >
           <h2 className="mb-6 text-2xl font-bold text-center">{formType === "login" ? "Login" : formType === "signup" ? "Register" : formType === "otp" ? "Verify OTP" : "Forgot Password"}</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -528,7 +528,7 @@ const Page = () => {
             )}
             {formType === "login" && (
               <span
-                className="text-red-500 text-xs underline cursor-pointer"
+                className="text-sm hover:underline cursor-pointer"
                 onClick={() => toggleForm("forgotPassword")}
               >
                 Forgot Password?

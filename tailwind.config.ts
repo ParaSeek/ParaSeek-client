@@ -19,6 +19,8 @@ const config: Config = {
 		extend: {
 			colors: {
 				background: 'hsl(var(--background))',
+				border2: 'hsl(var(--border2))',
+				activeLink: 'hsl(var(--activeLink))',
 				foreground: 'hsl(var(--foreground))',
 				card: {
 					DEFAULT: 'hsl(var(--card))',
@@ -69,3 +71,4 @@ const config: Config = {
 	plugins: [require("tailwindcss-animate")],
 };
 export default config;
+

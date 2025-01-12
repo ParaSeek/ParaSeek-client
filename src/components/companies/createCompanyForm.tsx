@@ -4,15 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useFetchCompanies } from '@/contexts/FetchCompaniesContext';
+import { useDashboardContext } from '@/contexts/DashboardContext';
 import { useToast } from '@/hooks/use-toast';
 import { industries } from '@/store/suggestions';
-import { X } from 'lucide-react';
+import { Edit, Loader, Plus, Upload, X } from 'lucide-react';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 
 interface Company {
+    _id: string,
     companyName: string,
     gstNumber: string,
     gstVerified: boolean,
@@ -28,7 +29,34 @@ const CreateCompanyForm = (props: any) => {
     const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm<Company>();
     const [verifyingGST, setVerifyingGST] = useState(false);
     const { toast } = useToast();
-    const { fetchCompanies } = useFetchCompanies();
+    const { fetchCompanies } = useDashboardContext();
+    const [uploading, setUploading] = useState<string | null>(null);
+
+    const handleLogoUpdate = async (e: any, id: string) => {
+        const formData = new FormData();
+        formData.append('companyLogo', e.target.files[0]);
+        try {
+            setUploading(id);
+            const res = await fetch(`${process.env.SERVER_URL}/api/v1/company/upload-logo/${id}`, {
+                method: 'POST',
+                credentials: "include",
+                body: formData,
+            });
+            const result = await res.json();
+            if (result.success) {
+                fetchCompanies();
+                toast({ title: result.message });
+            } else {
+                toast({ title: result.message, variant: "destructive" });
+            }
+        } catch (error: any) {
+            toast({ title: error.message, variant: "destructive" })
+        } finally {
+            setUploading(null);
+        }
+    }
+
+
     const handleVerifyGST = async () => {
         setVerifyingGST(true);
         try {
@@ -110,6 +138,25 @@ const CreateCompanyForm = (props: any) => {
                         </span>
                     )}
                 </div>}
+                {props.actionType === "update" && <div className='mb-4'>
+                    <label htmlFor={`companyLogo`}>
+                        <div className="px-4 gap-3 mx-auto mb-4 flex w-full border border-secondary py-2 rounded-lg">
+                            {
+                                uploading ? <Loader style={{ animationDuration: "3000ms" }} className='text-primary dark:text-white animate-spin' /> :
+                                    props.company.companyLogo ? <Edit /> : <Upload />
+                            }
+                            <p>{props.company.companyLogo ? "Edit Logo" : "Upload Logo"}</p>
+                        </div>
+                    </label>
+                    <Input
+                        type="file"
+                        name={`companyLogo`}
+                        id={`companyLogo`}
+                        onChange={(e: any) => handleLogoUpdate(e, props.company._id)}
+                        className="hidden"
+                    />
+                </div>}
+
                 <div className="mb-4">
                     <Textarea
                         placeholder="Description"

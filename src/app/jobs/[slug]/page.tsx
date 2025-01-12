@@ -14,6 +14,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     const param = params.slug
     const companies = useSelector((state: RootState) => state.companies)
     const jobs = useSelector((state: RootState) => state.jobs)
+    const recommendedJobs = useSelector((state: RootState) => state.recommendedJobs)
     const job = jobs.find((job) => {
         return job._id === param
     })
@@ -110,9 +111,9 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 </div>
                 <h1 className='text-2xl self-start font-semibold'>Recommended Jobs for you :</h1>
                 <div className='w-full rounded-xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-                    {/* {Recommendedjobs.map((job, index) => {
-                        return <Jobcard id={job._id} title={job.title} companyName={job.companyName} workHours={job.workHours} salaryRange={job.salaryRange} employmentType={job.employmentType} location={job.location} key={index} />
-                    })} */}
+                    {recommendedJobs.length > 0 ? recommendedJobs.map((job, index) => {
+                        return <Jobcard id={job.job._id} title={job.job.title} companyName={job.job.companyName} workHours={job.job.workHours} salaryRange={job.job.salaryRange} employmentType={job.job.employmentType} location={job.job.location} key={index} score={job.score} />
+                    }) : "No jobs found at the moment, Check back later!"}
                 </div>
                 <CompanyDetailsPopup
                     company={companies.find((company) => company.companyName === job.companyName)}

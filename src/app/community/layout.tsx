@@ -15,7 +15,7 @@ const navItems = [
 const Layout = ({ children }: LayoutProps) => {
     return (
         <section className='w-full bg-background/70 flex-row items-start justify-start'>
-            <aside className='md:w-[25%] md:min-h-screen md:static fixed bottom-0 flex md:flex-col w-full items-center md:px-6 md:py-6 bg-background/30'>
+            <aside className='md:w-[25%] md:min-h-screen md:static fixed bottom-0 flex md:flex-col w-full items-center md:px-6 md:py-16 bg-background/30'>
                 <ul className='w-full flex md:flex-col md:gap-3 gap-1'>
                     {navItems.map((item, index) => (
                         <Link className='bg-secondary/50 md:hover:bg-muted md:active:bg-none active:bg-muted text-center py-3 font-medium w-full rounded-md' href={item.path} key={index}>

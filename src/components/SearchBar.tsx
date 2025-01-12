@@ -52,8 +52,8 @@ const SearchBar = () => {
     };
 
     return (
-        <div className="w-full p-1 rounded-full">
-            <form onSubmit={(e) => e.preventDefault()} className={`${searchOpen ? "top-16" : "-top-16"} bg-background/70 transition-all duration-300 flex items-center justify-center w-full md:static gap-1 fixed left-2/4 translate-x-[-50%] px-[5%] pt-1 pb-3 md:p-0 md:translate-x-0`}>
+        <div className="w-full p-1 relative z-[25] rounded-full">
+            <form onSubmit={(e) => e.preventDefault()} className={`${searchOpen ? "top-16" : "-top-16"} transition-all duration-300 flex items-center justify-center w-full md:static gap-1 fixed left-2/4 translate-x-[-50%] px-[5%] pt-1 pb-3 md:p-0 md:translate-x-0`}>
                 <div className="relative w-full">
                     <input
                         type="text"
@@ -65,7 +65,7 @@ const SearchBar = () => {
                         className="w-full px-4 py-3 rounded-l-full focus:outline-none focus:ring-2 focus:ring-primary bg-secondary"
                     />
                     {titleSuggestionVisible && (
-                        <ul className="absolute top-[64px] w-full pl-1 py-1 bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
+                        <ul className="absolute top-[64px] w-full bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
                             {titleSuggestions.map((suggestion, index) => (
                                 <li
                                     key={index}
@@ -89,7 +89,7 @@ const SearchBar = () => {
                         className="w-full px-4 py-3 rounded-r-full focus:outline-none focus:ring-2 focus:ring-primary bg-secondary"
                     />
                     {locationSuggestionVisible && (
-                        <ul className="absolute top-[64px] pl-1 py-1 w-full bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
+                        <ul className="absolute top-[64px] backdrop-blur-sm w-full bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
                             {locationSuggestions.map((suggestion, index) => (
                                 <li
                                     key={index}
@@ -117,7 +117,7 @@ const SearchBar = () => {
                     </TooltipProvider>
                 </button>
             </form>
-            {searchOpen ? <CaretUpIcon onClick={() => { setSearchOpen(!searchOpen) }} className='h-7 w-7' /> : <SearchIcon onClick={() => { setSearchOpen(!searchOpen) }} className='block md:hidden h-7 w-7' />}
+            {searchOpen ? <CaretUpIcon onClick={() => { setSearchOpen(!searchOpen) }} className='h-7 w-7' /> : <SearchIcon onClick={() => { setSearchOpen(!searchOpen) }} className='block md:hidden md:h-7 md:w-7 h-5 w-5' />}
         </div>
     );
 };

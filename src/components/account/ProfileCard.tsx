@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useToast } from '@/hooks/use-toast';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux'
@@ -13,7 +13,8 @@ import { Loader } from "lucide-react"
 import LoadUserData from '../LoadUserData';
 import { useTheme } from 'next-themes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import {FaCalendarDays, FaEnvelope, FaLocationDot, FaPhone, FaUser } from 'react-icons/fa6';
+import { FaCalendarDays, FaEnvelope, FaLocationDot, FaPhone, FaUser } from 'react-icons/fa6';
+import GradientBg from '../GradientBg';
 
 
 const ProfileCard = () => {
@@ -79,8 +80,10 @@ const ProfileCard = () => {
     return (
         <motion.div
             style={{ backgroundImage: `linear-gradient(to right,  hsla(${theme == "dark" ? "224, 71.4% ,4.1%, 100%" : "0, 0%, 100% ,100%"}) 0%, hsla(${theme == "dark" ? "224, 71.4% ,4.1%, 10%" : "0, 0%, 100%, 10%"}) 60%), url("${userData.profilePic}")`, backgroundRepeat: "no-repeat", backgroundSize: "300px 100%", objectFit: "contain", backgroundPosition: "right" }}
-            className="w-4/5 h-[300px] p-6 mx-auto bg-card shadow-lg rounded-lg overflow-hidden"
+            className="w-4/5 h-[300px] p-6 mx-auto bg-card shadow-lg rounded-lg overflow-hidden relative"
         >
+            <div className='absolute w-[300px] h-[200px] rounded-[50%] -top-[170px] left-[50%] translate-x-[-50%] blur-[150px] bg-purple-500'></div>
+            <GradientBg height={200} width={300} />
             <div className="relative flex items-center py-4">
                 <div className="absolute right-0 top-0 ">
                     <div className={`${uploading ? "flex" : "hidden"} absolute transition-all items-center justify-center right-0 backdrop-blur-sm bg-gray-100/60 dark:bg-gray-900/40 rounded-full bottom-0 w-full h-full`}>
@@ -108,17 +111,20 @@ const ProfileCard = () => {
                 </div>
                 <div className="md:ml-4">
                     <h2 className="text-3xl font-semibold">{userData.firstName} {userData.lastName}</h2>
-                    <span className='flex items-center gap-2'><FaUser/><p>@{userData.username}</p></span>
-                    <span className='flex items-center gap-2'><FaEnvelope/><p>{userData.email}</p></span>
-                    <span className='flex items-center gap-2'><FaPhone/> <p>{userData.phoneNumber || "Phone Number not added"}</p></span>
-                    <span className='flex items-center gap-2'><FaCalendarDays/> <p>{userData.dob? new Date(userData.dob).toLocaleDateString() : "Dob not added"}</p></span>
-                    <span className='flex items-center gap-2'><FaLocationDot/>{userData.location? <p>{userData.location.street}, {userData.location.city}, {userData.location.state}, {userData.location.country} ({userData.location.postalCode})</p> : "Address not added"}</span>
+                    <span className='flex items-center gap-2'><FaUser /><p>@{userData.username}</p></span>
+                    <span className='flex items-center gap-2'><FaEnvelope /><p>{userData.email}</p></span>
+                    <span className='flex items-center gap-2'><FaPhone /> <p>{userData.phoneNumber || "Phone Number not added"}</p></span>
+                    <span className='flex items-center gap-2'><FaCalendarDays /> <p>{userData.dob ? new Date(userData.dob).toLocaleDateString() : "Dob not added"}</p></span>
+                    <span className='flex items-center gap-2'><FaLocationDot />{userData.location ? <p>{userData.location.city}, {userData.location.state}
+                        {/* , {userData.location.country} */}
+                    </p> : "Address not added"}</span>
                 </div>
             </div>
+            
             <Button onClick={handleLogout}
                 disabled={loading}
                 type="submit"
-                className="w-[130px] py-2 mt-4 md:ml-4 text-lg font-medium bg-primary rounded-md hover:bg-primary/90"
+                className="w-[130px] py-2 mt-4 md:ml-4 text-lg relative z-10 font-medium bg-primary rounded-md hover:bg-primary/90"
             >
                 {loading ? <Loader_dots text="Logging Out" /> :
                     "Log out"}

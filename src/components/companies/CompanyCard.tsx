@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import CompanyDetailsPopup from './companyDetailsPopup';
-
+import { motion } from "motion/react";
 const CompanyCard = (props: any) => {
 
   const [companyDetailsOpen, setCompanyDetailsOpen] = useState(false);
@@ -53,7 +53,7 @@ const CompanyCard = (props: any) => {
         }
         setFollowing(!following);
       } else {
-        toast({ title: dataRes.message, description:"Please log in first" });
+        toast({ title: dataRes.message, description: "Please log in first" });
       }
     } catch (error: any) {
       toast({ variant: "destructive", title: error.message, description: "Internal Server Error" });
@@ -61,7 +61,7 @@ const CompanyCard = (props: any) => {
   }
 
   return (
-    <div className='bg-card w-full h-full p-4 rounded-lg gap-3 flex flex-col shadow-[0px_0px_10px] shadow-black/20 dark:border dark:border-muted'>
+    <motion.div className='bg-card w-full h-full p-4 rounded-lg gap-3 flex flex-col shadow-[0px_0px_10px] shadow-black/20 dark:border dark:border-muted'>
       <div className='flex md:items-center justify-between gap-2 md:gap-0 flex-col md:flex-row'>
         <div className='flex items-center md:justify-center gap-3'>
           <div className='w-12 h-12 flex items-center justify-center'>
@@ -98,12 +98,12 @@ const CompanyCard = (props: any) => {
         <button onClick={() => setCompanyDetailsOpen(true)} className='text-primary font-semibold hover:underline'>See more...</button>
       </div>
 
-     <CompanyDetailsPopup
-        company = {props}
-        companyDetailsOpen = {companyDetailsOpen}
-        setCompanyDetailsOpen = {setCompanyDetailsOpen}
+      <CompanyDetailsPopup
+        company={props}
+        companyDetailsOpen={companyDetailsOpen}
+        setCompanyDetailsOpen={setCompanyDetailsOpen}
       />
-    </div>
+    </motion.div>
   )
 }
 

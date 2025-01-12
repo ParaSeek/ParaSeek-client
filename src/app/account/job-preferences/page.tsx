@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { RootState } from '@/store/store';
 import { ArrowLeft, Pencil, Plus, Trash } from 'lucide-react';
 import Link from 'next/link';
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"

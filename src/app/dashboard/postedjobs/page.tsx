@@ -5,10 +5,11 @@ import { useSelector } from 'react-redux';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useRouter } from 'next/navigation';
-import { Pencil, Trash } from 'lucide-react';
-import { useFetchCompanies } from '@/contexts/FetchCompaniesContext';
-import CreateJobForm from '@/components/jobs/createJobForm';
+import { Eye, Pencil, Trash } from 'lucide-react';
+import { useDashboardContext } from '@/contexts/DashboardContext';
+import CreateJobForm from '@/components/dashboard/jobs/createJobForm';
 import { useToast } from '@/hooks/use-toast';
+import GetApplicants from '@/components/dashboard/jobs/GetApplicants';
 
 
 const Page = () => {
@@ -17,13 +18,21 @@ const Page = () => {
   const [showJobEditForm, setShowJobEditForm] = useState(false);
   const userData = useSelector((state: RootState) => state.user.data);
   const [editJob, setEditJob] = useState([]);
-  const { fetchCompanies } = useFetchCompanies();
+  const { fetchCompanies } = useDashboardContext();
   const { toast } = useToast();
   const router = useRouter();
+  const [openGetApplicants, setOpenGetApplicants] = useState(false);
+  const [id, setId] = useState("");
+  const { setHeaderTitle } = useDashboardContext();
 
   function closeForm() {
     setShowJobEditForm(false);
+    setOpenGetApplicants(false);
   }
+
+  useEffect(() => {
+    setHeaderTitle('Posted Jobs');
+  }, [])
 
   const handleDeleteJob = async (jobId: string) => {
     try {
@@ -62,7 +71,7 @@ const Page = () => {
           defaultValue={selectedCompany}
           onValueChange={(value) => setSelectedCompany(value)}
         >
-          <SelectTrigger className="w-full disabled:cursor-default">
+          <SelectTrigger className="w-fit flex gap-2 disabled:cursor-default">
             <SelectValue placeholder="Select Company" />
           </SelectTrigger>
           <SelectContent>
@@ -74,7 +83,7 @@ const Page = () => {
         </Select>
       </div>
 
-      <h1 className="text-3xl font-semibold mt-12 mb-4">All Jobs posted under {selectedCompany}</h1>
+      <h1 className="text-3xl font-semibold mt-12 mb-4">All Jobs posted under <span className='custom-gradient text-transparent font-bold'>{selectedCompany}</span></h1>
 
       {(myCompanies.find(company => company.companyName === selectedCompany) || { jobs: [] }).jobs.length > 0 ? <Table className='mt-4'>
         {/* <TableCaption>My Companies</TableCaption> */}
@@ -82,9 +91,10 @@ const Page = () => {
           <TableRow>
             <TableHead>Sr. No.</TableHead>
             <TableHead>Job Title</TableHead>
+            <TableHead className='text-center'>Applicants</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className='text-center'>Edit</TableHead>
-            <TableHead className='text-center'>Delete</TableHead>
+            <TableHead className='text-center'></TableHead>
+            <TableHead className='text-center'></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -92,14 +102,16 @@ const Page = () => {
             <TableRow key={index}>
               <TableCell>{index + 1}</TableCell>
               <TableCell className='cursor-pointer' onClick={() => router.push(`/jobs/${job._id} `)}>{job.title}</TableCell>
+              <TableCell className='cursor-pointer'><Eye className='mx-auto' onClick={() => { setId(job._id); setOpenGetApplicants(true) }} /></TableCell>
               <TableCell>{job.isActive ? <p className='text-green-400'>Active</p> : <p className='text-red-500'>Not Active</p>}</TableCell>
-              {job.postedBy == userData._id ? <> <TableCell>
+              {job.postedBy == userData._id && <TableCell>
                 <Pencil className='cursor-pointer w-5 mx-auto' onClick={() => { setEditJob(job); setShowJobEditForm(true); }} />
-              </TableCell>
-                <TableCell>
-                  <Trash className='text-red-500 cursor-pointer w-5 mx-auto' onClick={() => handleDeleteJob(job._id)} />
-                </TableCell></> :
-                <TableCell className='text-center' colSpan={2}>This job is posted by some other employer</TableCell>
+              </TableCell>}
+              {job.postedBy == userData._id && <TableCell>
+                <Trash className='text-red-500 cursor-pointer w-5 mx-auto' onClick={() => handleDeleteJob(job._id)} />
+              </TableCell>}
+              {job.postedBy != userData._id &&
+                <TableCell className='text-center' colSpan={2}></TableCell>
               }
             </TableRow>
           ))}
@@ -109,7 +121,7 @@ const Page = () => {
         <p className='font-medium text-lg'>No Jobs Posted yet!</p>
       }
       {showJobEditForm && <CreateJobForm companyName={selectedCompany} actionType="update" job={editJob} close={closeForm} />}
-
+      {openGetApplicants && <GetApplicants id={id} close={closeForm} />}
     </div>
   )
 }

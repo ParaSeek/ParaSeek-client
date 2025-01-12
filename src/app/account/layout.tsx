@@ -1,7 +1,7 @@
 "use client";
 import { ReactNode, useEffect } from 'react';
 import { useSelector } from 'react-redux'
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { RootState } from '@/store/store'
 import { useRouter } from 'next/navigation';
 import Loader_dots from "@/components/Loader_dots";
@@ -43,7 +43,7 @@ const Layout = ({ children }: LayoutProps) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="flex-1 py-6"
+                className="flex-1 py-6 md:py-16"
             >
                 {children}
             </motion.main>

@@ -8,7 +8,7 @@ import { RootState } from '@/store/store';
 const Page = () => {
   const userData = useSelector((state: RootState) => state.user.data)
   return (
-    <div>
+    <div className='max-w-[1640px] mx-auto'>
       <ProfileCard />
       <Link href="/account/profile">
         <div
@@ -36,13 +36,6 @@ const Page = () => {
           className="w-4/5 p-6 my-4 mx-auto bg-card font-bold cursor-pointer hover:bg-accent shadow-lg rounded-lg overflow-hidden"
         >
           Resume Wizard
-        </div>
-      </Link>}
-      {userData.role === process.env.EMPLOYER_ID && <Link href="/dashboard">
-        <div
-          className="w-4/5 p-6 my-4 mx-auto bg-card font-bold cursor-pointer hover:bg-accent shadow-lg rounded-lg overflow-hidden"
-        >
-          Employer Dashboard
         </div>
       </Link>}
     </div>

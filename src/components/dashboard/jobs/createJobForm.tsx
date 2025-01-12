@@ -1,5 +1,4 @@
 "use client";
-import Loader_dots from '@/components/Loader_dots';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,9 +8,9 @@ import { employmentTypes, jobTitles, jobTypes, levelOfEducation, states } from '
 import { Plus, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { PopoverClose } from '@radix-ui/react-popover';
-import { useFetchCompanies } from '@/contexts/FetchCompaniesContext';
+import { useDashboardContext } from '@/contexts/DashboardContext';
 
 interface Location {
     city: string,
@@ -52,7 +51,7 @@ const CreateJobForm = (props: any) => {
     const { toast } = useToast();
     const [showTitleSuggestions, setShowTitleSuggestions] = useState(false);
     const [jobTitleValue, setJobTitleValue] = useState(props.job && props.job.title || "");
-    const { fetchCompanies } = useFetchCompanies();
+    const { fetchCompanies } = useDashboardContext();
     //location Group
     const [city, setCity] = useState((props.job && props.job.location && props.job.location.city) || "");
     const [state, setState] = useState((props.job && props.job.location && props.job.location.state) || "");
@@ -87,7 +86,7 @@ const CreateJobForm = (props: any) => {
     const handleBenefitRemove = (index: number) => {
         let newBenefits = [...benefits];
         newBenefits.splice(index, 1);
-        setSkills(newBenefits);
+        setBenefits(newBenefits);
     }
     useEffect(() => {
         setValue("benefits", benefits);

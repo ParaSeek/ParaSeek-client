@@ -15,7 +15,7 @@ const Page = () => {
     )
   }
   return (
-    <section className='bg-background/70 px-[5%] py-16 grid grid-cols-1 place-items-start sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+    <section className='bg-background/70 px-[5%] py-4 sm:py-16 grid grid-cols-1 place-items-center sm:place-items-start xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6'>
       {jobs[0].title == "" && <Loader />}
       {jobs[0].title != "" && jobs.map((job, index) => {
         return <Jobcard id={job._id} title={job.title} companyName={job.companyName} workHours={job.workHours} salaryRange={job.salaryRange} employmentType={job.employmentType} location={job.location} key={index} />
