@@ -6,8 +6,13 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 const Page = () => {
+  const [url, setUrl] = useState("");
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      setUrl(window.location.href)
+    }
+  }, [])
 
-  const url = window.location.href;
   const code = url.substring(36);
   const [error, setError] = useState(true);
   const { toast } = useToast();

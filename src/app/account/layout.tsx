@@ -1,11 +1,10 @@
 "use client";
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux'
 import { motion } from 'motion/react';
 import { RootState } from '@/store/store'
 import { useRouter } from 'next/navigation';
 import Loader_dots from "@/components/Loader_dots";
-import {getCookie} from "cookies-next"
 
 interface LayoutProps {
     children: ReactNode;
@@ -15,8 +14,11 @@ const Layout = ({ children }: LayoutProps) => {
     const userData = useSelector((state: RootState) => state.user.data)
     // const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
     const router = useRouter();
-    const token = localStorage.getItem('accessToken');
-    
+    const [token, setToken] = useState<string | null>(null)
+    useEffect(() => {
+        if (typeof window !== undefined)
+            setToken(localStorage.getItem('accessToken'))
+    }, [])
     useEffect(() => {
         const checkAuth = async () => {
             if (!token) {
@@ -29,13 +31,13 @@ const Layout = ({ children }: LayoutProps) => {
 
         checkAuth();
     }, [token, router]);
-    
-    
-      if (!userData) {
+
+
+    if (!userData) {
         return <section className='bg-background justify-center'>
-          <Loader_dots text='Loading'/>
+            <Loader_dots text='Loading' />
         </section>
-      }
+    }
     return (
 
         <div className="flex bg-background/70 min-h-screen pt-16">

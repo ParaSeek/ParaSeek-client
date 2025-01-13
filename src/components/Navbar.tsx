@@ -74,7 +74,6 @@ export const Navbar = () => {
   };
   useEffect(() => {
     setActiveLink(pathname);
-    console.log(pathname);
 
   }, [pathname]);
 

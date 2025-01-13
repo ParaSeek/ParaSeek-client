@@ -4,14 +4,14 @@
   functions = "netlify/functions"
   publish = ".next"
 
-  #[[redirects]]
-  #  from = "/*"
-  #  to = "/index.html"
-  #  status = 200
+  [[redirects]]
+    from = "/*"
+    to = "/index.html"
+    status = 200
 
   [[plugins]]
-  package = "@netlify/plugin-nextjs"
+    package = "@netlify/plugin-nextjs"
 
 [context.production.environment]
   NETLIFY_SITE_ID = "646b02d1-1cda-4219-be5e-4cb5e32545b6"
-  NETLIFY_API_TOKEN = "nfp_cVAPK7UuJTKph6F9g4cUvDTkrvz6e6PL2365"
+  NETLIFY_API_TOKEN = "nfp_HaYtYQMfBaG3zF1GkFznVX98CndrUkwEd897"

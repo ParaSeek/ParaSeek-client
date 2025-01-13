@@ -21,8 +21,8 @@ export interface Education {
     fieldOfStudy: string;
     boardOrUniversity?: string; //new
     institute?: string; //new
-    fromYear?: string; //new
-    toYear?: string; //new
+    from?: string; //new
+    to?: string; //new
 }
 
 export interface Experience {
@@ -30,6 +30,8 @@ export interface Experience {
     companyName: string,
     certificate: string,
     description?: string //new
+    from: String,
+    to: string
 }
 export interface Certifications {
     certificationName: string,
@@ -37,9 +39,10 @@ export interface Certifications {
 }
 // new
 export interface Projects {
-    projectTitle: string,
+    title: string,
     overview: string,
     role: string,
+    link: string
 }
 
 export interface Qualifications {

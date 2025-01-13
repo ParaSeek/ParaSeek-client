@@ -37,7 +37,13 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const token = localStorage.getItem('accessToken');
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      setToken(localStorage.getItem('accessToken'))
+    }
+  }, [])
+
 
   //custom hooks for login, signup, forgetPass,email verification api calls
   const { performLogin, isLoggingIn } = useLogin();
@@ -128,7 +134,7 @@ const Page = () => {
     return (
       <section className="justify-center bg-background">
         <Loader_dots text="Loading" />
-        {revalidateData && <LoadUserData/>}
+        {revalidateData && <LoadUserData />}
       </section>
     );
   }

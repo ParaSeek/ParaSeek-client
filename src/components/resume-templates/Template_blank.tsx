@@ -10,7 +10,7 @@ const Template_blank = ({ resumeDraft }: { resumeDraft: ResumeDraft }) => {
     const qualifications = useSelector((state: RootState) => state.qualification)
 
     return (
-        <Fragment>
+        <div className='relative h-full'>
             <h1 className="text-3xl font-bold mb-4">{resumeDraft.name || 'Your Name'}</h1>
             <div className="text-gray-600 mb-6">
                 <p className='flex items-center gap-2'><FaLocationDot />{resumeDraft.address}</p>
@@ -68,7 +68,12 @@ const Template_blank = ({ resumeDraft }: { resumeDraft: ResumeDraft }) => {
                 <h2 className="text-xl font-semibold border-b-2 border-gray-700 pb-2 mb-4">Declaration</h2>
                 <p className="mb-2">{resumeDraft.declaration}</p>
             </div>
-        </Fragment>
+            <div className='absolute left-0 bottom-3'>
+                <p className="font-medium">Signature:</p>
+                <p className="font-semibold">{resumeDraft.name}</p>
+                <p className="">{resumeDraft.displayDate}</p>
+            </div>
+        </div>
     )
 }
 
