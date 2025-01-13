@@ -79,26 +79,23 @@ export interface ResumeTemplate {
     image: string
 }
 
-
-export interface resumeProfile {
+interface Links {
+    title: string,
+    url: string
+}
+export interface ResumeDraft {
     //resume-header
     name: string;
     email: string;
     phone: string;
     address: string;
-    linkedin: string;
-    github: string;
-
+    links?: Links[];
     //personal-info section-2
     gender: string;
     dob: string;
     nationality: string;
-}
-
-export interface ResumeDraft {
-    profile: resumeProfile;
+    //other sections
     professionalOverview: string;
-    qualifications: Qualifications;
     declaration: string;
     hobbies: string[];
     displayDate: string;

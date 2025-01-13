@@ -38,7 +38,7 @@ const Layout = ({ children }: LayoutProps) => {
       }
     return (
 
-        <div className="flex bg-background/70 min-h-screen">
+        <div className="flex bg-background/70 min-h-screen pt-16">
             <motion.main
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

@@ -1,65 +1,61 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight, Download, Plus, Trash } from 'lucide-react';
-import { FaBriefcase, FaEnvelope, FaGraduationCap, FaPhone, FaUser } from 'react-icons/fa6';
+import { ChevronLeft, ChevronRight, Download, Plus, Save, TrashIcon } from 'lucide-react';
+import { FaCalendar, FaCalendarDays, FaEnvelope, FaGithub, FaGraduationCap, FaLinkedin, FaLocationDot, FaPerson, FaPhone, FaUser } from 'react-icons/fa6';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas'
-import { ResumeTemplate, ResumeDraft, resumeProfile } from '@/store/interfaces';
+import { ResumeTemplate, ResumeDraft } from '@/store/interfaces';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import Template_blank from '@/components/resume-templates/Template_blank';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import AddUpdateEducation from '@/components/account/addUpdateQualifications/AddUpdateEducation';
+import AddUpdateExperience from '@/components/account/addUpdateQualifications/AddUpdateExperience';
+import AddUpdateSkills from '@/components/account/addUpdateQualifications/AddUpdateSkills';
+import AddUpdateLanguages from '@/components/account/addUpdateQualifications/AddUpdateLanguages';
+import Template from '@/components/resume-templates/Template';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import LinkIcon from '@/components/resume-templates/LinkIcon';
 
 export default function ResumeWizard() {
-
+  const { toast } = useToast();
   const [showTemplates, setShowTemplates] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<null | ResumeTemplate>(null);
   const [showTemplateEditor, setShowTemplateEditor] = useState(false);
 
   const userData = useSelector((state: RootState) => state.user.data);
-
-  //resume-generation
-  const [profile, setProfile] = useState<resumeProfile>({
-    name: "Your Name",
-    email: "example@email.com",
-    phone: "xxxxxx7890",
-    linkedin: "",
-    github: "",
-    address: "Your Address",
-    gender: "Male/Female",
-    dob: "xx-xx-xxxx",
-    nationality: "Indian",
-  })
-  const qualifications = useSelector((state: RootState) => state.qualification);
   const [resumeDraft, setResumeDraft] = useState<ResumeDraft>({
-    profile: profile,
+    name: "Your Name",
+    email: "example@paraseek.com",
+    phone: "xxxxxx7890",
+    address: "Your Adddress",
+    links: [],
+    gender: "Male",
+    dob: "1/1/1990",
+    nationality: "Indian",
     professionalOverview: "",
-    qualifications,
-    declaration: "I hereby declare that the above information is true and best of my knowledge and belief.",
+    declaration: "I hereby declare that the information provided is true.",
     hobbies: [],
     displayDate: String(new Date().toLocaleDateString),
   });
 
-  useEffect(() => {
-    setProfile({
-      name: userData?.firstName + userData?.lastName,
-      email: userData?.email as string,
-      phone: userData?.phoneNumber as string,
-      linkedin: "https://linkedin.com/xxxxxx",
-      github: "https://github.com/xxxxxx",
-      address: userData?.location?.city + ", " + userData?.location?.state + "(" + userData?.location?.postalCode + ")",
-      gender: userData?.gender,
-      dob: new Date(userData?.dob).toLocaleDateString(),
-      nationality: "Indian",
-    })
-  }, [userData])
-  useEffect(() => {
-    setResumeDraft({ ...resumeDraft, qualifications, profile })
-  }, [profile, qualifications])
+  const handleSocialLinkUpdate = (index: number, field: string, value: string) => {
+    const temp = { ...resumeDraft };
+    if (temp.links)
+      temp.links[index] = { ...temp.links[index], [field]: value };
+    setResumeDraft(temp);
+  }
 
-  console.log(profile);
+  const handleSocialLinkDelete = (index: number) => {
+    const temp = { ...resumeDraft };
+    if (temp.links)
+      temp.links = temp.links.filter((_, i) => i !== index);
+    setResumeDraft(temp);
+  };
 
   const generateResume = () => {
     const div = document.getElementById('resume-preview') as HTMLElement;
@@ -79,6 +75,58 @@ export default function ResumeWizard() {
     });
   };
 
+  const saveResumeDraft = async () => {
+    try {
+      const response = await fetch(`${process.env.SERVER_URL}/api/v1/draft/save-resume-draft`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(resumeDraft),
+      });
+      const res = await response.json();
+      if (res.success) {
+        toast({ title: res.message });
+      } else {
+        toast({ title: res.message, variant: "destructive" });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const fetchResumeDraft = async () => {
+    try {
+
+      const response = await fetch(`${process.env.SERVER_URL}/api/v1/draft/get-resume-draft?email=${userData.email}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (data.success) {
+        setResumeDraft(data.data);
+      } else {
+        setResumeDraft({
+          ...resumeDraft,
+          name: userData.firstName + userData.lastName,
+          email: userData.email,
+          phone: userData.phoneNumber,
+          address: userData.location?.city + ", " + userData.location?.state + "(" + userData.location?.postalCode + ")",
+          gender: userData.gender,
+          dob: userData.dob,
+        })
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    if (userData) {
+      fetchResumeDraft();
+    }
+  }, [userData])
 
   if (!showTemplateEditor) {
     return (
@@ -171,8 +219,9 @@ export default function ResumeWizard() {
               <FaUser />
               <Input
                 type="text"
+                value={resumeDraft.name}
+                onChange={(e) => setResumeDraft({ ...resumeDraft, name: e.target.value })}
                 placeholder="Full Name"
-                value={resumeDraft.profile.name}
                 className="w-full"
               />
             </div>
@@ -181,8 +230,9 @@ export default function ResumeWizard() {
               <FaEnvelope />
               <Input
                 type="email"
+                value={resumeDraft.email}
+                onChange={(e) => setResumeDraft({ ...resumeDraft, email: e.target.value })}
                 placeholder="Email"
-                value={resumeDraft.profile.email}
                 className="w-full"
               />
             </div>
@@ -191,105 +241,167 @@ export default function ResumeWizard() {
               <FaPhone />
               <Input
                 type="tel"
+                value={resumeDraft.phone}
+                onChange={(e) => setResumeDraft({ ...resumeDraft, phone: e.target.value })}
                 placeholder="Phone Number"
-                value={resumeDraft.profile.phone}
+                className="w-full"
+              />
+            </div>
+            <div className="flex items-center space-x-3">
+              <FaLocationDot />
+              <Input
+                type="text"
+                value={resumeDraft.address}
+                onChange={(e) => setResumeDraft({ ...resumeDraft, address: e.target.value })}
+                placeholder="Address"
+                className="w-full"
+              />
+            </div>
+            <div className="flex items-center space-x-3">
+              <FaCalendarDays />
+              <Input
+                type="text"
+                value={resumeDraft.displayDate}
+                onChange={(e) => setResumeDraft({ ...resumeDraft, displayDate: e.target.value })}
+                placeholder="Display Date (to be shown with signature)"
                 className="w-full"
               />
             </div>
           </div>
 
-          {/* Education Section */}
-          <div className="mt-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl flex items-center">
-                <FaGraduationCap className="mr-2" /> Education
-              </h2>
-              <Plus role='button' />
+          {/* Social Links */}
+          <div className="mt-6 border rounded-lg py-4 px-6 border-border">
+            <div className='flex items-center justify-between'>
+              <h2 className="text-xl font-semibold">Social Links</h2>
+              <Plus role='button' onClick={() => setResumeDraft({ ...resumeDraft, links: [...(resumeDraft.links || []), { title: '', url: '' }] })} />
             </div>
-            {resumeDraft.qualifications.education.map((edu, index) => (
-              <div
-                className='flex flex-col border-b border-b-border2 py-2'
-                key={index}
-              >
-                <div className='flex justify-between mb-2 items-center'>
-                  <h3 className='text-lg font-medium'>{edu.levelOfEducation}</h3>
-                  <Trash role='button' className='w-5 h-5' />
-
-                </div>
-                <div className='grid grid-cols-2 gap-3'>
-                  <Label className='flex flex-col gap-1'>
-                    Field of Study
+            {
+              resumeDraft.links?.map((link, index) => {
+                return (
+                  <div key={index} className='flex items-center gap-2 mt-2 mb-4'>
+                    <LinkIcon title={link.title} />
                     <Input
                       type="text"
-                      value={edu.fieldOfStudy}
-                      className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      placeholder="Link title eg. github"
+                      value={link.title}
+                      onChange={(e) => handleSocialLinkUpdate(index, 'title', e.target.value)}
+                      className='w-5/12'
                     />
-                  </Label>
-                  <Label className='flex flex-col gap-1'>
-                    Level of Education
                     <Input
                       type="text"
-                      value={edu.levelOfEducation}
-                      className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      placeholder="link"
+                      value={link.url}
+                      onChange={(e) => handleSocialLinkUpdate(index, 'url', e.target.value)}
+                      className='w-6/12'
                     />
-                  </Label>
-                  <Label className='flex flex-col gap-1'>
-                    From
-                    <Input
-                      type="text"
-                      value={edu.fromYear}
-                      className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                    />
-                  </Label>
-                  <Label className='flex flex-col gap-1'>
-                    To
-                    <Input
-                      type="text"
-                      value={edu.toYear}
-                      className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                    />
-                  </Label>
-                </div>
-              </div>
-            ))}
+                    <TrashIcon className='w-5 h-5 text-red-500 cursor-pointer' onClick={() => handleSocialLinkDelete(index)} />
+                  </div>
+                )
+              })
+            }
           </div>
 
-          {/* Experience Section */}
-          <div className="mt-6">
+          {/* Professional Overview */}
+          <div className="mt-6 border rounded-lg py-4 px-6 border-border">
+            <h2 className="text-xl font-semibold mb-2">Professional Overview</h2>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl flex items-center">
-                <FaBriefcase className="mr-2" /> Experience
-              </h2>
-              <button
-                className="bg-blue-600  px-3 py-1 rounded-lg hover:bg-blue-700"
-              >
-                Add
-              </button>
-            </div>
-            {resumeDraft.qualifications.experience.map((exp, index) => (
-              <Input
-                key={index}
-                type="text"
-                placeholder="Job Title, Company, Duration"
-                value={exp.jobTitle}
-                className="w-full bg-card  p-2 rounded-lg mb-2 focus:ring-2 focus:ring-primary outline-none"
+              <textarea
+                value={resumeDraft.professionalOverview}
+                onChange={(e) => setResumeDraft({ ...resumeDraft, professionalOverview: e.target.value })}
+                placeholder='Write something about yourself'
+                className=' w-full bg-transparent outline-none'
               />
-            ))}
+            </div>
           </div>
+
+          <AddUpdateEducation />
+          <AddUpdateExperience />
+          <AddUpdateSkills />
+          <AddUpdateLanguages />
+
+          {/* Personal Info */}
+          <div className="mt-6 border rounded-lg py-4 px-6 border-border">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl flex items-center font-semibold">
+                <FaPerson className="mr-2" /> Personal Info
+              </h2>
+            </div>
+            <div
+              className='flex flex-col '
+            >
+              <div className='grid grid-cols-2 gap-3'>
+                <Label className='flex flex-col gap-1'>
+                  Gender
+                  <Select
+                    value={resumeDraft.gender}
+                    onValueChange={(value) => setResumeDraft({ ...resumeDraft, gender: value })}
+                  >
+                    <SelectTrigger className="w-full disabled:cursor-default">
+                      <SelectValue placeholder="Gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Label>
+                <Label className='flex flex-col gap-1'>
+                  Date Of Birth
+                  <Input
+                    type="date"
+                    value={resumeDraft.dob}
+                    onChange={(e) => setResumeDraft({ ...resumeDraft, dob: e.target.value })}
+                    className="w-full bg-card p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                  />
+                </Label>
+                <Label className='flex flex-col gap-1'>
+                  Nationality
+                  <Input
+                    type="text"
+                    value={resumeDraft.nationality}
+                    onChange={(e) => setResumeDraft({ ...resumeDraft, nationality: e.target.value })}
+                    className="w-full bg-card  p-2 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                  />
+                </Label>
+              </div>
+            </div>
+          </div>
+          {/* Declaration */}
+          <div className="mt-6 border rounded-lg py-4 px-6 border-border">
+            <h2 className="text-xl mb-2 font-semibold">Declaration</h2>
+            <div className="flex justify-between items-center mb-4">
+              <textarea
+                value={resumeDraft.declaration}
+                onChange={(e) => setResumeDraft({ ...resumeDraft, declaration: e.target.value })}
+                className='outline-none bg-transparent w-full'
+              />
+            </div>
+          </div>
+
+
 
           {/* Generate PDF Button */}
-          <div className="text-center mt-8">
-            <button
-              onClick={generateResume}
-              className="bg-green-600  px-6 py-3 rounded-lg hover:bg-green-700 flex items-center justify-center mx-auto"
+          <div className=" flex items-center text-center gap-2 mt-8">
+            <Button
+              onClick={saveResumeDraft}
+              className="flex gap-1 items-center justify-center"
             >
-              <Download className="mr-2" /> Download
-            </button>
+              <Save /> Save Draft
+            </Button>
+            <Button
+              onClick={generateResume}
+              className="flex gap-1 items-center justify-center"
+            >
+              <Download /> Download
+            </Button>
           </div>
         </div>
 
+        <h1 className='font-semibold md:hidden text-2xl text-center mb-4 mt-8'>Preview</h1>
+
         {/* Preview Panel */}
-        {selectedTemplate?.id === "blank" && <Template_blank resumeDraft={resumeDraft} />}
+        <Template resumeDraft={resumeDraft} selectedTemplate={selectedTemplate} />
       </div>
     )
   }
