@@ -14,7 +14,10 @@ import { setRecommendedJobs } from '@/slices/RecommendedJobsSlice';
 const LoadUserData = () => {
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
   const dispatch = useDispatch();
-  const token = localStorage.getItem("accessToken")
+  var token = '';
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('accessToken') || ''
+  }
 
   const [loaded, setLoaded] = useState(false)
   async function loadUser() {
