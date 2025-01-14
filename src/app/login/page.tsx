@@ -37,12 +37,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const [token, setToken] = useState<string | null>(null);
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      setToken(localStorage.getItem('accessToken'))
-    }
-  }, [])
+  const token = localStorage.getItem('accessToken')
 
 
   //custom hooks for login, signup, forgetPass,email verification api calls

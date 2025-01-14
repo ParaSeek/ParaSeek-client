@@ -914,3 +914,5 @@ export const skills = [
     "React Native",
     "Redux"
 ]
+
+export const colors = ['Black', 'Gray', 'Red', 'Pink', 'Orange', 'Yellow', 'Green', 'Teal', 'Cyan', 'Blue', 'Violet', 'Indigo']

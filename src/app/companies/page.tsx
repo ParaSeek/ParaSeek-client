@@ -9,7 +9,7 @@ const Page = () => {
   const companies = useSelector((state: RootState) => state.companies)
 
   return (
-    <section className='bg-background/70 px-[5%] py-16 '>
+    <section className='bg-background px-[5%] pt-20 pb-8 '>
       {companies[0]?.companyName == "" && <Loader_dots text='Loading Companies' />}
       <div className='grid w-full grid-cols-1 place-items-center xl:grid-cols-2 gap-3'>
       {companies[0]? companies[0].companyName != "" && companies.map((company, index) => {

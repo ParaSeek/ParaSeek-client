@@ -9,6 +9,7 @@ import AddUpdateExperience from '@/components/account/addUpdateQualifications/Ad
 import AddUpdateSkills from '@/components/account/addUpdateQualifications/AddUpdateSkills';
 import AddUpdateCertifications from '@/components/account/addUpdateQualifications/AddUpdateCertifications';
 import AddUpdateLanguages from '@/components/account/addUpdateQualifications/AddUpdateLanguages';
+import AddUpdateProject from '@/components/account/addUpdateQualifications/addUpdateProject';
 
 
 const Page = () => {
@@ -30,6 +31,7 @@ const Page = () => {
       <AddUpdateEducation />
       <AddUpdateExperience />
       <AddUpdateSkills />
+      <AddUpdateProject />
       <AddUpdateCertifications />
       <AddUpdateLanguages />
     </motion.div>

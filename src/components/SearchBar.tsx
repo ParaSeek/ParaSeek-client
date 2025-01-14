@@ -2,12 +2,10 @@
 import { SearchIcon } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
-import { CaretUpIcon } from '@radix-ui/react-icons';
 import { useRouter } from 'next/navigation';
 import { jobTitles, locations } from '@/store/suggestions';
 
 const SearchBar = () => {
-    const [searchOpen, setSearchOpen] = useState(false);
     const [searchTitle, setSearchTitle] = useState("");
     const [searchLocation, setSearchLocation] = useState("");
     const [titleSuggestionVisible, setTitleSuggestionVisible] = useState(false)
@@ -53,7 +51,7 @@ const SearchBar = () => {
 
     return (
         <div className="w-full p-1 relative z-[25] rounded-full">
-            <form onSubmit={(e) => e.preventDefault()} className={`${searchOpen ? "top-16" : "-top-16"} transition-all duration-300 flex items-center justify-center w-full md:static gap-1 fixed left-2/4 translate-x-[-50%] px-[5%] pt-1 pb-3 md:p-0 md:translate-x-0`}>
+            <form onSubmit={(e) => e.preventDefault()} className={`transition-all duration-300 flex items-center justify-center w-full gap-1 px-[5%] pb-3`}>
                 <div className="relative w-full">
                     <input
                         type="text"
@@ -62,7 +60,7 @@ const SearchBar = () => {
                         onFocus={() => setTitleSuggestionVisible(true)}
                         onBlur={() => setTimeout(() => setTitleSuggestionVisible(false), 200)}
                         onChange={(e) => handleInputChange(e, 'title')}
-                        className="w-full px-4 py-3 rounded-l-full focus:outline-none focus:ring-2 focus:ring-primary bg-secondary"
+                        className="w-full px-4 py-3 rounded-l-full focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     {titleSuggestionVisible && (
                         <ul className="absolute top-[64px] w-full bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
@@ -86,7 +84,7 @@ const SearchBar = () => {
                         onFocus={() => setLocationSuggestionVisible(true)}
                         onBlur={() => setTimeout(() => setLocationSuggestionVisible(false), 200)}
                         onChange={(e) => handleInputChange(e, 'location')}
-                        className="w-full px-4 py-3 rounded-r-full focus:outline-none focus:ring-2 focus:ring-primary bg-secondary"
+                        className="w-full px-4 py-3 rounded-r-full focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     {locationSuggestionVisible && (
                         <ul className="absolute top-[64px] backdrop-blur-sm w-full bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
@@ -117,7 +115,6 @@ const SearchBar = () => {
                     </TooltipProvider>
                 </button>
             </form>
-            {searchOpen ? <CaretUpIcon onClick={() => { setSearchOpen(!searchOpen) }} className='h-7 w-7' /> : <SearchIcon onClick={() => { setSearchOpen(!searchOpen) }} className='block md:hidden md:h-7 md:w-7 h-5 w-5' />}
         </div>
     );
 };

@@ -14,11 +14,7 @@ const Layout = ({ children }: LayoutProps) => {
     const userData = useSelector((state: RootState) => state.user.data)
     // const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
     const router = useRouter();
-    const [token, setToken] = useState<string | null>(null)
-    useEffect(() => {
-        if (typeof window !== undefined)
-            setToken(localStorage.getItem('accessToken'))
-    }, [])
+    const token = localStorage.getItem('accessToken')
     useEffect(() => {
         const checkAuth = async () => {
             if (!token) {

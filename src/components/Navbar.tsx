@@ -119,9 +119,9 @@ export const Navbar = () => {
           <SearchBar />
         </div> */}
         <div className="w-[25vw] md:w-[12vw] flex gap-2 items-center justify-end">
-          <div className="md:hidden ml-3">
+          {/* <div className="md:hidden ml-3">
             <SearchBar />
-          </div>
+          </div> */}
           <ToggleTheme />
           {userLog ? (
             <Link href="/account">
@@ -141,7 +141,7 @@ export const Navbar = () => {
       </div>
       <div className={`absolute bg-background/50 w-full flex items-center justify-center z-0 transition-all duration-300`}>
 
-        {user?.role != process.env.EMPLOYER_ID && <div className="flex items-center top-[90vh] fixed md:left-1/2 md:translate-x-[-50%] right-4 h-[64px]">
+        {user?.role != process.env.EMPLOYER_ID && <div className="flex items-center md:top-[90vh] top-[85vh] fixed md:left-1/2 md:translate-x-[-50%] right-5 h-[64px]">
           <FloatingDock
             items={navItemsNew}
           />

@@ -222,7 +222,7 @@ export default function Home() {
                 <div className="p-4 relative z-[12]">
                   <motion.h2 className="font-semibold text-xl">Need help with your Resume?</motion.h2>
                   <motion.p>We created a service known as Resume Wizard. The goal is simple: help you land that dream job interview! Get an advantage in the modern professional environment. Create your resume in two simple steps</motion.p>
-                  <Link href="/services/resume-wizard"><Button className="mt-4">Create Resume</Button></Link>
+                  <Link href="/resume-wizard"><Button className="mt-4">Create Resume</Button></Link>
                 </div>
                 <div className="p-4 hidden md:block">
                   <img className="p-2 bg-white rounded-sm rounded-br-xl" src="https://s3-alpha-sig.figma.com/img/af3b/6828/787192a1f5bc3298a6ad9b695585a9b9?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=WK5oZmtVSbNUdzplT2ObMtgZIJhMFn8PGsMFRFvEXS8vLiWttc5lbVaLmGRVLPhkA4R4QsFcR6jKMUb1T56I34IkL87vXEwIUJczAzJQFJWGfig3CWpEiZ5QH2xd6DG1OXV7iAYm15kbcQzJerPDjI30g7u5VI06AXV32bBWVsaaFA2mvRLHMxoJIJFmdD9q99NIRQKGBDRAh6mXKzcaOng7d-5Zv7Hf1fns-qLU1AI1lFCgs46Dpgv6pubI7BlC9ZRZxEXkhGGP48KHi6~QhQ5mCl-4RvKSOhXe0fLFdxyxn36ScVlBNHHkypX-ltLckYddw6c-NyWx7HPnbo6TiQ__" alt="" />

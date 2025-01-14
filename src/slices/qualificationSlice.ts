@@ -16,7 +16,7 @@ const qualificationSlice = createSlice({
     initialState,
     reducers: {
         // Education
-        setQualifications(state, action){
+        setQualifications(state, action) {
             return action.payload;
         },
         addEducation(state, action) {
@@ -82,6 +82,19 @@ const qualificationSlice = createSlice({
             const { index } = action.payload;
             state.languages.splice(index, 1);
         },
+
+        //projects
+        addProject(state, action) {
+            state.projects.push(action.payload);
+        },
+        editProject(state, action) {
+            const { index, project } = action.payload;
+            state.projects[index] = project;
+        },
+        deleteProject(state, action) {
+            const { index } = action.payload;
+            state.projects.splice(index, 1);
+        },
     }
 });
 
@@ -102,5 +115,8 @@ export const {
     addLanguage,
     editLanguage,
     deleteLanguage,
+    addProject,
+    editProject,
+    deleteProject,
 } = qualificationSlice.actions;
 export default qualificationSlice.reducer;

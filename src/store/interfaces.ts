@@ -19,30 +19,30 @@ export interface User {
 export interface Education {
     levelOfEducation: string;
     fieldOfStudy: string;
-    boardOrUniversity?: string; //new
-    institute?: string; //new
-    from?: string; //new
-    to?: string; //new
+    boardOrUniversity: string; //new
+    institute: string; //new
+    from: string; //new
+    to: string; //new
 }
 
 export interface Experience {
-    jobTitle: string,
-    companyName: string,
-    certificate: string,
-    description?: string //new
-    from: String,
-    to: string
+    jobTitle: string;
+    companyName: string;
+    certificate: string;
+    description?: string; //new
+    from: string; //new
+    to: string; //new
 }
 export interface Certifications {
-    certificationName: string,
-    link: string,
+    certificationName: string;
+    link: string;
 }
 // new
 export interface Projects {
-    title: string,
-    overview: string,
-    role: string,
-    link: string
+    title: string;
+    overview: string;
+    role: string;
+    link: string;
 }
 
 export interface Qualifications {

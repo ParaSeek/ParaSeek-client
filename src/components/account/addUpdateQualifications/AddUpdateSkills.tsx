@@ -42,7 +42,7 @@ const AddUpdateSkills = () => {
     }
     return (
         <div
-            className="w-full py-2 px-6 my-4 mx-auto border dark:border-gray-800 cursor-pointer hover:bg-accent rounded-lg overflow-hidden"
+            className="w-full py-2 px-6 my-4 mx-auto border dark:border-gray-800 rounded-lg overflow-hidden"
         >
             <div className="flex justify-between font-semibold">
                 <Popover>
