@@ -874,6 +874,7 @@ export const employmentTypes = [
 ]
 
 export const jobTypes = [
+    "Designing",
     "Technical",
     "Marketing",
     "Sales",

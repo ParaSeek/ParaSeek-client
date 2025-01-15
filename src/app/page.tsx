@@ -239,7 +239,7 @@ export default function Home() {
             <div className="flex flex-col justify-center p-6 rounded-lg">
               <h1 className="text-xl font-semibold">Top Job Recommendations</h1>
               <div className="flex gap-3 overflow-x-auto py-3">
-                {recommendedJobs.length > 0 ? recommendedJobs.map((job, index) => {
+                {recommendedJobs.length > 0 && recommendedJobs[0].job.title !='' ? recommendedJobs.map((job, index) => {
                   return <Jobcard id={job.job._id} title={job.job.title} companyName={job.job.companyName} workHours={job.job.workHours} salaryRange={job.job.salaryRange} employmentType={job.job.employmentType} location={job.job.location} key={index} score={job.score} />
                 }) : <Link className="flex items-center gap-2" href="/jobs">No Job Recommendations for you at the moment, explore all jobs <FaArrowRightLong /></Link>}
               </div>

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import { useForm, Controller } from "react-hook-form";
@@ -15,8 +15,10 @@ import useLogin from "@/hooks/useLogin"
 import useSignup from "@/hooks/useSignup";
 import useResetPwd from "@/hooks/useResetPwd";
 import useVerifyEmail from "@/hooks/useVerifyEmail";
-import { getCookie } from "cookies-next";
 import LoadUserData from "@/components/LoadUserData";
+import { signInWithGoogle } from "../firebase.config";
+import { FaGoogle } from "react-icons/fa6";
+import { login } from "@/slices/userSlice";
 
 interface UserData {
   username?: string;
@@ -39,7 +41,7 @@ const Page = () => {
   const router = useRouter();
   var token = '';
   if (typeof window !== 'undefined') {
-      token = localStorage.getItem('accessToken') || ''
+    token = localStorage.getItem('accessToken') || ''
   }
 
 
@@ -48,7 +50,7 @@ const Page = () => {
   const { performSignup, isSigningUp } = useSignup();
   const { performResetPwd, isResettingPwd } = useResetPwd();
   const { verifyEmail, isVerifying } = useVerifyEmail();
-
+  const dispatch = useDispatch();
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
   const [otpError, setOtpError] = useState("")
 
@@ -115,6 +117,36 @@ const Page = () => {
       }
     }
   };
+
+  const handleGoogleSignIn = async () => {
+    const user = await signInWithGoogle();
+
+    // Send this token to server
+    if (user) {
+
+      const response = await fetch(`${process.env.SERVER_URL}/api/v1/auth/social-auth`, {
+        method: 'POST',
+        credentials: "include" as const,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: user.displayName, email: user.email, profilePic: user.photoURL }),
+      });
+
+      const res = await response.json();
+      if (res.success) {
+        toast({ title: "Logged in via Google" })
+        localStorage.setItem("accessToken", "loggedIn")
+        dispatch(login(res.data));
+      } else {
+        localStorage.removeItem("accessToken")
+      }
+    } else {
+      console.log('Error signing in with Google');
+    }
+
+  };
+
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -538,42 +570,53 @@ const Page = () => {
                 Forgot Password?
               </span>
             )}
-            {formType === "otp" ?
-              <Button
-                id="otp-submit"
-                disabled={loading}
-                className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90" onClick={handleOTPVerify}>
-                {loading ? (
-                  <Loader_dots text="Verifying" />
-                ) : (
-                  "Verify"
-                )}
-              </Button>
-              :
-              <Button
-                disabled={loading}
-                type="submit"
-                className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90"
-              >
-                {formType === "login" ? (
-                  loading ? (
-                    <Loader_dots text="Logging in" />
+            <div>
+
+              {formType === "otp" ?
+                <Button
+                  id="otp-submit"
+                  disabled={loading}
+                  type="submit"
+                  className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90" onClick={handleOTPVerify}>
+                  {loading ? (
+                    <Loader_dots text="Verifying" />
                   ) : (
-                    "Login"
-                  )
-                ) : formType === "signup" ? (
-                  loading ? (
-                    <Loader_dots text="Signing Up" />
+                    "Verify"
+                  )}
+                </Button>
+                :
+                <Button
+                  disabled={loading}
+                  type="submit"
+                  className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90"
+                >
+                  {formType === "login" ? (
+                    loading ? (
+                      <Loader_dots text="Logging in" />
+                    ) : (
+                      "Login"
+                    )
+                  ) : formType === "signup" ? (
+                    loading ? (
+                      <Loader_dots text="Signing Up" />
+                    ) : (
+                      "Sign Up"
+                    )
+                  ) : loading ? (
+                    <Loader_dots text="Loading" />
                   ) : (
-                    "Sign Up"
-                  )
-                ) : loading ? (
-                  <Loader_dots text="Loading" />
-                ) : (
-                  "Reset Password"
-                )}
-              </Button>
-            }
+                    "Reset Password"
+                  )}
+                </Button>
+              }
+              {
+                formType === "login" && (
+                  <button type="button" className="bg-black text-white dark:text-black flex items-center gap-2 font-semibold px-3 py-2 rounded-lg w-full justify-center mt-2 dark:bg-white hover:bg-black/90 hover:dark:bg-white/90" onClick={handleGoogleSignIn}>
+                    <FaGoogle />Continue with Google
+                  </button>
+                )
+              }
+            </div>
           </form>
           <motion.div
             initial={{ opacity: 0 }}
