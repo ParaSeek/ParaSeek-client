@@ -29,6 +29,7 @@
     "cookies-next": "^4.3.0",
     "cropperjs": "^1.6.2",
     "date-fns": "^3.6.0",
+    "firebase": "^11.1.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2",
     "lucide-react": "^0.445.0",
