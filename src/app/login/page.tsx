@@ -120,29 +120,32 @@ const Page = () => {
 
   const handleGoogleSignIn = async () => {
     const user = await signInWithGoogle();
-
-    // Send this token to server
     if (user) {
+      const idToken = await user.getIdToken();
+      // Send this token to server
+      if (user) {
 
-      const response = await fetch(`${process.env.SERVER_URL}/api/v1/auth/social-auth`, {
-        method: 'POST',
-        credentials: "include" as const,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: user.displayName, email: user.email, profilePic: user.photoURL }),
-      });
+        const response = await fetch(`${process.env.SERVER_URL}/api/v1/auth/social-auth`, {
+          method: 'POST',
+          credentials: "include" as const,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // body: JSON.stringify({ name: user.displayName, email: user.email, profilePic: user.photoURL }),
+          body: JSON.stringify({ idToken }),
+        });
 
-      const res = await response.json();
-      if (res.success) {
-        toast({ title: "Logged in via Google" })
-        localStorage.setItem("accessToken", "loggedIn")
-        dispatch(login(res.data));
+        const res = await response.json();
+        if (res.success) {
+          toast({ title: "Logged in via Google" })
+          localStorage.setItem("accessToken", "loggedIn")
+          dispatch(login(res.data));
+        } else {
+          localStorage.removeItem("accessToken")
+        }
       } else {
-        localStorage.removeItem("accessToken")
+        console.log('Error signing in with Google');
       }
-    } else {
-      console.log('Error signing in with Google');
     }
 
   };
