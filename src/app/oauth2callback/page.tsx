@@ -13,7 +13,9 @@ const Page = () => {
     }
   }, [])
 
-  const code = url.substring(36);
+  // const code = url.substring(36); //for local hosting
+  const code = url.substring(43); //for netlify hosting
+  // const code = url.substring(); //for .com hosting
   const [error, setError] = useState(true);
   const { toast } = useToast();
   const router = useRouter();
