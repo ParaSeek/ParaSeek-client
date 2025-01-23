@@ -74,7 +74,7 @@ const Template_blank = ({ resumeDraft }: { resumeDraft: ResumeDraft }) => {
 
             <div className="mb-4">
                 <h2 className="text-xl font-semibold border-b-2 border-gray-700 pb-2 mb-4">Personal Info</h2>
-                <p className="mb-2 text-black">Gender: {resumeDraft.gender.substring(0, 1).toUpperCase() + resumeDraft.gender.substring(1)}</p>
+                <p className="mb-2 text-black">Gender: {resumeDraft.gender?.substring(0, 1).toUpperCase() + resumeDraft.gender?.substring(1)}</p>
                 <p className="mb-2 text-black">Date Of Birth: {new Date(resumeDraft.dob).toLocaleDateString()}</p>
                 <p className="mb-2 text-black">Languages known: {qualifications.languages.join(", ")}</p>
                 <p className="mb-2 text-black">Nationality: {resumeDraft.nationality}</p>
