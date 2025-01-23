@@ -70,14 +70,16 @@ export const Navbar = () => {
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
   const user = useSelector((state: RootState) => state.user.data)
   const [headerScrolled, setHeaderScrolled] = useState(false)
-  document.addEventListener('scroll', function () {
-    let scrollPos = window.scrollY;
-    if (scrollPos > 50) {
-      setHeaderScrolled(true)
-    } else {
-      setHeaderScrolled(false)
-    }
-  });
+  if (typeof window !== 'undefined') {
+    document.addEventListener('scroll', function () {
+      let scrollPos = window.scrollY;
+      if (scrollPos > 50) {
+        setHeaderScrolled(true)
+      } else {
+        setHeaderScrolled(false)
+      }
+    });
+  }
   const toggleMenu = () => {
     setisMenuOpen(!isMenuOpen);
   };
@@ -90,7 +92,7 @@ export const Navbar = () => {
     return null;
   }
   else return (
-    <header className={`${headerScrolled? "bg-card dark:shadow-white/10 shadow-black/20 shadow-[0px_0px_30px]" : ""} flex flex-col items-center transition-all duration-300 fixed w-full z-20 h-16 px-2 top-0 left-0 `}>
+    <header className={`${headerScrolled ? "bg-card dark:shadow-white/10 shadow-black/20 shadow-[0px_0px_30px]" : ""} flex flex-col items-center transition-all duration-300 fixed w-full z-20 h-16 px-2 top-0 left-0 `}>
       <div className="container relative z-10 h-16 flex justify-between mx-auto items-center">
         {/* <div className="flex items-center justify-between w-[25vw] md:w-[8vw]">
           <div className="flex items-center">
