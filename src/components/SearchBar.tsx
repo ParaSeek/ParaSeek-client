@@ -51,16 +51,16 @@ const SearchBar = () => {
 
     return (
         <div className="w-full p-1 relative z-[25] rounded-full">
-            <form onSubmit={(e) => e.preventDefault()} className={`transition-all duration-300 flex items-center justify-center w-full gap-1 px-[5%] pb-3`}>
+            <form onSubmit={(e) => e.preventDefault()} className={`transition-all duration-300 flex items-center justify-center w-full gap-2 p-2 rounded-full bg-card`}>
                 <div className="relative w-full">
                     <input
                         type="text"
-                        placeholder="Job Title or keywords"
+                        placeholder="Job Title"
                         value={searchTitle}
                         onFocus={() => setTitleSuggestionVisible(true)}
                         onBlur={() => setTimeout(() => setTitleSuggestionVisible(false), 200)}
                         onChange={(e) => handleInputChange(e, 'title')}
-                        className="w-full px-4 py-3 rounded-l-full focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-full px-4 border-r-2 border-border focus:outline-none bg-transparent"
                     />
                     {titleSuggestionVisible && (
                         <ul className="absolute top-[64px] w-full bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
@@ -84,7 +84,7 @@ const SearchBar = () => {
                         onFocus={() => setLocationSuggestionVisible(true)}
                         onBlur={() => setTimeout(() => setLocationSuggestionVisible(false), 200)}
                         onChange={(e) => handleInputChange(e, 'location')}
-                        className="w-full px-4 py-3 rounded-r-full focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="w-full px-4 focus:outline-none bg-transparent"
                     />
                     {locationSuggestionVisible && (
                         <ul className="absolute top-[64px] backdrop-blur-sm w-full bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
@@ -103,16 +103,9 @@ const SearchBar = () => {
                 <button
                     onClick={handleSearch}
                     type="submit"
-                    className="outline-none border-none bg-none ml-1"
+                    className="outline-none border-none bg-none"
                 >
-                    <TooltipProvider>
-                        <Tooltip delayDuration={0}>
-                            <TooltipTrigger asChild><SearchIcon className='h-7 w-7' /></TooltipTrigger>
-                            <TooltipContent side="bottom">
-                                <p>Search</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <p className='bg-primary text-white px-5 py-2 rounded-full hover:bg-primary'>Search</p>
                 </button>
             </form>
         </div>

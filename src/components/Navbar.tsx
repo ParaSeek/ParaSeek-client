@@ -69,6 +69,15 @@ export const Navbar = () => {
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const userLog = useSelector((state: RootState) => state.user.isLoggedIn)
   const user = useSelector((state: RootState) => state.user.data)
+  const [headerScrolled, setHeaderScrolled] = useState(false)
+  document.addEventListener('scroll', function () {
+    let scrollPos = window.scrollY;
+    if (scrollPos > 50) {
+      setHeaderScrolled(true)
+    } else {
+      setHeaderScrolled(false)
+    }
+  });
   const toggleMenu = () => {
     setisMenuOpen(!isMenuOpen);
   };
@@ -81,7 +90,7 @@ export const Navbar = () => {
     return null;
   }
   else return (
-    <header className={`flex flex-col items-center bg-card border-b border-border fixed w-full z-20 h-16 px-2 top-0 left-0 backdrop-blur-sm`}>
+    <header className={`${headerScrolled? "bg-card dark:shadow-white/10 shadow-black/20 shadow-[0px_0px_30px]" : ""} flex flex-col items-center transition-all duration-300 fixed w-full z-20 h-16 px-2 top-0 left-0 `}>
       <div className="container relative z-10 h-16 flex justify-between mx-auto items-center">
         {/* <div className="flex items-center justify-between w-[25vw] md:w-[8vw]">
           <div className="flex items-center">
@@ -112,7 +121,7 @@ export const Navbar = () => {
         <div className="text-lg flex items-center  md:mr-8  w-full font-bold">
           <Link href={`${user?.role == process.env.EMPLOYER_ID ? "/dashboard" : "/"}`} className="flex items-baseline">
             <span className="text-2xl">Para</span>
-            <span className="font-medium text-primary text-2xl">Seek.</span>
+            <span className="font-medium text-primary dark:text-[#985AF9] w-7 text-2xl">Seek.</span>
           </Link>
         </div>
         {/* <div className="w-full md:flex items-center justify-center md:static md:h-full hidden">

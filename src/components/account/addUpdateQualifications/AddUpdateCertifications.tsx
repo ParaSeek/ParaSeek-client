@@ -1,7 +1,7 @@
 "use client";
 import { Button } from '@/components/ui/button';
 import { RootState } from '@/store/store';
-import { Pencil, Plus, Trash } from 'lucide-react';
+import { File, Pencil, Plus, Trash } from 'lucide-react';
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -57,7 +57,7 @@ const AddUpdateCertifications = () => {
         >
             <div className="flex justify-between font-semibold">
                 <Popover>
-                    <span>{certifications.length > 0 ? "Certifications" : "Add Certifications"}</span>
+                    <span><h2 className="text-xl flex items-center"><File className="mr-2" />{certifications.length > 0 ? "Certification" : "Add Certification"}</h2></span>
                     <span><PopoverTrigger><Plus className='hover:scale-125 transition-all duration-200' /></PopoverTrigger></span>
                     <PopoverContent className='w-full'>
                         <div className="grid gap-4">

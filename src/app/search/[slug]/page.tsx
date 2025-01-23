@@ -18,7 +18,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
     if (searchResult.length > 0) {
         return (
-            <section className='bg-background/70 px-[5%] py-16 flex flex-col items-start'>
+            <section className='bg-background/70 px-[5%] pb-8 pt-20 flex flex-col items-start'>
 
                 <h1 className='text-2xl font-semibold mb-4'>Search Results for {searchQuery.title != "" && `"${searchQuery.title}"`} {searchQuery.location != "" && `in "${searchQuery.location}"`} {searchQuery.skill != "" && `"${searchQuery.skill}"`} ({searchResult.length} Found)</h1>
 
@@ -39,7 +39,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
         )
     } else {
         return (
-            <section className='bg-background/70 px-[5%] py-16 flex flex-col items-start'>
+            <section className='bg-background/70 px-[5%] pb-8 pt-20 flex flex-col items-start'>
                 <h1 className='text-2xl font-semibold mb-4'>Uh oh! No Jobs found with the searched Query!</h1>
                 <h1 className='text-2xl font-semibold my-12'>Recommended Jobs for You</h1>
 

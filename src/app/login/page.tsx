@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import LoadUserData from "@/components/LoadUserData";
 import { signInWithGoogle } from "../firebase.config";
 import { FaGoogle } from "react-icons/fa6";
 import { login } from "@/slices/userSlice";
+import { ArrowRight } from "lucide-react";
 
 interface UserData {
   username?: string;
@@ -31,7 +32,8 @@ interface UserData {
 const Page = () => {
   const [formType, setFormType] = useState<"login" | "signup" | "forgotPassword" | "otp">("login");
   const { register, handleSubmit, control, formState: { errors }, } = useForm<UserData>();
-
+  const [showRoleInput, setShowRoleInput] = useState(false);
+  const [role, setRole] = useState<"job_seeker" | "employer">("job_seeker");
   const toggleForm = (type: "login" | "signup" | "forgotPassword" | "otp") => {
     setFormType(type);
   };
@@ -118,7 +120,14 @@ const Page = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignUp = async () => {
+    setShowRoleInput(true);
+  }
+  const handleGoogleSignIn = async (e: any) => {
+    if (e) {
+      e.preventDefault();
+      setShowRoleInput(false);
+    }
     const user = await signInWithGoogle();
     if (user) {
       const idToken = await user.getIdToken();
@@ -132,7 +141,7 @@ const Page = () => {
             'Content-Type': 'application/json',
           },
           // body: JSON.stringify({ name: user.displayName, email: user.email, profilePic: user.photoURL }),
-          body: JSON.stringify({ idToken }),
+          body: JSON.stringify({ idToken, role }),
         });
 
         const res = await response.json();
@@ -172,7 +181,39 @@ const Page = () => {
     );
   }
   return (
-    <div className="flex flex-col items-center justify-center p-2 bg-background/70 min-h-screen">
+    <div className="flex flex-col items-center justify-center p-2 bg-background/70 min-h-screen overflow-hidden relative">
+      <img className="w-screen sm:scale-110 h-auto absolute dark:opacity-70 top-[60vh] left-0 scale-125 sm:left-4 md:left-12 lg:left-[80px] rounded-[80px] -rotate-12 z-0" src="/login_bg.svg" alt="" />
+      {showRoleInput && <div className="w-screen h-screen fixed z-20 left-0 top-0 flex items-center justify-center backdrop-blur-md">
+        <AnimatePresence>
+          <motion.div
+            key={formType}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            layout="position"
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-md p-8 md:p-12 z-10 bg-card flex flex-col rounded-3xl dark:border dark:border-border shadow-black/20 shadow-[0px_0px_80px]"
+          >
+            <p className=" font-semibold text-center text-xl">Choose a Login Type</p>
+            <form onSubmit={(e) => handleGoogleSignIn(e)} className="flex flex-col mt-4">
+
+              <Select value={role} onValueChange={(value: "job_seeker" | "employer") => setRole(value)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="job_seeker">Job-seeker</SelectItem>
+                  <SelectItem value="employer">Employer</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button type="submit" size="icon" className="rounded-full mt-6 ml-auto">
+                <ArrowRight />
+              </Button>
+            </form>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      }
       <AnimatePresence>
         <motion.div
           key={formType}
@@ -181,9 +222,9 @@ const Page = () => {
           exit={{ opacity: 0, y: -50 }}
           layout="position"
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md p-8 bg-card rounded-lg shadow-md"
+          className="w-full max-w-md p-8 md:p-12 z-10 bg-card rounded-3xl dark:border dark:border-border shadow-black/20 shadow-[0px_0px_80px]"
         >
-          <h2 className="mb-6 text-2xl font-bold text-center">{formType === "login" ? "Login" : formType === "signup" ? "Register" : formType === "otp" ? "Verify OTP" : "Forgot Password"}</h2>
+          <h2 className="mb-6 text-2xl font-bold text-center">{formType === "login" ? "Welcome Back!" : formType === "signup" ? "Seconds to Register!" : formType === "otp" ? "Verify OTP!" : "Lets Recover Your Account!"}</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
               {(formType === "signup") && (
@@ -567,7 +608,7 @@ const Page = () => {
             )}
             {formType === "login" && (
               <span
-                className="text-sm hover:underline cursor-pointer"
+                className="text-sm hover:underline cursor-pointer pl-3 text-primary font-medium"
                 onClick={() => toggleForm("forgotPassword")}
               >
                 Forgot Password?
@@ -576,7 +617,7 @@ const Page = () => {
             <div>
 
               {formType === "otp" ?
-                <Button
+                <button
                   id="otp-submit"
                   disabled={loading}
                   type="submit"
@@ -586,9 +627,9 @@ const Page = () => {
                   ) : (
                     "Verify"
                   )}
-                </Button>
+                </button>
                 :
-                <Button
+                <button
                   disabled={loading}
                   type="submit"
                   className="w-full py-2 mt-4 text-lg font-medium text-white bg-primary rounded-md hover:bg-primary/90"
@@ -610,40 +651,42 @@ const Page = () => {
                   ) : (
                     "Reset Password"
                   )}
-                </Button>
+                </button>
               }
+              {(formType == "login" || formType == "signup") && <div className="w-full h-[2px] bg-border my-4">
+              </div>}
               {
-                formType === "login" && (
-                  <button type="button" className="bg-black text-white dark:text-black flex items-center gap-2 font-semibold px-3 py-2 rounded-lg w-full justify-center mt-2 dark:bg-white hover:bg-black/90 hover:dark:bg-white/90" onClick={handleGoogleSignIn}>
+                (formType === "login" || formType == 'signup') && (
+                  <button type="button" className="bg-gray-800 text-white dark:text-black flex items-center gap-2 font-semibold px-3 py-[10px] rounded-lg w-full justify-center dark:bg-white hover:bg-black/90 hover:dark:bg-white/90" onClick={() => { formType == "login" ? handleGoogleSignIn(false) : handleGoogleSignUp() }}>
                     <FaGoogle />Continue with Google
                   </button>
                 )
               }
             </div>
           </form>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-4 text-center"
-          >
-            <a
-              href="#"
-              onClick={() =>
-                toggleForm(formType === "login" ? "signup" : formType === "signup" ? "login" : formType === "forgotPassword" ? "login" : "signup")
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-4 z-[5] text-center"
+        >
+          <a
+            href="#"
+            onClick={() =>
+              toggleForm(formType === "login" ? "signup" : formType === "signup" ? "login" : formType === "forgotPassword" ? "login" : "signup")
 
-              }
-              className="text-primary hover:underline"
-            >
-              {formType === "login"
-                ? "Create an account"
-                : formType === "signup"
-                  ? "Already have an account? Login"
-                  : formType === "otp"
-                    ? "Back to signup"
-                    : "Back to Login"}
-            </a>
-          </motion.div>
+            }
+            className="text-white hover:underline"
+          >
+            {formType === "login"
+              ? "Don't have an account? Create One"
+              : formType === "signup"
+                ? "Already have an account? Login"
+                : formType === "otp"
+                  ? "Back to signup"
+                  : "Back to Login"}
+          </a>
         </motion.div>
       </AnimatePresence>
     </div >

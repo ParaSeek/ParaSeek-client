@@ -3,15 +3,21 @@ import Jobcard from '@/components/jobs/Jobcard'
 import Loader from '@/components/Loader';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RootState } from '@/store/store'
-import { employmentTypes, jobTypes, locations, skills, states } from '@/store/suggestions';
+import { employmentTypes, jobTypes, locations, skills } from '@/store/suggestions';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
 const Page = () => {
   const jobs = useSelector((state: RootState) => state.jobs)
   const companies = useSelector((state: RootState) => state.companies)
+  const [jobType, setJobType] = useState("All Jobs");
+  const [employmentType, setEmploymentType] = useState("All Employment Types");
+  const [location, setLocation] = useState("All Locations")
+  const [skill, setSkill] = useState("All Skills")
+  const [company, setCompany] = useState("All Companies")
+
   if (jobs.length == 0) {
     return (
       <section className='bg-background/70 px-[5%] py-16 grid grid-cols-1 place-items-start'>
@@ -21,12 +27,12 @@ const Page = () => {
   }
   return (
     <div className='min-h-screen pt-16 pb-8 px-2 sm:px-6'>
-      <div className='w-full bg-card z-20 px-4 py-6 sticky flex justify-between items-center top-16 left-0'>
-        <Link className='md:block hidden cursor-pointer hover:-translate-x-2' href="/"><ArrowLeft  /></Link>
+      <div className='w-full backdrop-blur-sm z-20 px-4 py-4 sticky flex justify-between items-center top-16 left-0'>
+        <Link className='md:block hidden cursor-pointer hover:-translate-x-2' href="/"><ArrowLeft /></Link>
         <div className='flex items-center gap-3 md:mr-16 justify-center md:justify-end w-full flex-wrap'>
           <Select
-            value=''
-            onValueChange={(value) => ''}
+            value={jobType}
+            onValueChange={(value) => setJobType(value)}
           >
             <SelectTrigger className="w-fit disabled:cursor-default flex gap-1">
               <SelectValue placeholder="Job Type" />
@@ -42,8 +48,8 @@ const Page = () => {
             </SelectContent>
           </Select>
           <Select
-            value=''
-            onValueChange={(value) => ''}
+            value={employmentType}
+            onValueChange={(value) => setEmploymentType(value)}
           >
             <SelectTrigger className="w-fit disabled:cursor-default flex gap-1">
               <SelectValue placeholder="Employment Type" />
@@ -59,8 +65,8 @@ const Page = () => {
             </SelectContent>
           </Select>
           <Select
-            value=''
-            onValueChange={(value) => ''}
+            value={location}
+            onValueChange={(value) => setLocation(value)}
           >
             <SelectTrigger className="w-fit disabled:cursor-default flex gap-1">
               <SelectValue placeholder="Location" />
@@ -76,8 +82,8 @@ const Page = () => {
             </SelectContent>
           </Select>
           <Select
-            value=''
-            onValueChange={(value) => ''}
+            value={skill}
+            onValueChange={(value) => setSkill(value)}
           >
             <SelectTrigger className="w-fit disabled:cursor-default flex gap-1">
               <SelectValue placeholder="Skills" />
@@ -92,23 +98,26 @@ const Page = () => {
               }
             </SelectContent>
           </Select>
-          <Select
-            value=''
-            onValueChange={(value) => ''}
-          >
-            <SelectTrigger className="w-fit disabled:cursor-default flex gap-1">
-              <SelectValue placeholder="Company" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='All Skills'>All Companies</SelectItem>
-              {
-                companies.map((item, index) => (
-                  <SelectItem key={index} value={item.companyName}><div className='flex items-center gap-2'>{item.companyName}</div>
-                  </SelectItem>
-                ))
-              }
-            </SelectContent>
-          </Select>
+          {
+            companies.length > 0 && companies[0].companyName != "" &&
+            <Select
+              value={company}
+              onValueChange={(value) => setCompany(value)}
+            >
+              <SelectTrigger className="w-fit disabled:cursor-default flex gap-1">
+                <SelectValue placeholder="Company" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='All Companies'>All Companies</SelectItem>
+                {
+                  companies.map((item, index) => (
+                    <SelectItem key={index} value={item.companyName}><div className='flex items-center gap-2'>{item.companyName}</div>
+                    </SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+          }
         </div>
       </div>
       <div className='gap-3 grid 2xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 w-fit mx-auto'>

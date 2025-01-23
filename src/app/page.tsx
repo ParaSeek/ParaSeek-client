@@ -297,12 +297,14 @@ export default function Home() {
               className="flex flex-col items-center justify-center flex-1 w-full px-20 text-center">
               <h1 className="md:text-6xl text-5xl font-bold">
                 Welcome to{" "}
-                <span className="text-primary">
+                <span className="custom-gradient text-transparent">
                   ParaSeek.
                 </span>
               </h1>
               <div className="w-full mt-2 md:text-2xl text-lg overflow-hidden">
-                <motion.p key={`next-${nextPIndex}`}
+                <motion.p
+                 key={`next-${nextPIndex}`}
+                 className="font-medium"
                   initial={{ y: '100%' }}
                   animate={{ y: 0 }}
                   exit={{ y: '200%' }}
@@ -311,9 +313,9 @@ export default function Home() {
                   {landingParagraph[nextPIndex]}
                 </motion.p>
               </div>
-              <div className="w-full md:block hidden mt-8 mb-4 max-w-3xl">
+              {/* <div className="w-full md:block hidden mt-8 mb-4 max-w-3xl">
                 <SearchBar />
-              </div>
+              </div> */}
 
               <div className="mt-6">
                 <Link href="/login">

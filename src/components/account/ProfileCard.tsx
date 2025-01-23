@@ -104,6 +104,7 @@ const ProfileCard = () => {
                             type="file"
                             name="profilePic"
                             id="profilePic"
+                            accept='image/*'
                             onChange={(e: any) => handleProfilePicUpdate(e)}
                             className="hidden"
                         />
