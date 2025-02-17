@@ -11,6 +11,9 @@ import { useForm } from 'react-hook-form'
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { PopoverClose } from '@radix-ui/react-popover';
 import { useDashboardContext } from '@/contexts/DashboardContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { sendNotification } from '@/app/firebase.config';
 
 interface Location {
     city: string,
@@ -108,6 +111,23 @@ const CreateJobForm = (props: any) => {
     useEffect(() => {
         setValue("title", jobTitleValue);
     }, [jobTitleValue])
+
+
+    //For Notifications
+
+    const myCompanies = useSelector((state: RootState) => state.myCompanies);
+    const { selectedCompany } = useDashboardContext();
+    const [followerList, setFollowerList] = useState<string[]>([])
+    useEffect(() => {
+        if (selectedCompany && myCompanies.length > 0) {
+            const company = myCompanies.find(company => company.companyName === selectedCompany)
+            const followers = company?.followers || [];
+            setFollowerList(followers);
+        }
+    })
+    //Notifications end
+
+
     useEffect(() => {
         setValue('companyName', props.companyName);
     }, [props.companyName])
@@ -139,6 +159,11 @@ const CreateJobForm = (props: any) => {
                 const dataRes = await res.json();
                 if (dataRes.success) {
                     toast({ title: dataRes.message })
+                    if (followerList && followerList.length > 1) {
+                        followerList.forEach((item) => {
+                            sendNotification(item, "New Job Alert", `${selectedCompany} posted a new job. Apply now!`)
+                        })
+                    }
                     setTimeout(() => {
                         if (props.actionType == "update") {
                             fetchCompanies();

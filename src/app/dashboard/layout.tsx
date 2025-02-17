@@ -35,6 +35,7 @@ const Layout = ({ children }: LayoutProps) => {
     const [collapsed, setCollapsed] = useState(false);
     const [navOpen, setNavOpen] = useState(false);
     const [headerTitle, setHeaderTitle] = useState("Dashboard");
+    const [selectedCompany, setSelectedCompany] = useState("");
     const fetchCompanies = async () => {
         try {
             const res = await fetch(`${process.env.SERVER_URL}/api/v1/company/get-my-companies`, {
@@ -47,6 +48,7 @@ const Layout = ({ children }: LayoutProps) => {
             const dataRes = await res.json();
             if (dataRes.success) {
                 dispatch(setMyCompanies(dataRes.data));
+                setSelectedCompany(dataRes.data[0]?.companyName)
             } else {
                 console.error(dataRes.message);
             }
@@ -54,7 +56,7 @@ const Layout = ({ children }: LayoutProps) => {
             console.error(error);
         }
     };
-
+    
     // const fetchJobs = async () => {
     //     if (userData && userData._id) {
     //         try {
@@ -98,7 +100,7 @@ const Layout = ({ children }: LayoutProps) => {
 
     if (userData.role === process.env.EMPLOYER_ID) {
         return (
-            <DashboardContext.Provider value={{ fetchCompanies, navOpen, setNavOpen, collapsed, headerTitle, setHeaderTitle }}>
+            <DashboardContext.Provider value={{ fetchCompanies, selectedCompany, setSelectedCompany, navOpen, setNavOpen, collapsed, headerTitle, setHeaderTitle }}>
                 <section className='w-full bg-background flex-row items-start justify-start'>
                     <aside onClick={() => setTimeout(() => setNavOpen(false), 100)} className={`${collapsed ? "w-[72px] px-[5px] py-[20px]" : "px-[15px] py-[20px] md:w-[20%]"} ${!navOpen ? "translate-x-[-30px] md:translate-x-0 w-0" : "w-[250px] z-[26]"} bg-background min-h-screen left-0 top-0 fixed flex flex-col border-r border-r-border z-[25] overflow-hidden transition-all duration-300`}>
                         <div className='flex justify-between items-center w-full'>

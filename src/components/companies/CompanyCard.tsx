@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import CompanyDetailsPopup from './companyDetailsPopup';
 import { motion } from "motion/react";
+import { sendNotification } from '@/app/firebase.config';
 const CompanyCard = (props: any) => {
 
   const [companyDetailsOpen, setCompanyDetailsOpen] = useState(false);
@@ -50,6 +51,7 @@ const CompanyCard = (props: any) => {
           setNumberOFFollowers((prev: number) => prev - 1)
         } else {
           setNumberOFFollowers((prev: number) => prev + 1)
+          sendNotification(props.companyOwner, "New Follower", `${user.firstName} followed ${props.companyName}`)
         }
         setFollowing(!following);
       } else {

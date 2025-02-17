@@ -4,7 +4,9 @@ interface DashboardContextProps {
   collapsed: boolean;
   navOpen: boolean;
   headerTitle: string;
+  selectedCompany: string;
   setHeaderTitle: (title: string) => void;
+  setSelectedCompany: (title: string) => void;
   setNavOpen: (navOpen: boolean) => void;
   fetchCompanies: () => Promise<void>;
 }

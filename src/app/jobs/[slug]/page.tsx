@@ -1,4 +1,5 @@
 "use client";
+import { sendNotification } from '@/app/firebase.config';
 import AccessDenied from '@/components/AccessDenied';
 import CompanyDetailsPopup from '@/components/companies/companyDetailsPopup';
 import Jobcard from '@/components/jobs/Jobcard'
@@ -22,6 +23,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     const [companyDetailsOpen, setCompanyDetailsOpen] = React.useState(false);
     const [openJobApplicationPopup, setOpenJobApplicationPopup] = React.useState(false);
     const [resume, setResume] = React.useState<File | null>(null);
+    const user = useSelector((state: RootState) => state.user.data)
     const handleJobApply = async () => {
         try {
             const formData = new FormData();
@@ -35,6 +37,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 const res = await response.json()
                 if (res.success) {
                     toast({ title: 'Applied successfully', description: res.message })
+                    sendNotification(job.postedBy, "New Job Applicant", `${user?.firstName} applied for  ${job.title}`)
                 } else {
                     toast({ title: 'Failed to apply', description: res.message, variant: "destructive" })
                 }
