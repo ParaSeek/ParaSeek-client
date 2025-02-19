@@ -51,7 +51,7 @@ const CompanyCard = (props: any) => {
           setNumberOFFollowers((prev: number) => prev - 1)
         } else {
           setNumberOFFollowers((prev: number) => prev + 1)
-          sendNotification(props.companyOwner, "New Follower", `${user.firstName} followed ${props.companyName}`)
+          sendNotification(props.companyOwner, "New Follower", `${user.firstName} ${user.lastName} followed ${props.companyName}`)
         }
         setFollowing(!following);
       } else {

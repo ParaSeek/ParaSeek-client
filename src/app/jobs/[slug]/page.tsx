@@ -50,7 +50,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     }
     if (job) {
         return (
-            <section className='bg-background/60 px-[5%] py-8 gap-8'>
+            <section className='bg-background/60 px-[5%] py-8 pt-20 gap-8'>
                 <div className="bg-card px-6 py-6 w-full rounded-xl flex flex-col gap-3">
                     <div>
                         <h2 onClick={() => setCompanyDetailsOpen(true)} className='hover:underline inline cursor-pointer font-semibold'>{job.companyName}</h2>

@@ -216,7 +216,7 @@ export default function ResumeWizard() {
       <div className=" min-h-screen pt-16">
 
         {/* Header */}
-        <div className='w-full sticky bg-card top-16 left-0 p-4 z-10 flex items-center justify-between flex-wrap'>
+        <div className='w-full bg-card relative z-10 p-4 flex items-center justify-between flex-wrap'>
           <ArrowLeft role='button' onClick={() => setShowTemplateEditor(false)} className='cursor-pointer hover:-translate-x-1' />
           <div className='flex items-center gap-2'>
 
@@ -252,7 +252,7 @@ export default function ResumeWizard() {
           </div>
         </div>
 
-        <div className='flex flex-col md:flex-row bg-background'>
+        <div className='flex flex-col md:flex-row bg-card'>
           {/* Input Panel */}
           <div className="md:w-1/2 w-full p-8 md:px-8 px-4 space-y-6">
             <h1 className="text-3xl font-bold mb-6 text-center">Resume Wizard</h1>

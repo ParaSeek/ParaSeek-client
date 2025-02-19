@@ -27,7 +27,7 @@ const Page = () => {
   }
   return (
     <div className='min-h-screen pt-16 pb-8 px-2 sm:px-6'>
-      <div className='w-full backdrop-blur-sm z-20 px-4 py-4 sticky flex justify-between items-center top-16 left-0'>
+      <div className='w-full z-20 px-4 py-4 flex justify-between items-center'>
         <Link className='md:block hidden cursor-pointer hover:-translate-x-2' href="/"><ArrowLeft /></Link>
         <div className='flex items-center gap-3 md:mr-16 justify-center md:justify-end w-full flex-wrap'>
           <Select

@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useDashboardContext } from '@/contexts/DashboardContext';
 import { useToast } from '@/hooks/use-toast';
 import { industries } from '@/store/suggestions';
-import { Edit, Loader, Plus, Upload, X } from 'lucide-react';
+import { Edit, Loader, Plus, Upload, X, XCircle } from 'lucide-react';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -97,12 +97,10 @@ const CreateCompanyForm = (props: any) => {
     }
     return (
         <div className='fixed top-0 left-0 h-screen w-screen flex items-center justify-center backdrop-blur-sm z-10'>
-            <form className='w-4/5 max-w-xl mt-12 bg-card p-5 rounded-xl shadow-[0px_0px_10px] shadow-black/20 dark:border dark:border-muted' onSubmit={handleSubmit(onSubmit)}>
+            <form className='w-4/5 max-w-xl mt-12 bg-card p-5 rounded-xl shadow-[0px_0px_25px] shadow-black/10 dark:border dark:border-muted' onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4 flex justify-between items-center">
-                    <h2 className='text-xl font-semibold ml-2'>{props.actionType == "create" ? "Fill your company details" : "Fill the details you want to edit"}</h2>
-                    <Button onClick={() => props.close()} type='button' size="icon" variant="outline" className='mb-4 ml-auto text-bold font-bold text-lg'>
-                        <X />
-                    </Button>
+                    <h2 className='text-xl font-medium ml-2'>{props.actionType == "create" ? "Fill your company details" : "Fill the details you want to edit"}</h2>
+                        <XCircle onClick={() => props.close()} role='button' strokeWidth={"1.5px"} className='cursor-pointer ml-auto text-bold font-bold text-lg' />
                 </div>
                 <div className="mb-4">
                     <Input

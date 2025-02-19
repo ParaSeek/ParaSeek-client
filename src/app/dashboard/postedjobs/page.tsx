@@ -14,16 +14,14 @@ import GetApplicants from '@/components/dashboard/jobs/GetApplicants';
 
 const Page = () => {
   const myCompanies = useSelector((state: RootState) => state.myCompanies);
-  const [selectedCompany, setSelectedCompany] = useState(myCompanies[0]?.companyName);
   const [showJobEditForm, setShowJobEditForm] = useState(false);
   const userData = useSelector((state: RootState) => state.user.data);
   const [editJob, setEditJob] = useState([]);
-  const { fetchCompanies } = useDashboardContext();
+  const { fetchCompanies, setHeaderTitle, selectedCompany } = useDashboardContext();
   const { toast } = useToast();
   const router = useRouter();
   const [openGetApplicants, setOpenGetApplicants] = useState(false);
   const [id, setId] = useState("");
-  const { setHeaderTitle } = useDashboardContext();
 
   function closeForm() {
     setShowJobEditForm(false);
@@ -65,25 +63,8 @@ const Page = () => {
   }
   return (
     <div className='w-full'>
-      <div className='flex gap-3'>
 
-        <Select
-          defaultValue={selectedCompany}
-          onValueChange={(value) => setSelectedCompany(value)}
-        >
-          <SelectTrigger className="w-fit flex gap-2 disabled:cursor-default">
-            <SelectValue placeholder="Select Company" />
-          </SelectTrigger>
-          <SelectContent>
-            {myCompanies.map((company, index) => (
-              <SelectItem key={index} value={company.companyName}>{company.companyName}</SelectItem>
-            ))
-            }
-          </SelectContent>
-        </Select>
-      </div>
-
-      <h1 className="text-3xl font-semibold mt-12 mb-4">All Jobs posted under <span className='custom-gradient text-transparent font-bold'>{selectedCompany}</span></h1>
+      <h1 className="text-3xl font-semibold mt-2 mb-4">All Jobs posted under <span className='custom-gradient text-transparent font-bold'>{selectedCompany}</span></h1>
 
       {(myCompanies.find(company => company.companyName === selectedCompany) || { jobs: [] }).jobs.length > 0 ? <Table className='mt-4'>
         {/* <TableCaption>My Companies</TableCaption> */}

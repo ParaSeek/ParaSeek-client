@@ -63,7 +63,7 @@ const SearchBar = () => {
                         className="w-full px-4 border-r-2 border-border focus:outline-none bg-transparent"
                     />
                     {titleSuggestionVisible && (
-                        <ul className="absolute top-[64px] w-full bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
+                        <ul className="absolute top-[64px] w-full bg-card max-h-[500px] overflow-y-scroll rounded-md z-10">
                             {titleSuggestions.map((suggestion, index) => (
                                 <li
                                     key={index}
@@ -87,7 +87,7 @@ const SearchBar = () => {
                         className="w-full px-4 focus:outline-none bg-transparent"
                     />
                     {locationSuggestionVisible && (
-                        <ul className="absolute top-[64px] backdrop-blur-sm w-full bg-background max-h-[500px] overflow-y-scroll rounded-md z-10">
+                        <ul className="absolute top-[64px] backdrop-blur-sm w-full bg-card max-h-[500px] overflow-y-scroll rounded-md z-10">
                             {locationSuggestions.map((suggestion, index) => (
                                 <li
                                     key={index}

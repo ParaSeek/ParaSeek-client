@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { employmentTypes, jobTitles, jobTypes, levelOfEducation, states } from '@/store/suggestions';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, XCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
@@ -159,7 +159,7 @@ const CreateJobForm = (props: any) => {
                 const dataRes = await res.json();
                 if (dataRes.success) {
                     toast({ title: dataRes.message })
-                    if (followerList && followerList.length > 1) {
+                    if (followerList && followerList.length > 0) {
                         followerList.forEach((item) => {
                             sendNotification(item, "New Job Alert", `${selectedCompany} posted a new job. Apply now!`)
                         })
@@ -182,10 +182,8 @@ const CreateJobForm = (props: any) => {
         <div className="fixed top-0 left-0 h-screen w-screen backdrop-blur-sm z-10 flex items-center justify-center">
             <form className="w-4/5 max-w-xl max-h-[88vh] overflow-y-scroll mt-12 bg-card p-5 pt-0 rounded-xl shadow-[0px_0px_10px] shadow-black/20 dark:border dark:border-muted" onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4 flex justify-between items-center sticky top-0 backdrop-blur-sm z-[15] pt-5">
-                    <h2 className='text-xl font-semibold ml-1'>{props.actionType == "create" ? "Fill the Job details" : "Fill the details you want to edit"}</h2>
-                    <Button onClick={() => props.close()} type='button' size="icon" variant="outline" className='mb-4 ml-auto'>
-                        <X />
-                    </Button>
+                    <h2 className='text-xl font-medium ml-1'>{props.actionType == "create" ? "Fill the Job details" : "Fill the details you want to edit"}</h2>
+                    <XCircle onClick={() => props.close()} role='button' strokeWidth={"1.5px"} className='cursor-pointer ml-auto text-bold font-bold text-lg' />
                 </div>
                 <p className='mb-4 ml-1'>Company: <span className='font-semibold'>{props.companyName}</span></p>
                 <div className="mb-4 relative">

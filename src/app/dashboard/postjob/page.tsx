@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useDashboardContext } from '@/contexts/DashboardContext';
 import { RootState } from '@/store/store'
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
-import { Plus } from 'lucide-react';
+import { Plus, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 import { FaArrowRightLong, FaGoogleDrive } from 'react-icons/fa6';
@@ -16,10 +16,9 @@ const Page = () => {
 
   const myCompanies = useSelector((state: RootState) => state.myCompanies);
   const userData = useSelector((state: RootState) => state.user.data);
-  const [selectedCompany, setSelectedCompany] = useState(myCompanies[0]?.companyName)
   const [createJobFormOpen, setCreateJobFormOpen] = useState(false)
   const [link, setLink] = useState("");
-  const { setHeaderTitle } = useDashboardContext();
+  const { setHeaderTitle, selectedCompany } = useDashboardContext();
   useEffect(() => {
     setHeaderTitle("Post a Job");
   }, [])
@@ -55,22 +54,7 @@ const Page = () => {
   }
   return (
     <div className='w-full'>
-      <Select
-        defaultValue={selectedCompany}
-        onValueChange={(value) => setSelectedCompany(value)}
-      >
-        <SelectTrigger className="w-fit flex gap-2 disabled:cursor-default">
-          <SelectValue placeholder="Select Company" />
-        </SelectTrigger>
-        <SelectContent>
-          {myCompanies.map((company, index) => (
-            <SelectItem key={index} value={company.companyName}>{company.companyName}</SelectItem>
-          ))
-          }
-        </SelectContent>
-      </Select>
-
-      <div className='mt-8'>
+      <div className='mt-2'>
         <div className='flex items-center gap-1'>
           {!userData.tokens && <span className='text-red-500 text-lg'>*</span>}<h1 className='font-semibold'>{userData.tokens ? "Your Google Drive was Successfully Linked" : "Link your Google Drive Account"}</h1>
           <TooltipProvider>
@@ -89,12 +73,10 @@ const Page = () => {
 
       {userData.tokens &&
         <div>
-          <div className="w-full md:max-w-[66%] mt-8 bg-muted p-[25px] cursor-pointer hover:bg-[#ecdcff0a] flex items-center gap-[24px] rounded-xl" onClick={() => setCreateJobFormOpen(true)}>
-            <span className="rounded-full bg-background border p-[12px] dark:border-white border-black">
-              <Plus width="24" height="24" />
-            </span>
+          <div className="w-fit mt-8 group cursor-pointer flex gap-2 transition-all duration-300 rounded-lg" onClick={() => setCreateJobFormOpen(true)}>
+          <PlusCircle strokeWidth="1.25px" width="24" height="24" />
             <div className="flex flex-col justify-center gap-2">
-              <h3 className="font-medium text-xl">Create a Job Post</h3>
+              <h3 className="font-medium group-hover:underline">Create a Job Post</h3>
             </div>
           </div>
           {createJobFormOpen && <CreateJobForm companyName={selectedCompany} actionType="create" close={close} />}

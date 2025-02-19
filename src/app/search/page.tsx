@@ -9,6 +9,7 @@ const Search = (props: Props) => {
             <div className="w-full pt-4 max-w-3xl mx-auto">
                 <SearchBar />
             </div>
+            <img src="/search.svg" className='lg:w-[50vw] md:w-[70vw] w-[90vw]' alt='placeholder image'/>
         </section>
     )
 }

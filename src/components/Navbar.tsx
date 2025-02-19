@@ -13,6 +13,7 @@ import { FloatingDock } from "./ui/floating-dock";
 import { IconBrandGithub, IconBrandLinkedin, IconGlobe, IconHome, IconNewSection, IconTerminal2 } from "@tabler/icons-react";
 import { FaInternetExplorer, FaPeopleGroup, FaSuitcase } from "react-icons/fa6";
 import { Compass, Search } from "lucide-react";
+import NotificationButton from "./notifications/notificationButton";
 
 const navItems = [
   { path: "/jobs", name: "Jobs" },
@@ -123,7 +124,7 @@ export const Navbar = () => {
         <div className="text-lg flex items-center  md:mr-8  w-full font-bold">
           <Link href={`${user?.role == process.env.EMPLOYER_ID ? "/dashboard" : "/"}`} className="flex items-baseline">
             <span className="text-2xl">Para</span>
-            <span className="font-medium text-primary dark:text-[#985AF9] w-7 text-2xl">Seek.</span>
+            <span className="font-medium text-primary dark:text-[#9757ff] w-7 text-2xl">Seek.</span>
           </Link>
         </div>
         {/* <div className="w-full md:flex items-center justify-center md:static md:h-full hidden">
@@ -134,6 +135,7 @@ export const Navbar = () => {
             <SearchBar />
           </div> */}
           <ToggleTheme />
+          <NotificationButton />
           {userLog ? (
             <Link href="/account">
               <Avatar className="w-8 h-8">

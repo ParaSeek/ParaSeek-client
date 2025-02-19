@@ -1,54 +1,49 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ToggleTheme } from '../ToggleTheme'
-import { useTheme } from 'next-themes'
 import { useDashboardContext } from '@/contexts/DashboardContext'
 import { HamburgerMenuIcon } from '@radix-ui/react-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
-import { Bell } from 'lucide-react'
-import { doc, onSnapshot } from 'firebase/firestore'
-import { firestore } from '@/app/firebase.config'
+import { ChevronDown } from 'lucide-react'
+import NotificationButton from '../notifications/notificationButton'
+
+
 
 type Props = {}
 
 const Header = (props: Props) => {
-    const { theme } = useTheme();
 
-    const user = useSelector((state: RootState) => state.user.data);
+    const myCompanies = useSelector((state: RootState) => state.myCompanies);
+    const [customSelectOpen, setCustomSelectOpen] = useState(false);
+    const { collapsed, setNavOpen, headerTitle, selectedCompany, setSelectedCompany } = useDashboardContext();
 
-    const [notifications, setNotifications] = useState<any>()
-    const getNotifications = async (recipientId: string) => {
-        try {
-            onSnapshot(doc(firestore, "notifications", `${recipientId}`), (doc) => {
-                setNotifications(doc.data())
-            })
-        } catch (error) {
-            console.log(error, "in fetching notifications");
-        }
-    }
-    useEffect(() => {
-        getNotifications(user._id)
-        console.log(notifications)
-    }, [])
-    console.log(notifications)
-    const { collapsed, setNavOpen, headerTitle } = useDashboardContext();
     return (
-        <div style={{ width: collapsed ? "calc(100vw - 72px)" : "" }} className={`fixed backdrop-blur-sm right-0 top-0 z-[25] flex px-[25px] py-[15px] items-center justify-between transition-all duration-300 w-full md:w-[80%]`}>
+        <div style={{ width: collapsed ? "calc(100vw - 72px)" : "" }} className={`fixed  backdrop-blur-sm right-0 top-0 z-[25] flex px-[25px] py-[15px] items-center justify-between transition-all duration-300 w-full md:w-[80%]`}>
             <div className='flex items-center gap-2'>
                 <HamburgerMenuIcon onClick={() => setNavOpen(true)} className='md:hidden' />
-                <div>
-                    <h1 className='font-bold'>{headerTitle}</h1>
+                <div className='flex items-center gap-3'>
+                    {/* <h1 className='font-bold'>{headerTitle}</h1> */}
+
+                    {/* custom select */}
+                    <div className='text-sm' onMouseEnter={() => setCustomSelectOpen(true)} onClick={() => setCustomSelectOpen(!customSelectOpen)} onMouseLeave={() => setCustomSelectOpen(false)}>
+                        <span
+                            className='cursor-pointer flex items-center gap-1'
+                        >
+                            {selectedCompany || "No company added yet"}
+                            {selectedCompany && <ChevronDown className='w-4 h-4' strokeWidth="1.5px" />}
+                        </span>
+                        <div className={`flex absolute rounded-md flex-col bg-card shadow-[0px_0px_25px] shadow-black/5  overflow-hidden transition-all duration-300 ${customSelectOpen ? "h-fit" : "h-0"}`}>
+                            {myCompanies.map((company, index) => (
+                                <span onClick={() => { setSelectedCompany(company.companyName); setTimeout(() => setCustomSelectOpen(false), 200) }} className='cursor-pointer hover:bg-primary/10 px-3 py-2' key={index}>{company.companyName}</span>
+                            ))
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className='flex items-center gap-[15px]'>
+            <div className='flex items-center'>
                 <ToggleTheme />
-
-                <div className='relative'>
-                    <Bell className='h-5 w-5' />
-                    {notifications?.newNotifCount > 0 && <span className='absolute rounded-full text-sm flex items-center justify-center -top-1 -right-1 dark:bg-white bg-black text-white dark:text-black w-4 h-4'>{notifications?.newNotifCount}</span>
-                    }
-                </div>
-
+                <NotificationButton />
             </div>
         </div>
     )
