@@ -183,7 +183,7 @@ const Page = () => {
                                             <TableCell>{sn}</TableCell>
                                             <TableCell >{employer.user?.firstName + " " + employer.user?.lastName}</TableCell>
                                             <TableCell ><p className={` ${employer.hireProcess == "hired" ? "text-green-500" : "text-orange-500"}`}>{employer.hireProcess == "hired" ? "Hired" : "Pending"}</p></TableCell>
-                                            {company.companyOwner && company.companyOwner._id === user._id && <TableCell><Button onClick={() => { if (confirm("Are you sure you want to fire this employer? This action can't be undone.")) handleFireEmployer(employer.user._id) }} className="bg-red-500 hover:bg-red-600">
+                                            {company.companyOwner && company.companyOwner._id === user._id && <TableCell className="text-center"><Button onClick={() => { if (confirm("Are you sure you want to fire this employer? This action can't be undone.")) handleFireEmployer(employer.user._id) }} className="bg-red-500 hover:bg-red-600">
                                                 Fire
                                             </Button>
                                             </TableCell>}

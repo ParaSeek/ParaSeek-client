@@ -10,6 +10,7 @@ import { DashboardContext } from '@/contexts/DashboardContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Header from '@/components/dashboard/Header';
 import Footer from '@/components/dashboard/Footer';
+import { useTheme } from 'next-themes';
 
 interface LayoutProps {
     children: ReactNode;
@@ -33,7 +34,7 @@ const Layout = ({ children }: LayoutProps) => {
     const [navOpen, setNavOpen] = useState(false);
     const [headerTitle, setHeaderTitle] = useState("Dashboard");
     const [selectedCompany, setSelectedCompany] = useState("");
-
+    const { theme } = useTheme();
     // get my companies
     const fetchCompanies = async () => {
         try {
@@ -102,7 +103,8 @@ const Layout = ({ children }: LayoutProps) => {
             <DashboardContext.Provider value={{ fetchCompanies, selectedCompany, setSelectedCompany, navOpen, setNavOpen, collapsed, headerTitle, setHeaderTitle }}>
                 <section className='w-full bg-card dark:bg-background flex-row items-start justify-start'>
                     <aside onClick={() => setTimeout(() => setNavOpen(false), 100)} className={`${collapsed ? "w-[72px] px-[5px] py-[20px]" : "px-[10px] py-[20px] md:w-[20%]"} ${!navOpen ? "translate-x-[-30px] md:translate-x-0 w-0" : "w-[250px] z-[26]"}  min-h-screen left-0 top-0 fixed bg-card dark:bg-background flex flex-col border-r border-r-border z-[25] overflow-hidden transition-all duration-300`}>
-                        <div className='flex justify-between items-center w-full'>
+                        <div className={`flex ${collapsed ? "flex-col gap-8" : ""} justify-between items-center w-full`}>
+                            {collapsed && (theme=="light" ? <img src="/logo-light.svg" className='h-5 ' alt="logo" /> : <img src="/logo-dark.svg" className='h-5 ' alt="logo" />)}
                             {!collapsed && <Link href="/dashboard" className={`flex ml-2 items-baseline`}>
                                 <span className="text-xl font-bold">Para</span>
                                 <span className="font-medium text-primary dark:text-[#9757ff] text-xl">Seek.</span>
@@ -151,7 +153,7 @@ const Layout = ({ children }: LayoutProps) => {
                             ))}
                         </ul>
                         {!collapsed && <div className='absolute opacity-80 w-full left-0 bottom-2 px-[20px] py-[6px]'>
-                            <Link href="/about" className='flex items-center py-[20px] gap-1'>
+                            <Link href="/about" className='flex items-center py-[6px] gap-1'>
                                 <span>About</span>
                                 <span><ArrowUpRight strokeWidth="1.25px" className='h-5 w-5' /></span>
                             </Link>

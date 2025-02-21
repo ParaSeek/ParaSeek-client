@@ -87,57 +87,6 @@ This project aims to develop a **Comprehensive Employment Portal** that serves a
 
 This **Comprehensive Employment Portal** will revolutionize the job search and recruitment process by leveraging advanced technologies and user-centric design, making it easier for job seekers to find opportunities and for employers to connect with the right talent.
 
-### Current requirements from Backend Dev:
+<!-- ### Current requirements from Backend Dev:
 
-dated: 12-01-25
-
-Need Api endpoint for resume draft saving and updating other related data models-
-
-```javascript
-interface Education {
-  levelOfEducation: string;
-  fieldOfStudy: string;
-  fromYear: string; //newly added
-  toYear: string; //newly added
-}
-
-interface Experience {
-  jobTitle: string;
-  companyName: string;
-  certificate: string;
-  description?: string; //newly added
-}
-
-interface Education {
-  levelOfEducation: string;
-  fieldOfStudy: string;
-  boardOrUniversity?: string; //newly added
-  institute?: string; //newly added
-  fromYear?: string; //newly added
-  toYear?: string; //newly added
-}
-
-export interface resumeProfile {
-  //resume-header
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  linkedin: string;
-  github: string;
-
-  //personal-info section-2
-  gender: string;
-  dob: string;
-  nationality: string;
-}
-
-export interface ResumeDraft {
-  profile: resumeProfile;
-  professionalOverview: string;
-  qualifications: Qualifications;
-  declaration: string;
-  hobbies: string[];
-  displayDate: string;
-}
-```
+dated: 12-01-25 -->

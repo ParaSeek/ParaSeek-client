@@ -10,6 +10,7 @@ const NotificationDialog = ({ showNotifications, setNotifCount, notifClose }: { 
     const user = useSelector((state: RootState) => state.user.data);
     const [notifications, setNotifications] = useState<any>()
     const [newNotifCount, setNewNotifCount] = useState(0)
+
     const getNotifications = async (recipientId: string) => {
         try {
             const q = query(collection(firestore, "notifications"), where("recipient", "==", recipientId), orderBy('time', 'desc'));
@@ -59,12 +60,13 @@ const NotificationDialog = ({ showNotifications, setNotifCount, notifClose }: { 
 
     //state updates
     useEffect(() => {
-        if(user)
-        getNotifications(user._id)
+        if (user)
+            getNotifications(user._id)
     }, [user])
 
     useEffect(() => {
         setNotifCount(newNotifCount)
+
     }, [newNotifCount])
 
 
@@ -74,6 +76,7 @@ const NotificationDialog = ({ showNotifications, setNotifCount, notifClose }: { 
     if (showNotifications)
         return (
             <div className='fixed top-16 md:right-7 bg-card md:max-w-[500px] w-[95vw] right-1/2 md:translate-x-0 translate-x-1/2 min-h-[100px] dark:bg-[#212121] dark:border dark:border-gray-700 shadow-[0px_0px_25px] shadow-black/10 py-3 rounded-lg'>
+             
                 <div className='flex items-center mb-4 justify-between px-3'>
                     <h3 className='text-lg font-medium flex items-center gap-1'><Bell strokeWidth="1.5px" className='h-5 w-5' /> Notifications</h3>
                     <div className='flex items-center gap-1'>
@@ -109,7 +112,7 @@ const NotificationDialog = ({ showNotifications, setNotifCount, notifClose }: { 
 
             </div>
         )
-    else return null;
+    else return null
 }
 
 export default NotificationDialog
