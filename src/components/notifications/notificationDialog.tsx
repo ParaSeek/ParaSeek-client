@@ -75,17 +75,17 @@ const NotificationDialog = ({ showNotifications, setNotifCount, notifClose }: { 
 
     if (showNotifications)
         return (
-            <div className='fixed top-16 md:right-7 bg-card md:max-w-[500px] w-[95vw] right-1/2 md:translate-x-0 translate-x-1/2 min-h-[100px] dark:bg-[#212121] dark:border dark:border-gray-700 shadow-[0px_0px_25px] shadow-black/10 py-3 rounded-lg'>
+            <div className='fixed top-16 md:right-7 bg-card md:max-w-[500px] w-[95vw] right-[calc(50%+32px)] md:translate-x-0 translate-x-1/2 min-h-[100px] dark:bg-[#212121] dark:border dark:border-gray-700 shadow-[0px_0px_25px] shadow-black/10 py-3 rounded-lg'>
              
                 <div className='flex items-center mb-4 justify-between px-3'>
                     <h3 className='text-lg font-medium flex items-center gap-1'><Bell strokeWidth="1.5px" className='h-5 w-5' /> Notifications</h3>
-                    <div className='flex items-center gap-1'>
+                    <div className='flex items-center gap-2'>
                         {notifications?.length > 0 && <IconClearAll onClick={handleClearAll} className='w-5 h-5 cursor-pointer hover:text-primary' />}
                         {newNotifCount > 0 && <CheckCheck onClick={handleMarkAllRead} className='w-5 h-5 cursor-pointer hover:text-primary' />}
                         <XCircle onClick={notifClose} className='h-5 w-5 cursor-pointer hover:text-primary' />
                     </div>
                 </div>
-                <div className='max-h-[40vh] px-1 overflow-y-scroll'>
+                <div className='max-h-[40vh] px-1 overflow-y-auto'>
 
                     {
                         !notifications || notifications.length == 0 ?

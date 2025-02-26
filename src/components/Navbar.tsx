@@ -8,10 +8,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { ToggleTheme } from "./ToggleTheme";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import SearchBar from "./SearchBar";
 import { FloatingDock } from "./ui/floating-dock";
-import { IconBrandGithub, IconBrandLinkedin, IconGlobe, IconHome, IconNewSection, IconTerminal2 } from "@tabler/icons-react";
-import { FaInternetExplorer, FaPeopleGroup, FaSuitcase } from "react-icons/fa6";
+import { IconBrandLinkedin, IconHome } from "@tabler/icons-react";
+import { FaPeopleGroup, FaSuitcase } from "react-icons/fa6";
 import { Compass, Search } from "lucide-react";
 import NotificationButton from "./notifications/notificationButton";
 
@@ -89,11 +88,11 @@ export const Navbar = () => {
 
   }, [pathname]);
 
-  if (user?.role == process.env.EMPLOYER_ID && pathname.includes("/dashboard")) {
+  if (pathname.includes("/dashboard") || pathname.includes("/community")) {
     return null;
   }
   else return (
-    <header className={`${headerScrolled ? "bg-card dark:shadow-white/10 shadow-black/20 shadow-[0px_0px_30px]" : ""} flex flex-col items-center transition-all duration-300 fixed w-full z-20 h-16 px-2 top-0 left-0 `}>
+    <header className={`${headerScrolled ? " dark:shadow-white/10 shadow-black/20 shadow-[0px_0px_50px]" : ""} flex flex-col items-center transition-all duration-300 fixed w-full z-20 h-16 px-2 top-0 left-0 backdrop-blur-2xl`}>
       <div className="container relative z-10 h-16 flex justify-between mx-auto items-center">
         {/* <div className="flex items-center justify-between w-[25vw] md:w-[8vw]">
           <div className="flex items-center">

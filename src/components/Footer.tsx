@@ -1,13 +1,10 @@
 "use client";
-import { RootState } from "@/store/store";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSelector } from "react-redux";
 
 export default function Footer() {
-  const user = useSelector((state: RootState) => state.user.data)
   const pathname = usePathname();
-  if (user?.role === process.env.EMPLOYER_ID && pathname.includes("/dashboard")) {
+  if (pathname.includes("/dashboard") || pathname.includes("/community")) {
     return null;
   } else {
     return (

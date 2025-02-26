@@ -16,7 +16,7 @@ export const DashboardContext = createContext<DashboardContextProps | undefined>
 export const useDashboardContext = () => {
   const context = useContext(DashboardContext);
   if (!context) {
-    throw new Error('useDashboardContext must be used within a FetchCompaniesProvider');
+    throw new Error('useDashboardContext must be used within a DashboardContext Provider');
   }
   return context;
 };

@@ -124,7 +124,7 @@ export default function Home() {
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
               // whileDrag={{ scale: 0.9, rotate: 10 }}
               // dragConstraints={{ left: -30, right: 10, top: -40, bottom: 40 }}
@@ -223,9 +223,6 @@ export default function Home() {
                   <motion.h2 className="font-semibold text-xl">Need help with your Resume?</motion.h2>
                   <motion.p>We created a service known as Resume Wizard. The goal is simple: help you land that dream job interview! Get an advantage in the modern professional environment. Create your resume in two simple steps</motion.p>
                   <Link href="/resume-wizard"><Button className="mt-4">Create Resume</Button></Link>
-                </div>
-                <div className="p-4 hidden md:block">
-                  <img className="p-2 bg-white rounded-sm rounded-br-xl" src="https://s3-alpha-sig.figma.com/img/af3b/6828/787192a1f5bc3298a6ad9b695585a9b9?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=WK5oZmtVSbNUdzplT2ObMtgZIJhMFn8PGsMFRFvEXS8vLiWttc5lbVaLmGRVLPhkA4R4QsFcR6jKMUb1T56I34IkL87vXEwIUJczAzJQFJWGfig3CWpEiZ5QH2xd6DG1OXV7iAYm15kbcQzJerPDjI30g7u5VI06AXV32bBWVsaaFA2mvRLHMxoJIJFmdD9q99NIRQKGBDRAh6mXKzcaOng7d-5Zv7Hf1fns-qLU1AI1lFCgs46Dpgv6pubI7BlC9ZRZxEXkhGGP48KHi6~QhQ5mCl-4RvKSOhXe0fLFdxyxn36ScVlBNHHkypX-ltLckYddw6c-NyWx7HPnbo6TiQ__" alt="" />
                 </div>
               </motion.div>
             </div>

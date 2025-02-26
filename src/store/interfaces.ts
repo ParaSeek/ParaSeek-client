@@ -103,3 +103,13 @@ export interface ResumeDraft {
     hobbies: string[];
     displayDate: string;
 }
+
+export interface Community {
+    name: string;
+    description: string;
+    owner: string;
+    members: string[];
+    banned: string[];
+    avatar: string;
+    coverImage: string;
+}
