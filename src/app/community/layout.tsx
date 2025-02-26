@@ -1,7 +1,7 @@
 "use client";
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Globe, Home, Plus } from 'lucide-react';
+import { ArrowUpRight, Globe, Home, Plus, X } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -90,6 +90,7 @@ const Layout = ({ children }: LayoutProps) => {
                         <div className={`flex ml-2 items-baseline text-lg font-medium`}>
                             <p>{selectedCommunity ? selectedCommunity?.name : "Friends"}</p>
                         </div>
+                        <X onClick={() => { setSelectedFriend(" ") }} className='md:hidden' />
                     </div>
                     <ul className='w-full flex flex-col gap-1 mt-4'>
                         <div className={`hover:bg-muted md:active:bg-none active:bg-muted transition-all text-sm duration-300 text-center w-full rounded-full mb-2`}>
