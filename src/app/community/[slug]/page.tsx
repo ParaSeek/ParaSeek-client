@@ -2,15 +2,21 @@
 
 import ChatInputBox from '@/components/community/ChatInputBox';
 import NotFound from '@/components/NotFound';
-import { myCommunites } from '@/store/suggestions';
+import { useCommunityContext } from '@/contexts/CommunityContext';
+
 import React from 'react'
 
 const Page = ({ params }: { params: { slug: string } }) => {
     const { slug } = params;
-    const name = slug.replace("%20", " ").toLowerCase();
-    console.log(name)
-    const community = myCommunites.find((c) => {
-        return c.name.toLowerCase() === name
+    const { myCommunities } = useCommunityContext();
+    const name = slug.replaceAll("%20", " ").toLowerCase();
+    console.log(name);
+
+    const community = myCommunities.find((c) => {
+        console.log(c.name.toLowerCase())
+        return (
+            c.name.toLowerCase().trim() === name
+        )
     })
 
     if (!community) {

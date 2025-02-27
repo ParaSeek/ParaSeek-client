@@ -1,28 +1,92 @@
 "use client";
-import { ReactNode, useState } from 'react';
+import { FormEvent, ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Globe, Home, Plus, X } from 'lucide-react';
+import { ArrowUpRight, Globe, Home, Plus, X, XCircle } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CommunityContext } from '@/contexts/CommunityContext';
-import { ToggleTheme } from '@/components/ToggleTheme';
-import NotificationButton from '@/components/notifications/notificationButton';
 import Header from '@/components/community/Header';
-import { myCommunites } from '@/store/suggestions';
-import { Community } from '@/store/interfaces';
+import { Community, Member } from '@/store/interfaces';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 interface LayoutProps {
     children: ReactNode;
 }
 
-
-
-
 const Layout = ({ children }: LayoutProps) => {
     const userData = useSelector((state: RootState) => state.user.data);
+    const [myCommunities, setMyCommunities] = useState<Community[]>([])
     const [selectedCommunity, setSelectedCommunity] = useState<null | Community>(null);
     const [selectedFriend, setSelectedFriend] = useState("");
+
+    const { toast } = useToast();
+
+    const [createCommunityFormOpen, setCreateCommunityFormOpen] = useState(false);
+    const [communityName, setCommunityName] = useState("");
+    const [communityDesc, setCommunityDesc] = useState("");
+
+
+    const setCommunities = (communities: Community[]) => {
+        setMyCommunities(communities);
+    }
+
+    const getAllCommunities = async () => {
+        try {
+            const response = await fetch(`${process.env.SERVER_URL2}/api/v1/community/get-all-communities`, {
+                method: 'GET',
+                credentials: "include" as const,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const res = await response.json();
+            if (res.success) {
+                setMyCommunities(res.data);
+            } else {
+                toast({ title: res.message, variant: "destructive" })
+            }
+        } catch {
+            toast({ title: "Failed to get your communities. Please refresh!", variant: "destructive" })
+        }
+    }
+
+    const handleCreateCommunity = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (communityName.trim() && communityDesc.trim()) {
+            try {
+                const response = await fetch(`${process.env.SERVER_URL2}/api/v1/community/create-community`, {
+                    method: 'POST',
+                    credentials: "include" as const,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: communityName.trim(), description: communityDesc.trim() }),
+                });
+
+                const res = await response.json();
+                if (res.success) {
+                    toast({ title: "Community Created Successfully!" })
+                    setCreateCommunityFormOpen(false);
+                    getAllCommunities();
+                } else {
+                    toast({ title: res.message, variant: "destructive" })
+                }
+            } catch {
+                toast({ title: "Failed to create community", variant: "destructive" })
+            }
+        } else {
+            toast({ title: "Please fill in all fields", variant: "destructive" })
+        }
+    }
+
+    useEffect(() => {
+        getAllCommunities();
+    }, [userData])
 
     if (!userData) {
         return (
@@ -34,10 +98,9 @@ const Layout = ({ children }: LayoutProps) => {
         );
     }
 
-
     return (
 
-        <CommunityContext.Provider value={{}}>
+        <CommunityContext.Provider value={{ myCommunities, setCommunities }}>
             <section className='w-full bg-card dark:bg-background flex-row items-start justify-start'>
 
                 {/* community nav */}
@@ -50,9 +113,9 @@ const Layout = ({ children }: LayoutProps) => {
                     <div className='w-5 m-1 h-[1px] bg-[#A9AAAC]' />
 
                     {
-                        myCommunites.map((community, index) => {
+                        myCommunities?.map((community, index) => {
                             return (
-                                <div onClick={() => { setSelectedCommunity(community); }} key={index} className='w-12 cursor-pointer h-12 rounded-full flex items-center justify-center'>
+                                <div onClick={() => { setSelectedCommunity(community); setSelectedFriend(""); }} key={index} className='w-12 cursor-pointer h-12 rounded-full flex items-center justify-center'>
                                     <Link className='flex items-center' href={`/community/${community.name}`}>
                                         <Avatar className="w-12 h-12 mx-auto">
                                             <AvatarImage className="object-cover" src={community.avatar} />
@@ -64,7 +127,7 @@ const Layout = ({ children }: LayoutProps) => {
                         })
                     }
 
-                    <div className='w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
+                    <div onClick={() => setCreateCommunityFormOpen(true)} className='w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
                         <Plus strokeWidth="1.5px" className='h-8 w-8' />
                     </div>
 
@@ -108,21 +171,34 @@ const Layout = ({ children }: LayoutProps) => {
                             }
 
                         </div>
-                        {myCommunites.map((item, index) => (
-                            <Link className={` ${selectedFriend == item.name ? "bg-activeLink border-[#e2dcff] text-black" : "hover:bg-muted border-transparent md:active:bg-none"} text-center transition-all border duration-300 w-full rounded-md`} onClick={() => setSelectedFriend(item.name)} href={`/community/dm/${item.name}`} key={index}>
-                                <li className={`flex items-center px-[10px] py-[6px] gap-2`}>
-                                    <Avatar className="w-8 h-8">
-                                        <AvatarImage className="object-cover" src={item.avatar} />
-                                        <AvatarFallback className="bg-primary text-white">{item.name.substring(0, 1).toUpperCase()}</AvatarFallback>
-                                    </Avatar>
-                                    <span className='text-nowrap'>{item.name}</span>
-                                </li>
-                            </Link>
-                        ))}
-                    </ul>
-                    <ul className='w-full flex flex-col gap-1 mt-[25px] pt-[25px] border-t border-border'>
+                        {
+                            selectedCommunity ?
+                                selectedCommunity.members?.map((item: Member, index) => (
+                                    <Link className={` ${selectedFriend == item.username ? "bg-activeLink border-[#e2dcff] text-black" : "hover:bg-muted border-transparent md:active:bg-none"} text-center transition-all border duration-300 w-full rounded-md`} onClick={() => { setSelectedFriend(item.username); setSelectedCommunity(null) }} href={`/community/dm/${item.username}`} key={index}>
+                                        <li className={`flex items-center px-[10px] py-[6px] gap-2`}>
+                                            <Avatar className="w-8 h-8">
+                                                <AvatarImage className="object-cover" src={item.profilePic} />
+                                                <AvatarFallback className="bg-primary text-white">{item.username.substring(0, 1).toUpperCase()}</AvatarFallback>
+                                            </Avatar>
+                                            <span className='text-nowrap'>{item.firstName}</span>
+                                        </li>
+                                    </Link>
+                                ))
+                                :
+                                myCommunities[0]?.members?.map((item, index) => (
+                                    <Link className={` ${selectedFriend == item.username ? "bg-activeLink border-[#e2dcff] text-black" : "hover:bg-muted border-transparent md:active:bg-none"} text-center transition-all border duration-300 w-full rounded-md`} onClick={() => setSelectedFriend(item.username)} href={`/community/dm/${item.username}`} key={index}>
+                                        <li className={`flex items-center px-[10px] py-[6px] gap-2`}>
+                                            <Avatar className="w-8 h-8">
+                                                <AvatarImage className="object-cover" src={item.profilePic} />
+                                                <AvatarFallback className="bg-primary text-white">{item.username.substring(0, 1).toUpperCase()}</AvatarFallback>
+                                            </Avatar>
+                                            <span className='text-nowrap'>{item.firstName}</span>
+                                        </li>
+                                    </Link>
+                                ))}
 
                     </ul>
+
                     <div className='absolute opacity-80 w-full left-0 bottom-2 px-[20px] py-[6px]'>
                         <Link href="/about" className='flex items-center py-[6px] gap-1'>
                             <span>About</span>
@@ -138,7 +214,22 @@ const Layout = ({ children }: LayoutProps) => {
                 <main className={`md:w-[calc(100vw-314px)] w-[calc(100vw-64px)] px-[25px] h-screen fixed top-0 right-0`}>
                     {children}
                 </main>
+
             </section>
+
+
+            {/* createServerForm */}
+            <div className={`${createCommunityFormOpen ? "fixed z-[200] h-screen w-screen top-0 left-0" : ""}`}>
+                <div className={`w-[300px] md:w-[400px] bg-card rounded-xl shadow-black/20 shadow-[0px_0px_50px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all flex flex-col p-8 duration-500 ${createCommunityFormOpen ? "scale-100 opacity-100" : "scale-0 opacity-0"}`}>
+                    <XCircle role='button' onClick={() => setCreateCommunityFormOpen(false)} className='absolute top-4 right-4' />
+                    <h3 className='text-center mb-3 font-medium text-2xl'>Create a Community</h3>
+                    <form className='flex flex-col gap-3' onSubmit={(e) => handleCreateCommunity(e)}>
+                        <Input value={communityName} onChange={(e) => setCommunityName(e.target.value)} type="text" placeholder='Enter Community Name' />
+                        <Textarea value={communityDesc} onChange={(e) => setCommunityDesc(e.target.value)} placeholder='Enter Description' />
+                        <Button type='submit'>Create</Button>
+                    </form>
+                </div>
+            </div>
         </CommunityContext.Provider>
     );
 };

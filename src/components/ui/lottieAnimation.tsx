@@ -8,7 +8,7 @@ const MyLottieAnimation = () => {
     const [animationData, setAnimationData] = useState(null);
 
     useEffect(() => {
-        import('../../public/community-bg.json').then((data: any) => {
+        import('../../../public/community-bg.json').then((data: any) => {
             setAnimationData(data);
         });
     }, []);

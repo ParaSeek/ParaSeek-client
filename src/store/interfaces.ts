@@ -104,11 +104,18 @@ export interface ResumeDraft {
     displayDate: string;
 }
 
+export interface Member {
+    _id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    profilePic: string;
+}
 export interface Community {
     name: string;
     description: string;
     owner: string;
-    members: string[];
+    members: Member[];
     banned: string[];
     avatar: string;
     coverImage: string;

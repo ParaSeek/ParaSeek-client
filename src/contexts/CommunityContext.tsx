@@ -1,7 +1,9 @@
+import { Community } from '@/store/interfaces';
 import { createContext, useContext } from 'react';
 
 interface CommunityContextProps {
- 
+  myCommunities: Community[] | [],
+  setCommunities: (communities: Community[])=> void;
 }
 
 export const CommunityContext = createContext<CommunityContextProps | undefined>(undefined);
