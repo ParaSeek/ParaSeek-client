@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 
 const Page = ({ params }: { params: { slug: string } }) => {
     const { slug } = params;
-    const name = slug.replace("%20", " ").toLowerCase();
+    const name = slug.replace("%20", " ").toLowerCase() || "";
     console.log(name);
     const { toast } = useToast();
     const [messages, setMessages] = useState<any>([])
