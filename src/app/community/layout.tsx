@@ -1,7 +1,7 @@
 "use client";
 import { FormEvent, ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Globe, Home, Plus, X, XCircle } from 'lucide-react';
+import { ArrowUpRight, Compass, Globe, Home, MessageCircle, Plus, Search, X, XCircle } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { sendNotification } from '../firebase.config';
 
 interface LayoutProps {
     children: ReactNode;
@@ -19,7 +20,9 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
     const userData = useSelector((state: RootState) => state.user.data);
+    const [allCommunities, setAllCommunities] = useState<Community[]>([])
     const [myCommunities, setMyCommunities] = useState<Community[]>([])
+    const [myFriends, setMyFriends] = useState([])
     const [selectedCommunity, setSelectedCommunity] = useState<null | Community>(null);
     const [selectedFriend, setSelectedFriend] = useState("");
 
@@ -29,11 +32,11 @@ const Layout = ({ children }: LayoutProps) => {
     const [communityName, setCommunityName] = useState("");
     const [communityDesc, setCommunityDesc] = useState("");
 
+    const [addMemberOrCreateDM, setAddMemberOrCreateDM] = useState("");
+    const [addMemberUserId, setAddMemberUserId] = useState("");
 
-    const setCommunities = (communities: Community[]) => {
-        setMyCommunities(communities);
-    }
 
+    // fetch requests
     const getAllCommunities = async () => {
         try {
             const response = await fetch(`${process.env.SERVER_URL2}/api/v1/community/get-all-communities`, {
@@ -46,7 +49,7 @@ const Layout = ({ children }: LayoutProps) => {
 
             const res = await response.json();
             if (res.success) {
-                setMyCommunities(res.data);
+                setAllCommunities(res.data);
             } else {
                 toast({ title: res.message, variant: "destructive" })
             }
@@ -84,9 +87,88 @@ const Layout = ({ children }: LayoutProps) => {
         }
     }
 
+    const handleJoinCommunity = async (communityId: string, username: string) => {
+        try {
+            const response = await fetch(`${process.env.SERVER_URL2}/api/v1/community/join-community/${communityId}`, {
+                method: 'POST',
+                credentials: "include" as const,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username }),
+            });
+
+            const res = await response.json();
+            if (res.success) {
+                toast({ title: "Community Joined Successfully!" })
+                setAddMemberOrCreateDM("");
+                getAllCommunities();
+            } else {
+                toast({ title: res.message, variant: "destructive" })
+            }
+        } catch {
+            toast({ title: "Failed to create community", variant: "destructive" })
+        }
+    }
+
+    const handleSendFriendReq = async (username: string) => {
+        try {
+            const response = await fetch(`${process.env.SERVER_URL2}/api/v1/dm/sendfriendReq`, {
+                method: 'POST',
+                credentials: "include" as const,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username })
+            });
+
+            const res = await response.json();
+            if (res.success) {
+                toast({ title: res.message })
+                sendNotification(res.data.userId, "New Friend Request", `${userData.username} sent you a friend request.`, "/community/dm?tab=acceptReq");
+            } else {
+                toast({ title: res.message, variant: "destructive" })
+            }
+        } catch {
+            toast({ title: "Failed to Send Friend Req. Please refresh!", variant: "destructive" })
+        }
+    }
+
+    const getMyFriends = async () => {
+        try {
+            const response = await fetch(`${process.env.SERVER_URL2}/api/v1/dm/getallfriend`, {
+                method: 'GET',
+                credentials: "include" as const,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const res = await response.json();
+            if (res.success) {
+                setMyFriends(res.data);
+            } else {
+                console.log(res.message);
+            }
+        } catch {
+            toast({ title: "Failed to get your Friends. Please refresh!", variant: "destructive" })
+        }
+    }
+
+    useEffect(() => {
+        if (userData)
+            getMyFriends();
+    }, [userData])
+
+    useEffect(() => {
+        if (allCommunities.length > 0 && userData)
+            setMyCommunities(allCommunities.filter((c: Community) => c.members.some((member: Member) => member._id === userData._id)))
+    }, [allCommunities])
+
+
     useEffect(() => {
         getAllCommunities();
-    }, [userData])
+    }, [])
 
     if (!userData) {
         return (
@@ -100,14 +182,17 @@ const Layout = ({ children }: LayoutProps) => {
 
     return (
 
-        <CommunityContext.Provider value={{ myCommunities, setCommunities }}>
+        <CommunityContext.Provider value={{ myCommunities, allCommunities, setAllCommunities, setMyCommunities, handleJoinCommunity }}>
             <section className='w-full bg-card dark:bg-background flex-row items-start justify-start'>
 
                 {/* community nav */}
-                <aside className='h-screen w-16 z-[25] gap-2 fixed left-0 top-0 flex flex-col items-center pt-4 bg-[#EAE5F2] dark:bg-[#1E152B]'>
+                <aside className='h-screen w-16 z-[25] gap-2 rounded-r-2xl fixed left-0 top-0 flex flex-col items-center pt-4 bg-[#EAE5F2] dark:bg-[#1E152B]'>
+                    <Link href={"/community"} onClick={() => { setSelectedCommunity(null); setSelectedFriend(" "); }} className='w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
+                        <Compass strokeWidth="1.5px" className='h-7 w-7' />
+                    </Link>
 
-                    <Link href={"/community"} onClick={() => { setSelectedCommunity(null); setSelectedFriend(""); }} className='w-12 cursor-pointer h-12 bg-primary rounded-full flex items-center justify-center'>
-                        <Globe strokeWidth="1.5px" className='text-white h-8 w-8' />
+                    <Link href={"/community"} onClick={() => { setSelectedCommunity(null); setSelectedFriend(""); }} className='md:hidden w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
+                        <MessageCircle strokeWidth="1.5px" className='h-7 w-7' />
                     </Link>
 
                     <div className='w-5 m-1 h-[1px] bg-[#A9AAAC]' />
@@ -153,7 +238,6 @@ const Layout = ({ children }: LayoutProps) => {
                         <div className={`flex ml-2 items-baseline text-lg font-medium`}>
                             <p>{selectedCommunity ? selectedCommunity?.name : "Friends"}</p>
                         </div>
-                        <X onClick={() => { setSelectedFriend(" ") }} className='md:hidden' />
                     </div>
                     <ul className='w-full flex flex-col gap-1 mt-4'>
                         <div className={`hover:bg-muted md:active:bg-none active:bg-muted transition-all text-sm duration-300 text-center w-full rounded-full mb-2`}>
@@ -162,11 +246,12 @@ const Layout = ({ children }: LayoutProps) => {
                                 selectedCommunity ?
                                     <div className='flex items-center justify-between px-[10px] py-[4px] gap-2'>
                                         <p>MEMBERS</p>
+                                        {selectedCommunity.owner == userData._id && <Plus onClick={() => setAddMemberOrCreateDM("Add Member")} className='h-5 w-5 cursor-pointer' strokeWidth="1px" />}
                                     </div>
                                     :
                                     <div className='flex items-center justify-between px-[10px] py-[4px] gap-2'>
                                         <p>DIRECT MESSAGES</p>
-                                        <Plus className='h-5 w-5 cursor-pointer' strokeWidth="1px" />
+                                        <Plus onClick={() => setAddMemberOrCreateDM("Add Friend")} className='h-5 w-5 cursor-pointer' strokeWidth="1px" />
                                     </div>
                             }
 
@@ -185,7 +270,7 @@ const Layout = ({ children }: LayoutProps) => {
                                     </Link>
                                 ))
                                 :
-                                myCommunities[0]?.members?.map((item, index) => (
+                                myFriends.map((item: Member, index) => (
                                     <Link className={` ${selectedFriend == item.username ? "bg-activeLink border-[#e2dcff] text-black" : "hover:bg-muted border-transparent md:active:bg-none"} text-center transition-all border duration-300 w-full rounded-md`} onClick={() => setSelectedFriend(item.username)} href={`/community/dm/${item.username}`} key={index}>
                                         <li className={`flex items-center px-[10px] py-[6px] gap-2`}>
                                             <Avatar className="w-8 h-8">
@@ -211,7 +296,7 @@ const Layout = ({ children }: LayoutProps) => {
                     </div>
                 </aside>
                 <Header />
-                <main className={`md:w-[calc(100vw-314px)] w-[calc(100vw-64px)] px-[25px] h-screen fixed top-0 right-0`}>
+                <main className={`md:w-[calc(100vw-314px)] w-[calc(100vw-64px)] md:px-[25px] px-2 h-screen fixed top-0 right-0`}>
                     {children}
                 </main>
 
@@ -227,6 +312,17 @@ const Layout = ({ children }: LayoutProps) => {
                         <Input value={communityName} onChange={(e) => setCommunityName(e.target.value)} type="text" placeholder='Enter Community Name' />
                         <Textarea value={communityDesc} onChange={(e) => setCommunityDesc(e.target.value)} placeholder='Enter Description' />
                         <Button type='submit'>Create</Button>
+                    </form>
+                </div>
+            </div>
+            {/* Add Member to Community Form and create a new DM Form */}
+            <div className={`${addMemberOrCreateDM ? "fixed z-[200] h-screen w-screen top-0 left-0" : ""}`}>
+                <div className={`w-[300px] md:w-[400px] bg-card rounded-xl shadow-black/20 shadow-[0px_0px_50px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all flex flex-col p-8 duration-500 ${addMemberOrCreateDM ? "scale-100 opacity-100" : "scale-0 opacity-0"}`}>
+                    <XCircle role='button' onClick={() => setAddMemberOrCreateDM("")} className='absolute top-4 right-4' />
+                    <h3 className='text-center mb-3 font-medium text-2xl'>{addMemberOrCreateDM}</h3>
+                    <form className='flex flex-col gap-3' onSubmit={(e) => { e.preventDefault(); addMemberOrCreateDM == "Add Member" ? handleJoinCommunity(selectedCommunity?._id || "", addMemberUserId) : handleSendFriendReq(addMemberUserId) }}>
+                        <Input value={addMemberUserId} onChange={(e) => setAddMemberUserId(e.target.value)} type="text" placeholder='Enter Username' />
+                        <Button type='submit'>Add</Button>
                     </form>
                 </div>
             </div>

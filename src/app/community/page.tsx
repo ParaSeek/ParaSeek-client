@@ -5,10 +5,13 @@ import React from 'react'
 import MyLottieAnimation from '@/components/ui/lottieAnimation'
 import CommunitySearchBar from '@/components/community/CommunitySearchBar';
 import { useCommunityContext } from '@/contexts/CommunityContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 
 const Page = () => {
-    const { myCommunities } = useCommunityContext();
+    const { allCommunities, handleJoinCommunity } = useCommunityContext();
+    const userData = useSelector((state: RootState) => state.user.data)
     return (
         <div className='flex items-center flex-col h-screen gap-8'>
             <div className='w-full h-[350px] relative pt-40 flex flex-col items-center gap-3'>
@@ -22,7 +25,7 @@ const Page = () => {
                 <h1 className='md:text-xl md:text-left text-center text-base'>Explore Popular Communities</h1>
                 <div className='w-full gap-3 grid grid-cols-1 md:grid-cols-2 pr-2 lg:grid-cols-3 overflow-y-auto'>
                     {
-                        myCommunities.map((c, i) => {
+                        allCommunities.map((c, i) => {
                             return (
 
                                 <div key={i} className='group relative cursor-pointer rounded-xl bg-[#F8F4FF] dark:bg-[#222222]'>
@@ -32,7 +35,7 @@ const Page = () => {
                                     </p>
                                     <div className='p-2 flex justify-between items-center'>
                                         <h5 className='group-hover:underline text-lg font-medium'>{c.name}</h5>
-                                        <Button>Join</Button>
+                                        <Button onClick={()=>handleJoinCommunity(c._id, userData._id)}>Join</Button>
                                     </div>
                                 </div>
                             )

@@ -5,8 +5,12 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import { Bell, Check, CheckCheck, X, XCircle } from 'lucide-react'
 import { IconClearAll } from '@tabler/icons-react'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { Button } from '../ui/button'
 
 const NotificationDialog = ({ showNotifications, setNotifCount, notifClose }: { notifClose: () => void, showNotifications: boolean, setNotifCount: (count: number) => void }) => {
+    const pathname = usePathname();
     const user = useSelector((state: RootState) => state.user.data);
     const [notifications, setNotifications] = useState<any>()
     const [newNotifCount, setNewNotifCount] = useState(0)
@@ -75,8 +79,8 @@ const NotificationDialog = ({ showNotifications, setNotifCount, notifClose }: { 
 
     if (showNotifications)
         return (
-            <div className='fixed top-16 md:right-7 bg-card md:max-w-[500px] w-[95vw] right-[calc(50%+32px)] md:translate-x-0 translate-x-1/2 min-h-[100px] dark:bg-[#212121] dark:border dark:border-gray-700 shadow-[0px_0px_25px] shadow-black/10 py-3 rounded-lg'>
-             
+            <div className={`fixed top-16 md:right-7 bg-card md:max-w-[500px] w-[95vw] ${pathname.includes('/community') ? "right-[calc(50%+32px)]" : "right-1/2"} md:translate-x-0 translate-x-1/2 min-h-[100px] dark:bg-[#212121] dark:border dark:border-gray-700 shadow-[0px_0px_25px] shadow-black/10 py-3 rounded-lg`}>
+
                 <div className='flex items-center mb-4 justify-between px-3'>
                     <h3 className='text-lg font-medium flex items-center gap-1'><Bell strokeWidth="1.5px" className='h-5 w-5' /> Notifications</h3>
                     <div className='flex items-center gap-2'>
@@ -95,7 +99,7 @@ const NotificationDialog = ({ showNotifications, setNotifCount, notifClose }: { 
                                 return (
                                     <div className='cursor-pointer hover:bg-primary/5 rounded-md px-2 py-2 ' key={index}>
                                         <div className='flex items-center justify-between'>
-                                            <div className={`${notification.read ? "" : "font-medium"} flex gap-1 items-center`}><p>{notification.title}</p>{!notification.read && <div className='bg-red-500 text-white rounded-full h-2 w-2 px-1'></div>}</div>
+                                            <Link onClick={() => { if (notification.link) notifClose(); }} href={notification.link || ""} className={`${notification.read ? "" : "font-medium"} flex gap-1 items-center`}><p>{notification.title}</p>{!notification.read && <div className='bg-red-500 text-white rounded-full h-2 w-2 px-1'></div>}</Link>
                                             <div className='flex items-center gap-1'>
                                                 {!notification.read && <Check onClick={() => handleMarkRead(notification._id)} className='w-5 h-5 cursor-pointer hover:text-primary' />}
                                                 <X onClick={() => handleClear(notification._id)} className='h-5 w-5 cursor-pointer hover:text-primary' />

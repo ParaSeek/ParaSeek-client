@@ -103,7 +103,11 @@ export interface ResumeDraft {
     hobbies: string[];
     displayDate: string;
 }
-
+export interface FriendReq {
+    sender: Member,
+    receiver: string,
+    _id: string
+}
 export interface Member {
     _id: string;
     username: string;
@@ -112,6 +116,7 @@ export interface Member {
     profilePic: string;
 }
 export interface Community {
+    _id: string;
     name: string;
     description: string;
     owner: string;

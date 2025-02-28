@@ -30,7 +30,7 @@ export const signInWithGoogle = async () => {
 };
 
 //Notification send
-export async function sendNotification(recipientId: string, title: string, message: string) {
+export async function sendNotification(recipientId: string, title: string, message: string, link? : string) {
   try {
     const notif =
     {
@@ -38,6 +38,7 @@ export async function sendNotification(recipientId: string, title: string, messa
       message,
       read: false,
       recipient: recipientId,
+      link,
       time: Date.now()
     }
     await setDoc(doc(firestore, "notifications", nanoid()), notif)
