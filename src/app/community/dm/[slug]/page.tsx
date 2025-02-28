@@ -10,8 +10,9 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 
 const Page = ({ params }: { params: { slug: string } }) => {
+    var name: string = "";
     const { slug } = params;
-    const name = slug.replace("%20", " ").toLowerCase() || "";
+    name = slug.replace("%20", " ").toLowerCase();
     console.log(name);
     const { toast } = useToast();
     const [messages, setMessages] = useState<any>([])

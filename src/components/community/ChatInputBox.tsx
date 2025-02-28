@@ -2,7 +2,7 @@ import { toast } from '@/hooks/use-toast';
 import { Send } from 'lucide-react'
 import React, { useState } from 'react'
 
-const ChatInputBox = ({ friendUsername }: { friendUsername: string }) => {
+const ChatInputBox = ({ friendUsername }: { friendUsername?: string }) => {
     const [message, setMessage] = useState("");
     const handleMessageSend = async (e: any) => {
         e.preventDefault();
