@@ -1,18 +1,19 @@
 "use client";
 import { FormEvent, ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Compass, Globe, Home, MessageCircle, Plus, Search, X, XCircle } from 'lucide-react';
+import { ArrowUpRight, Compass, Globe, Home, MessageCircle, Plus, Search, UserCheck2, UsersRound, X, XCircle } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CommunityContext } from '@/contexts/CommunityContext';
 import Header from '@/components/community/Header';
-import { Community, Member } from '@/store/interfaces';
+import { Community, Friend, Member } from '@/store/interfaces';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { sendNotification } from '../firebase.config';
+import { FaPeopleGroup } from 'react-icons/fa6';
 
 interface LayoutProps {
     children: ReactNode;
@@ -22,10 +23,11 @@ const Layout = ({ children }: LayoutProps) => {
     const userData = useSelector((state: RootState) => state.user.data);
     const [allCommunities, setAllCommunities] = useState<Community[]>([])
     const [myCommunities, setMyCommunities] = useState<Community[]>([])
-    const [myFriends, setMyFriends] = useState([])
+    const [myFriends, setMyFriends] = useState<Friend[]>([])
     const [selectedCommunity, setSelectedCommunity] = useState<null | Community>(null);
     const [selectedFriend, setSelectedFriend] = useState("");
-
+    const [headerTitle, setHeaderTitle] = useState("Paraseek Communities")
+    const [sidebarOpen, setSidebarOpen] = useState(false)
     const { toast } = useToast();
 
     const [createCommunityFormOpen, setCreateCommunityFormOpen] = useState(false);
@@ -182,35 +184,43 @@ const Layout = ({ children }: LayoutProps) => {
 
     return (
 
-        <CommunityContext.Provider value={{ myCommunities, allCommunities, setAllCommunities, setMyCommunities, handleJoinCommunity }}>
+        <CommunityContext.Provider value={{ headerTitle, setHeaderTitle, myCommunities, allCommunities, myFriends, setAllCommunities, setMyCommunities, handleJoinCommunity }}>
             <section className='w-full bg-card dark:bg-background flex-row items-start justify-start'>
 
                 {/* community nav */}
                 <aside className='h-screen w-16 z-[25] gap-2 rounded-r-2xl fixed left-0 top-0 flex flex-col items-center pt-4 bg-[#EAE5F2] dark:bg-[#1E152B]'>
-                    <Link href={"/community"} onClick={() => { setSelectedCommunity(null); setSelectedFriend(" "); }} className='w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
+                    <Link href={"/community"} onClick={() => { setSelectedCommunity(null); setSelectedFriend("") }} className='w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
                         <Compass strokeWidth="1.5px" className='h-7 w-7' />
                     </Link>
 
-                    <Link href={"/community"} onClick={() => { setSelectedCommunity(null); setSelectedFriend(""); }} className='md:hidden w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
-                        <MessageCircle strokeWidth="1.5px" className='h-7 w-7' />
+                    <Link href={"/community/dm"} onClick={() => { setSelectedCommunity(null); setSelectedFriend("") }} className='w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
+                        <UserCheck2 strokeWidth="1.5px" className='h-7 w-7' />
                     </Link>
+
+                    <div onClick={() => setSidebarOpen(!sidebarOpen)} className='w-12 cursor-pointer h-12 bg-background rounded-full flex items-center md:hidden justify-center'>
+                        {selectedCommunity ? <UsersRound strokeWidth={"1.5px"} className='w-7 h-7' /> : <MessageCircle strokeWidth="1.5px" className='h-7 w-7' />}
+                    </div>
 
                     <div className='w-5 m-1 h-[1px] bg-[#A9AAAC]' />
 
-                    {
-                        myCommunities?.map((community, index) => {
-                            return (
-                                <div onClick={() => { setSelectedCommunity(community); setSelectedFriend(""); }} key={index} className='w-12 cursor-pointer h-12 rounded-full flex items-center justify-center'>
-                                    <Link className='flex items-center' href={`/community/${community._id}`}>
-                                        <Avatar className="w-12 h-12 mx-auto">
-                                            <AvatarImage className="object-cover" src={community.avatar} />
-                                            <AvatarFallback className="text-lg">{community.name.substring(0, 1).toUpperCase()}</AvatarFallback>
-                                        </Avatar>
-                                    </Link>
-                                </div>
-                            )
-                        })
-                    }
+                    <div className='overflow-y-auto flex flex-col px-[5px] gap-2 max-h-[50%]'>
+
+                        {
+                            myCommunities?.map((community, index) => {
+                                return (
+                                    <div onClick={() => { setSelectedCommunity(community); setSelectedFriend(""); }} key={index} className='w-12 cursor-pointer h-12 rounded-full flex items-center justify-center'>
+                                        <Link className='flex items-center' href={`/community/${community._id}`}>
+                                            <Avatar className="w-12 h-12 mx-auto">
+                                                <AvatarImage className="object-cover" src={community.avatar} />
+                                                <AvatarFallback className="text-lg">{community.name.substring(0, 1).toUpperCase()}</AvatarFallback>
+                                            </Avatar>
+                                        </Link>
+                                    </div>
+                                )
+                            })
+                        }
+                        
+                    </div>
 
                     <div onClick={() => setCreateCommunityFormOpen(true)} className='w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
                         <Plus strokeWidth="1.5px" className='h-8 w-8' />
@@ -231,14 +241,8 @@ const Layout = ({ children }: LayoutProps) => {
                 </aside>
 
                 {/* Friends/Community Members */}
-                <aside className={` px-[10px] md:h-screen h-[calc(100vh-48px)] left-16 md:w-[250px] rounded-t-2xl md:rounded-t-none w-[calc(100vw-64px)] py-[20px] md:top-0 top-12 fixed bg-card dark:bg-background flex flex-col border-r border-r-border z-[25] overflow-hidden md:translate-x-0 transition-all duration-500 ${selectedFriend || selectedCommunity ? "-translate-x-[120%]" : "translate-x-0"}`}>
+                <aside className={` px-[10px] md:h-screen h-[calc(100vh-48px)] left-16 md:w-[250px] rounded-t-2xl md:rounded-t-none w-[calc(100vw-64px)] md:top-0 top-12 fixed bg-card dark:bg-background flex flex-col border-r border-r-border z-[25] overflow-hidden md:translate-x-0 transition-all duration-500 ${!sidebarOpen ? "translate-x-[100%]" : "translate-x-0"}`}>
 
-
-                    <div className='flex justify-between items-center w-full'>
-                        <div className={`flex ml-2 items-baseline text-lg font-medium`}>
-                            <p>{selectedCommunity ? selectedCommunity?.name : "Friends"}</p>
-                        </div>
-                    </div>
                     <ul className='w-full flex flex-col gap-1 mt-4'>
                         <div className={`hover:bg-muted md:active:bg-none active:bg-muted transition-all text-sm duration-300 text-center w-full rounded-full mb-2`}>
 
@@ -271,7 +275,7 @@ const Layout = ({ children }: LayoutProps) => {
                                 ))
                                 :
                                 myFriends.map((item: Member, index) => (
-                                    <Link className={` ${selectedFriend == item.username ? "bg-activeLink border-[#e2dcff] text-black" : "hover:bg-muted border-transparent md:active:bg-none"} text-center transition-all border duration-300 w-full rounded-md`} onClick={() => setSelectedFriend(item.username)} href={`/community/dm/${item.username}`} key={index}>
+                                    <Link className={` ${selectedFriend == item.username ? "bg-activeLink border-[#e2dcff] text-black" : "hover:bg-muted border-transparent md:active:bg-none"} text-center transition-all border duration-300 w-full rounded-md`} onClick={() => { setSidebarOpen(false); setSelectedFriend(item.username) }} href={`/community/dm/${item.username}`} key={index}>
                                         <li className={`flex items-center px-[10px] py-[6px] gap-2`}>
                                             <Avatar className="w-8 h-8">
                                                 <AvatarImage className="object-cover" src={item.profilePic} />

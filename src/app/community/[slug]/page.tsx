@@ -14,7 +14,7 @@ import { io, Socket } from 'socket.io-client';
 
 const Page = ({ params }: { params: { slug: string } }) => {
     const { slug } = params;
-    const { myCommunities } = useCommunityContext();
+    const { setHeaderTitle, myCommunities } = useCommunityContext();
     const userData = useSelector((state: RootState) => state.user.data);
     const [messages, setMessages] = useState<any>([])
     const [socket, setSocket] = useState<Socket | null>(null)
@@ -72,6 +72,11 @@ const Page = ({ params }: { params: { slug: string } }) => {
             c._id === slug
         )
     })
+    useEffect(() => {
+        if (community) {
+            setHeaderTitle(community.name);
+        }
+    }, [community])
 
     if (!community) {
         return <NotFound />

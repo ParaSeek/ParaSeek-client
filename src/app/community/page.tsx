@@ -1,7 +1,7 @@
 "use client";
 import { Button } from '@/components/ui/button'
 import { Search } from 'lucide-react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import MyLottieAnimation from '@/components/ui/lottieAnimation'
 import CommunitySearchBar from '@/components/community/CommunitySearchBar';
 import { useCommunityContext } from '@/contexts/CommunityContext';
@@ -10,8 +10,11 @@ import { RootState } from '@/store/store';
 
 
 const Page = () => {
-    const { allCommunities, handleJoinCommunity } = useCommunityContext();
+    const { setHeaderTitle, allCommunities, handleJoinCommunity } = useCommunityContext();
     const userData = useSelector((state: RootState) => state.user.data)
+    useEffect(() => {
+        setHeaderTitle("Paraseek Communities");
+    }, [])
     return (
         <div className='flex items-center flex-col h-screen gap-8'>
             <div className='w-full h-[350px] relative pt-40 flex flex-col items-center gap-3'>
@@ -35,7 +38,7 @@ const Page = () => {
                                     </p>
                                     <div className='p-2 flex justify-between items-center'>
                                         <h5 className='group-hover:underline text-lg font-medium'>{c.name}</h5>
-                                        <Button onClick={()=>handleJoinCommunity(c._id, userData._id)}>Join</Button>
+                                        <Button onClick={() => handleJoinCommunity(c._id, userData._id)}>Join</Button>
                                     </div>
                                 </div>
                             )

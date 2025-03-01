@@ -108,6 +108,14 @@ export interface FriendReq {
     receiver: string,
     _id: string
 }
+
+export interface Friend {
+    _id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    profilePic: string;
+}
 export interface Member {
     _id: string;
     username: string;
