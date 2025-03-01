@@ -20,7 +20,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     const [socket, setSocket] = useState<Socket | null>(null)
     const { toast } = useToast();
     useEffect(() => {
-        const s = io('http://localhost:4000');
+        const s = io(process.env.SERVER_URL2);
         setSocket(s);
 
         return () => {
