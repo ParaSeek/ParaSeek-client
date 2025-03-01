@@ -201,7 +201,7 @@ const Layout = ({ children }: LayoutProps) => {
                         myCommunities?.map((community, index) => {
                             return (
                                 <div onClick={() => { setSelectedCommunity(community); setSelectedFriend(""); }} key={index} className='w-12 cursor-pointer h-12 rounded-full flex items-center justify-center'>
-                                    <Link className='flex items-center' href={`/community/${community.name}`}>
+                                    <Link className='flex items-center' href={`/community/${community._id}`}>
                                         <Avatar className="w-12 h-12 mx-auto">
                                             <AvatarImage className="object-cover" src={community.avatar} />
                                             <AvatarFallback className="text-lg">{community.name.substring(0, 1).toUpperCase()}</AvatarFallback>
