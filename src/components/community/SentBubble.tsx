@@ -2,7 +2,7 @@ import React from 'react'
 
 const SentBubble = ({ message, time }: { message: string, time: string }) => {
     return (
-        <div className='max-w-[70%] bg-background dark:bg-card w-fit rounded-xl ml-auto flex'>
+        <div className='md:max-w-[70%] max-w-[85%] bg-background dark:bg-card w-fit rounded-xl ml-auto flex'>
             <div className='px-3 py-1 bg-background dark:bg-card rounded-lg break-all w-fit'>
                 {message}
             </div>

@@ -11,12 +11,17 @@ interface CommunityContextProps {
 
   //Community Context Setter Functions
   setAllCommunities: (communities: Community[]) => void;
-  setHeaderTitle: (title: string) =>void,
+  setHeaderTitle: (title: string) => void,
   setMyCommunities: (communities: Community[]) => void;
 
   //Join community fetch req
   handleJoinCommunity: (communityId: string, userId: string) => void;
 
+  //For audio and video calling
+  audioCall: boolean;
+  videoCall: boolean;
+  setAudioCall: (audioCall: boolean) => void;
+  setVideoCall: (videoCall: boolean) => void;
 }
 
 export const CommunityContext = createContext<CommunityContextProps | undefined>(undefined);

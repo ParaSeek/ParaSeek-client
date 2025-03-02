@@ -11,7 +11,7 @@ const RecievedBubble = ({ message, time, sender }: { message: string, time: stri
                 </Avatar>
                 {sender.username}
             </div>}
-            <div className='max-w-[70%] text-white bg-primary w-fit rounded-lg flex'>
+            <div className='md:max-w-[70%] max-w-[85%] text-white bg-primary w-fit rounded-lg flex'>
                 <div className='h-full w-[16px]'>
                     <div className='h-8 w-full rounded-tr-[80%] bg-card dark:bg-background' />
                     <div className='h-[calc(100%-32px)] rounded-bl-md bg-card dark:bg-background' />

@@ -38,6 +38,10 @@ const Layout = ({ children }: LayoutProps) => {
     const [addMemberUserId, setAddMemberUserId] = useState("");
 
 
+    //for audio/video calling
+    const [audioCall, setAudioCall] = useState(false);
+    const [videoCall, setVideoCall] = useState(false);
+
     // fetch requests
     const getAllCommunities = async () => {
         try {
@@ -184,7 +188,7 @@ const Layout = ({ children }: LayoutProps) => {
 
     return (
 
-        <CommunityContext.Provider value={{ headerTitle, setHeaderTitle, myCommunities, allCommunities, myFriends, setAllCommunities, setMyCommunities, handleJoinCommunity }}>
+        <CommunityContext.Provider value={{ audioCall, setAudioCall, videoCall, setVideoCall, headerTitle, setHeaderTitle, myCommunities, allCommunities, myFriends, setAllCommunities, setMyCommunities, handleJoinCommunity }}>
             <section className='w-full bg-card dark:bg-background flex-row items-start justify-start'>
 
                 {/* community nav */}
@@ -219,7 +223,7 @@ const Layout = ({ children }: LayoutProps) => {
                                 )
                             })
                         }
-                        
+
                     </div>
 
                     <div onClick={() => setCreateCommunityFormOpen(true)} className='w-12 cursor-pointer h-12 bg-background rounded-full flex items-center justify-center'>
