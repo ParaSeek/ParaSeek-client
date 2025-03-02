@@ -80,12 +80,14 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 }
             });
             socket.on('hangup', () => {
-                pcRef.current?.close();
-                setCallUiOpen(false);
-                setAudioCall(false);
-                setVideoCall(false);
+                handleHangUp();
             })
 
+            if (typeof window != "undefined") {
+                window.addEventListener('beforeunload', (event) => {
+                    socket?.emit('hangup', { chatId });
+                })
+            }
 
         }
 
@@ -141,6 +143,8 @@ const Page = ({ params }: { params: { slug: string } }) => {
         })
 
         const remoteStream = new MediaStream();
+        if (remoteVideoRef.current)
+            remoteVideoRef.current.style.display = "block"
         remoteStreamRef.current = remoteStream;
         pc.ontrack = async (event) => {
             event.streams[0].getTracks().forEach(track => {
@@ -203,14 +207,30 @@ const Page = ({ params }: { params: { slug: string } }) => {
         await createAnswer(offerRef.current);
     }
 
-    
-    //Call Controls
     const handleHangUp = async () => {
+        //closing peer connection
         pcRef.current?.close();
-        socket?.emit('hangup', { chatId });
+
+        //Resetting all states
+        remoteStreamRef.current = null;
+        pcRef.current = null;
+        offerRef.current = null;
+        callTypeRef.current = "audio";
+        setMicOpen(false);
+        setVideoOpen(false);
         setCallUiOpen(false);
+        setShowIncomingCall(false);
+
+        //header calling button state reset
         setAudioCall(false);
         setVideoCall(false);
+    }
+
+    //Call Controls
+    const handleCallCut = () => {
+        //sending hangup signal through signaling server to anotehr peer
+        socket?.emit('hangup', { chatId });
+        handleHangUp();
     }
 
     const toggleMic = () => {
@@ -265,10 +285,10 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 <Button className='' onClick={handleAnswerIncomingCall}>Answer</Button>
             </div>
             <div className={`fixed overflow-hidden top-16 z-[25] right-0 flex flex-col w-[calc(100vw-64px)] md:w-[calc(100vw-314px)] rounded-b-3xl shadow-black/50 shadow-[0px_0px_50px]  dark:bg-card bg-background transition-all duration-300  ${callUiOpen ? "md:h-[400px] h-[calc(100vh-64px)]" : "h-0"}`}>
-                <div className=' flex flex-col  md:flex-row'>
-                    <div className=' p-4 md:w-1/2'>
+                <div className=' flex flex-col justify-center md:flex-row'>
+                    <div className={`p-4 md:w-1/2`}>
                         <div className='rounded-lg overflow-hidden h-full bg-indigo-500'>
-                            <video className='w-full h-full' autoPlay ref={remoteVideoRef} />
+                            <video className={`w-full h-full`} autoPlay ref={remoteVideoRef} />
                         </div>
                     </div>
                     <div className=' p-4 md:w-1/2'>
@@ -299,7 +319,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                                 <VideoOff className='h-6 w-6' />
                             </div>
                     }
-                    <div onClick={handleHangUp} className='bg-muted rounded-full p-3 bg-red-500 text-white cursor-pointer'>
+                    <div onClick={handleCallCut} className='bg-muted rounded-full p-3 bg-red-500 text-white cursor-pointer'>
                         <Phone className='h-6 w-6' />
                     </div>
                 </div>
