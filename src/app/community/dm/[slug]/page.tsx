@@ -360,12 +360,12 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 {
                     messages.map((message, index) => {
                         return (
-                            <div className='flex flex-col'>
+                            <div key={index} className='flex flex-col'>
                                 {index < messages.length - 1 ? new Date(message.createdAt).getDate() - new Date(messages[index + 1].createdAt).getDate() > 0 && <p className='mx-auto mb-3 bg-[#EAE5F2] dark:bg-[#1E152B] px-3 py-1 rounded-md w-fit'>{new Date(message.createdAt).getDate() == new Date(Date.now()).getDate() ? "Today" : new Date(Date.now()).getDate() - new Date(message.createdAt).getDate() == 1 ? "Yesterday" : new Date(message.createdAt).toLocaleDateString()}</p> : <p className='mx-auto mb-3 bg-[#EAE5F2] dark:bg-[#1E152B] px-3 py-1 rounded-md w-fit'>{new Date(message.createdAt).getDate() == new Date(Date.now()).getDate() ? "Today" : new Date(Date.now()).getDate() - new Date(message.createdAt).getDate() == 1 ? "Yesterday" : new Date(message.createdAt).toLocaleDateString()}</p>}
                                 {message.sender == userData._id ?
-                                    <SentBubble key={index} message={message.message} time={new Date(message.updatedAt).toLocaleTimeString("en", { hour: "numeric", minute: "numeric", hour12: true })} />
+                                    <SentBubble message={message.message} time={new Date(message.updatedAt).toLocaleTimeString("en", { hour: "numeric", minute: "numeric", hour12: true })} />
                                     :
-                                    <RecievedBubble key={index} message={message.message} time={new Date(message.updatedAt).toLocaleTimeString("en", { hour: "numeric", minute: "numeric", hour12: true })} />
+                                    <RecievedBubble message={message.message} time={new Date(message.updatedAt).toLocaleTimeString("en", { hour: "numeric", minute: "numeric", hour12: true })} />
                                 }
                             </div>
                         )
