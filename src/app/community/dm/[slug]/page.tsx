@@ -121,6 +121,14 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 socket?.emit("add-ice-candidate", { candidate: event.candidate, type, chatId })
             }
         }
+
+        pc.onnegotiationneeded = async () => {
+            console.log("on negotiation neeeded, sending offer");
+            const offer = await pcRef.current?.createOffer();
+            await pcRef.current?.setLocalDescription(offer)
+            socket?.emit('offer', { offer, callType: "audio", chatId });
+        }
+
     }
 
     const initCall = async () => {
