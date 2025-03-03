@@ -95,7 +95,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     }
 
     const createPeerConnection = async (type: string) => {
-        const pc = new RTCPeerConnection(stunServers);
+        const pc = new RTCPeerConnection();
         pcRef.current = pc;
 
         localStreamRef.current?.getTracks().forEach(track => {
@@ -121,14 +121,6 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 socket?.emit("add-ice-candidate", { candidate: event.candidate, type, chatId })
             }
         }
-
-        pc.onnegotiationneeded = async () => {
-            console.log("on negotiation neeeded, sending offer");
-            const offer = await pcRef.current?.createOffer();
-            await pcRef.current?.setLocalDescription(offer)
-            socket?.emit('offer', { offer, callType: "audio", chatId });
-        }
-
     }
 
     const initCall = async () => {
