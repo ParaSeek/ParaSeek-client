@@ -87,6 +87,9 @@ const Page = ({ params }: { params: { slug: string } }) => {
         setCallUiOpen(true);
         setMicOpen(true);
         setVideoOpen(true);
+        socket?.emit('toggle-mic', { status: "true", chatId })
+        socket?.emit('toggle-video', { status: "true", chatId })
+        setRemoteVideoOpen(true);
         await initCall();
         await createOffer("video");
     }
