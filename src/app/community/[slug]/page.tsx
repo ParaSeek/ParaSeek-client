@@ -6,6 +6,7 @@ import SentBubble from '@/components/community/SentBubble';
 import NotFound from '@/components/NotFound';
 import { useCommunityContext } from '@/contexts/CommunityContext';
 import { useToast } from '@/hooks/use-toast';
+import { CommunityMessage } from '@/store/interfaces';
 import { RootState } from '@/store/store';
 
 import React, { useEffect, useState } from 'react'
@@ -16,7 +17,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     const { slug } = params;
     const { setHeaderTitle, myCommunities } = useCommunityContext();
     const userData = useSelector((state: RootState) => state.user.data);
-    const [messages, setMessages] = useState<any>([])
+    const [messages, setMessages] = useState<CommunityMessage[]>([])
     const [socket, setSocket] = useState<Socket | null>(null)
     const { toast } = useToast();
     useEffect(() => {
@@ -87,7 +88,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
             <div className='h-full w-full pt-4 pb-20 flex flex-col-reverse gap-3 overflow-y-auto'>
                 {
-                    messages.map((message: any, index: number) => {
+                    messages.map((message, index) => {
                         return (
                             message.sender._id == userData._id ?
                                 // sent 

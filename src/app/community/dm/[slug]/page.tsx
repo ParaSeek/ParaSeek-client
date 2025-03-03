@@ -13,6 +13,7 @@ import { useCommunityContext } from '@/contexts/CommunityContext';
 import { Mic, MicOff, Phone, Video, VideoOff } from 'lucide-react';
 import Loader_dots from '@/components/Loader_dots';
 import { Button } from '@/components/ui/button';
+import { Message, Participant } from '@/store/interfaces';
 
 const stunServers = {
     iceServers: [
@@ -29,17 +30,19 @@ const Page = ({ params }: { params: { slug: string } }) => {
     const { setHeaderTitle, audioCall, setAudioCall, videoCall, setVideoCall } = useCommunityContext();
     const { toast } = useToast();
     const [chatId, setChatId] = useState<string | null>(null);
-    const [messages, setMessages] = useState<any>([])
-    const [receiver, setReceiver] = useState<any>(null)
+    const [messages, setMessages] = useState<Message[]>([])
+    const [receiver, setReceiver] = useState<Participant | null>(null)
     const userData = useSelector((state: RootState) => state.user.data);
     const [socket, setSocket] = useState<Socket | null>(null)
 
-
-    //for calling
+    //for calls
     const [callUiOpen, setCallUiOpen] = useState(false);
     const [showIncomingCall, setShowIncomingCall] = useState(false);
+    const [callAnswered, setCallAnswered] = useState(false);
     const [micOpen, setMicOpen] = useState(false);
     const [videoOpen, setVideoOpen] = useState(false);
+    const [remoteMicOpen, setRemoteMicOpen] = useState(false);
+    const [remoteVideoOpen, setRemoteVideoOpen] = useState(false);
     const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
@@ -47,52 +50,6 @@ const Page = ({ params }: { params: { slug: string } }) => {
     const pcRef = useRef<RTCPeerConnection | null>(null);
     const callTypeRef = useRef<"audio" | "video">("audio")
     const offerRef = useRef<any>(null);
-    useEffect(() => {
-        const s = io(process.env.SERVER_URL2);
-        setSocket(s);
-
-        return () => {
-            s.disconnect();
-            setSocket(null);
-        };
-    }, [])
-
-    useEffect(() => {
-        if (socket && chatId && userData) {
-            socket.emit('join', { chatId, username: userData.username });
-            socket.on('receiveMessage', () => {
-                getMessages();
-            });
-            socket.on('offer', async (callType, offer) => {
-                callTypeRef.current = callType
-                offerRef.current = offer;
-                setShowIncomingCall(true);
-            })
-            socket.on('answer', (answer) => {
-                handleOnAnswer(answer);
-            })
-            socket.on('add-ice-candidate', (type, candidate) => {
-                console.log("type:", type, "candidate:", candidate)
-                console.log(pcRef.current)
-                if (pcRef.current) {
-                    console.log('Adding ICE candidate:', candidate);
-                    pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-                }
-            });
-            socket.on('hangup', () => {
-                handleHangUp();
-            })
-
-            if (typeof window != "undefined") {
-                window.addEventListener('beforeunload', (event) => {
-                    socket?.emit('hangup', { chatId });
-                })
-            }
-
-        }
-
-    }, [socket, chatId, userData]);
-
 
     const getMessages = async () => {
         try {
@@ -120,6 +77,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     const handleAudioCall = async () => {
         setCallUiOpen(true);
         setMicOpen(true);
+        socket?.emit('toggle-mic', { status: "true", chatId })
         await initCall();
         toggleCamera();
         await createOffer("audio");
@@ -195,6 +153,8 @@ const Page = ({ params }: { params: { slug: string } }) => {
         if (!pcRef.current?.currentRemoteDescription) {
             pcRef.current?.setRemoteDescription(answer)
         }
+        setRemoteMicOpen(true);
+        setCallAnswered(true);
     }
 
 
@@ -202,6 +162,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     const handleAnswerIncomingCall = async () => {
         setShowIncomingCall(false);
         setMicOpen(true);
+        setCallAnswered(true);
         setCallUiOpen(true);
         await initCall();
         await createAnswer(offerRef.current);
@@ -218,6 +179,9 @@ const Page = ({ params }: { params: { slug: string } }) => {
         callTypeRef.current = "audio";
         setMicOpen(false);
         setVideoOpen(false);
+        setCallAnswered(false);
+        setRemoteMicOpen(false);
+        setRemoteVideoOpen(false);
         setCallUiOpen(false);
         setShowIncomingCall(false);
 
@@ -254,9 +218,9 @@ const Page = ({ params }: { params: { slug: string } }) => {
             }
         }
     }
-    //end Call Controls
+    //Call Controls
 
-
+    //Effects
     useEffect(() => {
         if (audioCall && !videoCall) {
             handleAudioCall();
@@ -271,11 +235,60 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
     useEffect(() => {
         if (receiver)
-            setHeaderTitle(receiver.firstName)
+            setHeaderTitle(receiver.firstName + " " + receiver.lastName)
     }, [receiver])
 
     useEffect(() => {
+        if (socket && chatId && userData) {
+            socket.emit('join', { chatId, username: userData.username });
+            socket.on('receiveMessage', () => {
+                getMessages();
+            });
+            socket.on('offer', async (callType, offer) => {
+                callTypeRef.current = callType
+                offerRef.current = offer;
+                setShowIncomingCall(true);
+            })
+            socket.on('answer', (answer) => {
+                handleOnAnswer(answer);
+            })
+            socket.on('add-ice-candidate', (type, candidate) => {
+                console.log("type:", type, "candidate:", candidate)
+                console.log(pcRef.current)
+                if (pcRef.current) {
+                    console.log('Adding ICE candidate:', candidate);
+                    pcRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+                }
+            });
+            socket.on('hangup', () => {
+                handleHangUp();
+            })
+            socket.on("toggle-mic", (status) => {
+                setRemoteMicOpen(status)
+            })
+            socket.on("toggle-video", (status) => {
+                setRemoteVideoOpen(status);
+            })
+
+            if (typeof window != "undefined") {
+                window.addEventListener('beforeunload', (event) => {
+                    socket?.emit('hangup', { chatId });
+                })
+            }
+
+        }
+
+    }, [socket, chatId, userData]);
+
+    useEffect(() => {
         getMessages();
+        const s = io(process.env.SERVER_URL2);
+        setSocket(s);
+
+        return () => {
+            s.disconnect();
+            setSocket(null);
+        };
     }, [])
 
     return (
@@ -284,38 +297,56 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 <Loader_dots text={`Incoming ${callTypeRef.current} call`} />
                 <Button className='' onClick={handleAnswerIncomingCall}>Answer</Button>
             </div>
-            <div className={`fixed overflow-hidden top-16 z-[25] right-0 flex flex-col w-[calc(100vw-64px)] md:w-[calc(100vw-314px)] rounded-b-3xl shadow-black/50 shadow-[0px_0px_50px]  dark:bg-card bg-background transition-all duration-300  ${callUiOpen ? "md:h-[400px] h-[calc(100vh-64px)]" : "h-0"}`}>
-                <div className=' flex flex-col justify-center md:flex-row'>
-                    <div className={`p-4 md:w-1/2`}>
-                        <div className='rounded-lg overflow-hidden h-full bg-indigo-500'>
-                            <video className={`w-full h-full`} autoPlay ref={remoteVideoRef} />
+            <div className={`fixed overflow-hidden top-16 z-[25] right-0 flex flex-col rounded-b-3xl shadow-black/50 shadow-[0px_0px_50px] dark:bg-card bg-background transition-all duration-300  ${callUiOpen ? "w-[calc(100vw-64px)] md:w-[calc(100vw-314px)]" : "w-0"}`}>
+                {!callAnswered ?
+                    <div className='w-full text-lg font-semibold mt-4 text-orange-500 flex items-center justify-center'>
+                        <Loader_dots text='Ringing' />
+                    </div>
+                    :
+                    <div className='w-full text-lg font-semibold mt-4 text-green-500 flex items-center justify-center'>
+                        <p>Connected</p>
+                    </div>}
+                <div className=' flex flex-col justify-center lg:flex-row'>
+                    <div className={`p-4 lg:w-1/2`}>
+                        <div className='rounded-lg relative overflow-hidden h-full'>
+                            {!remoteVideoOpen && <Avatar className="w-28 h-28 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                                <AvatarImage className="object-cover" src={receiver?.profilePic} />
+                                <AvatarFallback className="text-3xl bg-primary font-semibold">{receiver?.username.substring(0, 1).toUpperCase()}</AvatarFallback>
+                            </Avatar>}
+                            {!remoteMicOpen && <MicOff className='absolute text-white bottom-4 left-1/2 -translate-x-1/2' />}
+                            <video className={`w-full h-full bg-indigo-500`} autoPlay ref={remoteVideoRef} />
                         </div>
                     </div>
-                    <div className=' p-4 md:w-1/2'>
-                        <div className='rounded-lg overflow-hidden h-full bg-indigo-500'>
-                            <video className='w-full h-full' autoPlay muted ref={localVideoRef} />
+                    <div className=' p-4 lg:w-1/2'>
+                        <div className='rounded-lg relative overflow-hidden h-full'>
+                            {!videoOpen && <Avatar className="w-28 h-28 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                                <AvatarImage className="object-cover" src={userData?.profilePic} />
+                                <AvatarFallback className="text-3xl bg-primary font-semibold">{userData?.username.substring(0, 1).toUpperCase()}</AvatarFallback>
+                            </Avatar>}
+                            {!micOpen && <MicOff className='absolute bottom-4 text-white left-1/2 -translate-x-1/2' />}
+                            <video className='w-full h-full bg-indigo-500' autoPlay muted ref={localVideoRef} />
                         </div>
                     </div>
 
                 </div>
-                <div className=' flex items-center justify-center gap-3 md:h-[60px]'>
+                <div className=' flex items-center mb-4 justify-center gap-3'>
                     {
                         micOpen ?
-                            <div onClick={() => { setMicOpen(false); toggleMic(); }} className='bg-muted rounded-full p-3 cursor-pointer'>
+                            <div onClick={() => { socket?.emit("toggle-mic", { status: false, chatId }); setMicOpen(false); toggleMic(); }} className='bg-muted rounded-full p-3 cursor-pointer'>
                                 <Mic className='h-6 w-6' />
                             </div>
                             :
-                            <div onClick={() => { setMicOpen(true); toggleMic(); }} className='bg-muted rounded-full p-3 cursor-pointer'>
+                            <div onClick={() => { socket?.emit("toggle-mic", { status: true, chatId }); setMicOpen(true); toggleMic(); }} className='bg-muted rounded-full p-3 cursor-pointer'>
                                 <MicOff className='h-6 w-6' />
                             </div>
                     }
                     {
                         videoOpen ?
-                            <div onClick={() => { setVideoOpen(false); toggleCamera() }} className='bg-muted rounded-full p-3 cursor-pointer'>
+                            <div onClick={() => { socket?.emit("toggle-video", { status: false, chatId }); setVideoOpen(false); toggleCamera() }} className='bg-muted rounded-full p-3 cursor-pointer'>
                                 <Video className='h-6 w-6' />
                             </div>
                             :
-                            <div onClick={() => { setVideoOpen(true); toggleCamera() }} className='bg-muted rounded-full p-3 cursor-pointer'>
+                            <div onClick={() => { socket?.emit("toggle-video", { status: true, chatId }); setVideoOpen(true); toggleCamera() }} className='bg-muted rounded-full p-3 cursor-pointer'>
                                 <VideoOff className='h-6 w-6' />
                             </div>
                     }
@@ -327,7 +358,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
             <div className='h-full w-full pt-4 pb-20 flex flex-col-reverse gap-3 overflow-y-auto'>
 
                 {
-                    messages.map((message: any, index: number) => {
+                    messages.map((message, index) => {
                         return (
                             message.sender == userData._id ?
                                 // sent 

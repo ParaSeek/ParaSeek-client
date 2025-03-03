@@ -116,6 +116,13 @@ export interface Friend {
     lastName: string;
     profilePic: string;
 }
+export interface Participant {
+    _id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    profilePic: string;
+}
 export interface Member {
     _id: string;
     username: string;
@@ -123,6 +130,16 @@ export interface Member {
     lastName: string;
     profilePic: string;
 }
+
+export interface Message {
+    _id: string;
+    sender: Participant,
+    Receiver: Participant,
+    message: string,
+    createdAt: string,
+    updatedAt: string
+}
+
 export interface Community {
     _id: string;
     name: string;
@@ -132,4 +149,13 @@ export interface Community {
     banned: string[];
     avatar: string;
     coverImage: string;
+}
+
+export interface CommunityMessage {
+    _id: string;
+    sender: Member;
+    community: Community;
+    message: string;
+    createdAt: string;
+    updatedAt: string;
 }
