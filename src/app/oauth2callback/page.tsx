@@ -2,28 +2,15 @@
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation';
+import React from 'react'
 
 const Page = () => {
-  const [url, setUrl] = useState("");
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      setUrl(window.location.href)
-    }
-  }, [])
-
-  // const code = url.substring(36); //for local hosting
-  const code = url.substring(43); //for netlify hosting
-  // const code = url.substring(); //for .com hosting
-  const [error, setError] = useState(true);
+  const searchParams = useSearchParams();
+  const code = searchParams.get("code") || "";
+  const error = searchParams.get("error") || "";
   const { toast } = useToast();
   const router = useRouter();
-  useEffect(() => {
-    if (code.substring(1, 5) == "code") {
-      setError(false)
-    }
-  }, [code])
 
   const handleDriveLink = async () => {
     try {
