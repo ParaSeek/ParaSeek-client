@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -34,15 +34,17 @@ const Page = () => {
   }
 
   return (
-    <section className='bg-background/70 justify-center'>
-      <div className='bg-card shadow-black/20 shadow-[0px_0px_10px] dark:border dark:border-muted grid place-items-center p-8 gap-6'>
-        <h1 className='text-xl font-semibold'>{error ? "Error while linking drive" : "Drive Linked Successfully"}</h1>
-        <div className='flex gap-3'>
-          {!error && <Button onClick={handleDriveLink}>Get Access</Button>}
-          <Link href="/dashboard/postjob"><Button >{error ? "Return Back" : "Cancel"}</Button></Link>
+    <Suspense>
+      <section className='bg-background/70 justify-center'>
+        <div className='bg-card shadow-black/20 shadow-[0px_0px_10px] dark:border dark:border-muted grid place-items-center p-8 gap-6'>
+          <h1 className='text-xl font-semibold'>{error ? "Error while linking drive" : "Drive Linked Successfully"}</h1>
+          <div className='flex gap-3'>
+            {!error && <Button onClick={handleDriveLink}>Get Access</Button>}
+            <Link href="/dashboard/postjob"><Button >{error ? "Return Back" : "Cancel"}</Button></Link>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </Suspense>
   )
 }
 
