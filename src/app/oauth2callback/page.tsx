@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense } from 'react'
 
-const Page = () => {
+const Callback = () => {
   const searchParams = useSearchParams();
   const code = searchParams.get("code") || "";
   const error = searchParams.get("error") || "";
@@ -32,18 +32,23 @@ const Page = () => {
       console.error('Error fetching data:', error);
     }
   }
+  return (
+    <section className='bg-background/70 justify-center'>
+      <div className='bg-card shadow-black/20 shadow-[0px_0px_10px] dark:border dark:border-muted grid place-items-center p-8 gap-6'>
+        <h1 className='text-xl font-semibold'>{error ? "Error while linking drive" : "Drive Linked Successfully"}</h1>
+        <div className='flex gap-3'>
+          {!error && <Button onClick={handleDriveLink}>Get Access</Button>}
+          <Link href="/dashboard/postjob"><Button >{error ? "Return Back" : "Cancel"}</Button></Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+const Page = () => {
 
   return (
     <Suspense>
-      <section className='bg-background/70 justify-center'>
-        <div className='bg-card shadow-black/20 shadow-[0px_0px_10px] dark:border dark:border-muted grid place-items-center p-8 gap-6'>
-          <h1 className='text-xl font-semibold'>{error ? "Error while linking drive" : "Drive Linked Successfully"}</h1>
-          <div className='flex gap-3'>
-            {!error && <Button onClick={handleDriveLink}>Get Access</Button>}
-            <Link href="/dashboard/postjob"><Button >{error ? "Return Back" : "Cancel"}</Button></Link>
-          </div>
-        </div>
-      </section>
+      <Callback />
     </Suspense>
   )
 }
