@@ -38,6 +38,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
+            <div className="w-full flex items-center justify-center bg-primary text-white p-4 text-center">Our server is running on a free instance, So please wait 50 seconds for it to start up.</div>
             <Navbar />
             <LoadUserData />
             {children}
