@@ -93,7 +93,7 @@ export const Navbar = () => {
   }
   else return (
     <>
-      <header className={`${headerScrolled ? " dark:shadow-white/10 shadow-black/20 shadow-[0px_0px_50px]" : ""} flex flex-col items-center transition-all duration-300 sticky w-full z-20 h-16 px-2 top-0 left-0 backdrop-blur-2xl`}>
+      <header className={`${headerScrolled ? " dark:shadow-white/10 shadow-black/20 shadow-[0px_0px_50px]" : ""} flex flex-col items-center transition-all duration-300 fixed w-full z-20 h-16 px-2 top-0 left-0 backdrop-blur-2xl`}>
         <div className="container relative z-10 h-16 flex justify-between mx-auto items-center">
           {/* <div className="flex items-center justify-between w-[25vw] md:w-[8vw]">
           <div className="flex items-center">
