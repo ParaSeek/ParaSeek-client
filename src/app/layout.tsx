@@ -19,7 +19,7 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: "ParaSeek",
-  description: "Welcome to ParaSeek, your go-to destination for career growth and job opportunities. Our mission is to empower job seekers by providing them with the tools and resources they need to succeed in today’s competitive job market.",
+  description: "Welcome to ParaSeek, your go-to destination for career growth and job opportunities. Our mission is to empower job seekers by providing them with the tools and resources they need to succeed in today's competitive job market.",
 };
 
 export default function RootLayout({
@@ -38,7 +38,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
-            <div className="w-full flex items-center justify-center bg-primary text-white p-4 text-center">Our server is running on a free instance, So please wait 50 seconds for it to start up.</div>
             <Navbar />
             <LoadUserData />
             {children}
